@@ -1,5 +1,6 @@
 package com.example.puriqtours;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +56,11 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             bottomSheet.show(fragmentManager, bottomSheet.getTag());
         });
 
-        holder.btnIniciar.setOnClickListener(v ->
-                Toast.makeText(v.getContext(), "Rechazaste: " + solicitud.getTitulo(), Toast.LENGTH_SHORT).show());
+        holder.btnIniciar.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), IniciarTourActivity.class);
+            v.getContext().startActivity(intent);
+        });
+
     }
 
     @Override

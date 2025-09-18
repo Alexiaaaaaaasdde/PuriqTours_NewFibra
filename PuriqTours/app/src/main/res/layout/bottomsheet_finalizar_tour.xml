@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <!-- 🔹 Título -->
+    <TextView
+        android:id="@+id/tvTituloFinalizar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finalizar Tour"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+        android:textColor="@color/black"
+        android:layout_marginBottom="12dp" />
+
+    <!-- 🔹 Indicación -->
+    <TextView
+        android:id="@+id/tvIndicacionFinalizar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Escanee el código QR para finalizar su tour"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        android:textColor="@color/teal_700"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- 🔹 Ícono central -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgCamaraFinalizar"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/ic_camera_alt"
+        android:background="@color/teal_700"
+        android:padding="32dp"
+        android:scaleType="centerInside"
+        android:tint="@android:color/black"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
+        android:layout_marginBottom="32dp" />
+
+    <!-- 🔹 Botón escanear -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEscanearFinalizar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Finalizar Tour"
+        style="@style/Widget.Material3.Button.TonalButton"
+        app:cornerRadius="12dp" />
+
+</LinearLayout>
