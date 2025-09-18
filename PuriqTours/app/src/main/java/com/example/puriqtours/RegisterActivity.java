@@ -1,6 +1,7 @@
 package com.example.puriqtours;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,7 +16,7 @@ import java.util.Calendar;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText etBirthDate;
+    EditText etBirthDate, etName;
     Spinner spnDocumentType;
     Button btnRegister;
 
@@ -26,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // === FECHA DE NACIMIENTO ===
         etBirthDate = findViewById(R.id.etBirthDate);
+        etName = findViewById(R.id.etName);
 
         etBirthDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -44,7 +46,6 @@ public class RegisterActivity extends AppCompatActivity {
         // === SPINNER DE DOCUMENTO ===
         spnDocumentType = findViewById(R.id.spnDocumentType);
 
-        // Lista de documentos
         String[] docTypes = {
                 "Selecciona tipo de documento",
                 "DNI",
@@ -52,15 +53,12 @@ public class RegisterActivity extends AppCompatActivity {
                 "Pasaporte"
         };
 
-        // Adaptador
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 docTypes
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Asignar al Spinner
         spnDocumentType.setAdapter(adapter);
 
         // === BOTÓN REGISTRAR ===
@@ -72,7 +70,14 @@ public class RegisterActivity extends AppCompatActivity {
             } else {
                 // Continuar con registro
                 Toast.makeText(this, "Documento: " + spnDocumentType.getSelectedItem(), Toast.LENGTH_SHORT).show();
+
+                // Ir a HomeActivity
+                Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                intent.putExtra("username", etName.getText().toString());
+                startActivity(intent);
+                finish();
             }
         });
     }
 }
+

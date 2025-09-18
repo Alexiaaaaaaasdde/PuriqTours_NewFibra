@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".HomeActivity">
+
+    <!-- Texto Bienvenida personalizado -->
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hey, Alexia Gabriela"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp" />
+
+    <!-- Barra de búsqueda -->
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_searchbar"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvWelcome"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:tint="@color/teal_700" />
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Buscar tours, empresas..."
+            android:background="@android:color/transparent"
+            android:paddingStart="8dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="#888888" />
+    </LinearLayout>
+
+    <!-- Sección de Filtros de Búsqueda -->
+    <LinearLayout
+        android:id="@+id/filterSection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Dónde?"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tvStartDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="17 Sep Mié"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@drawable/bg_date_filter"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvEndDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="20 Sep Sáb"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:background="@drawable/bg_date_filter"
+                android:gravity="center"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvGuests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1 habitación, 2 huéspedes"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:background="@drawable/bg_date_filter"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tvPropertyTypes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Todos los tipos de propiedad"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:background="@drawable/bg_date_filter"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <!-- Botón de búsqueda -->
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Buscar"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/filterSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Sección de empresas favoritas -->
+    <TextView
+        android:id="@+id/tvFavorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Empresas favoritas en todo el mundo"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/btnSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"/>
+
+    <!-- Lista horizontal de empresas favoritas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFavoriteCompanies"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        app:layout_constraintTop_toBottomOf="@id/tvFavorites"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"/>
+
+    <!-- Sección de tours recientes/reservados -->
+    <TextView
+        android:id="@+id/tvRecentTours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tours recientes"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/rvFavoriteCompanies"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Ver todos los tours -->
+    <TextView
+        android:id="@+id/tvViewAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ver todos"
+        android:textSize="14sp"
+        android:textColor="@color/teal_700"
+        app:layout_constraintTop_toBottomOf="@id/rvFavoriteCompanies"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Lista de tours recientes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRecentTours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRecentTours"
+        app:layout_constraintVertical_bias="0.105" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
