@@ -65,6 +65,109 @@
                 android:textColorHint="#888888"
                 android:layout_marginBottom="12dp"/>
 
+            <!-- NUEVO: Sección "Mis lista de tours" con flecha -->
+            <LinearLayout
+                android:id="@+id/layoutMisListaTours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mis lista de tours"
+                    android:textColor="#009688"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:contentDescription="Ver lista"
+                    app:tint="#009688"/>
+            </LinearLayout>
+
+            <!-- Chips de filtros horizontales -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="16dp">
+
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupFiltros"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:chipSpacingHorizontal="8dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLima"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lima"
+                        android:checkable="true"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        app:chipStrokeColor="#009688"
+                        app:chipStrokeWidth="1dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipCusco"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cusco"
+                        android:checkable="true"
+                        android:checked="true"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        app:chipStrokeColor="#009688"
+                        app:chipStrokeWidth="1dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipArequipa"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Arequipa"
+                        android:checkable="true"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        app:chipStrokeColor="#009688"
+                        app:chipStrokeWidth="1dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTumbes"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tumbes"
+                        android:checkable="true"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        app:chipStrokeColor="#009688"
+                        app:chipStrokeWidth="1dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPiura"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Piura"
+                        android:checkable="true"
+                        app:chipBackgroundColor="@color/chip_background_selector"
+                        app:chipStrokeColor="#009688"
+                        app:chipStrokeWidth="1dp"/>
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
             <!-- Botón de filtro -->
             <Button
                 android:id="@+id/btnFiltro"
@@ -156,10 +259,10 @@
                                 android:textSize="16sp"
                                 android:layout_marginTop="6dp"/>
 
-
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardLima1"
                     android:layout_width="match_parent"
@@ -233,10 +336,10 @@
                                 android:textSize="16sp"
                                 android:layout_marginTop="6dp"/>
 
-
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardCusco2"
                     android:layout_width="match_parent"
@@ -310,10 +413,10 @@
                                 android:textSize="16sp"
                                 android:layout_marginTop="6dp"/>
 
-
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardCusco3"
                     android:layout_width="match_parent"
@@ -387,58 +490,8 @@
                                 android:textSize="16sp"
                                 android:layout_marginTop="6dp"/>
 
-
                         </LinearLayout>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- Card de Tour -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCusco4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- Card de Tour -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- Card de Tour -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
