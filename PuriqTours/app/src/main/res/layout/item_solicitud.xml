@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingVertical="8dp"
-    android:paddingHorizontal="12dp">
+    android:background="@drawable/bg_item_solicitud"
+    android:padding="12dp"
+    android:layout_marginVertical="6dp"
+    android:elevation="2dp">
 
     <!-- 🔹 Parte siempre visible -->
     <LinearLayout
@@ -17,10 +19,10 @@
         <!-- Imagen -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgSolicitud"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.SmallComponent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
             android:src="@drawable/ic_launcher_foreground" />
 
         <!-- Texto -->
@@ -29,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="10dp">
+            android:layout_marginStart="12dp">
 
             <TextView
                 android:id="@+id/tvTitulo"
@@ -40,14 +42,54 @@
                 android:textColor="@color/black" />
 
             <TextView
+                android:id="@+id/tvEmpresa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Empresa: Ejemplo S.A."
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="@color/teal_700"
+                android:layout_marginTop="2dp" />
+
+            <TextView
                 android:id="@+id/tvDescripcionCorta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:ellipsize="end"
                 android:text="Descripción corta de la solicitud..."
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:textColor="@color/darkgreen" />
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="@color/darkgreen"
+                android:layout_marginTop="2dp" />
+
+            <!-- 🔹 Ciudad -->
+            <TextView
+                android:id="@+id/tvCiudad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ciudad: Lima"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="@color/black"
+                android:layout_marginTop="2dp" />
+
+            <!-- 🔹 Fecha -->
+            <TextView
+                android:id="@+id/tvFecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha: 18/09/2025"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="@color/black"
+                android:layout_marginTop="2dp" />
+
+            <!-- 🔹 Rango de hora -->
+            <TextView
+                android:id="@+id/tvRangoHora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hora: 10:00 - 12:00"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="@color/black"
+                android:layout_marginTop="2dp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -58,7 +100,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp">
+        android:layout_marginTop="8dp">
 
         <TextView
             android:id="@+id/tvDescripcionCompleta"
@@ -66,7 +108,8 @@
             android:layout_height="wrap_content"
             android:text="Aquí va la descripción completa de la solicitud que aparece al expandir."
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:lineSpacingExtra="2dp" />
 
         <!-- Botones -->
         <LinearLayout
@@ -74,7 +117,7 @@
             android:gravity="end"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp">
+            android:layout_marginTop="8dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDetalles"
@@ -84,12 +127,22 @@
                 android:text="Detalles" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnIniciar"
+                android:id="@+id/btnAceptar"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aceptar"
+                android:layout_marginStart="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRechazar"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Iniciar"
-                android:layout_marginStart="8dp"/>
+                android:text="Rechazar"
+                android:layout_marginStart="8dp"
+                android:textColor="@android:color/holo_red_dark" />
+
         </LinearLayout>
     </LinearLayout>
 

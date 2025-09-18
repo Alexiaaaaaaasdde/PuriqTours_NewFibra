@@ -11,14 +11,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ToursFragment extends Fragment {
 
     RecyclerView recyclerView;
-    SolicitudAdapter adapter;
-    List<Solicitud> lista;
+    TourAdapter adapter;
+    List<Tour> lista;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -30,10 +31,10 @@ public class ToursFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         lista = new ArrayList<>();
-        lista.add(new Solicitud("Solicitud 1", "Esta es la descripción completa de la solicitud 1", R.drawable.machupicchu));
-        lista.add(new Solicitud("Solicitud 2", "Texto laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaargo de descripción de la solicitud 2", R.drawable.machupicchu));
+        lista.add(new Tour("Tour 1", "Esta es la descripción completa de la solicitud 1", R.drawable.machupicchu, "Lima", "18/09/2025", LocalTime.of(18,0), LocalTime.of(19,0)));
+        lista.add(new Tour("Tour 2", "Texto laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaargo de descripción de la solicitud 2", R.drawable.machupicchu, "Cusco", "26/09/2025", LocalTime.of(7,0), LocalTime.of(17,0)));
 
-        SolicitudAdapter adapter = new SolicitudAdapter(lista, getParentFragmentManager());
+        TourAdapter adapter = new TourAdapter(lista, getParentFragmentManager());
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
         return view;

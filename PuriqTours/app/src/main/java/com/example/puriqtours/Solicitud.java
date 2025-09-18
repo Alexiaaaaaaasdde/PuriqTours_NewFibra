@@ -1,6 +1,7 @@
 package com.example.puriqtours;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Date;
 
 public class Solicitud {
@@ -10,18 +11,25 @@ public class Solicitud {
 
     private String ciudad;
 
-    private Date fecha;
+    private String fecha;
 
-    private Time horaInicio;
+    private LocalTime horaInicio;
 
-    private Time horaFin;
+    private LocalTime horaFin;
+
+    private String empresa;
 
     private boolean expandido; // controla si está expandido o no
 
-    public Solicitud(String titulo, String descripcion, int imagenResId) {
+    public Solicitud(String titulo, String descripcion, int imagenResId, String ciudad, String fecha, LocalTime horaInicio, LocalTime horaFin, String empresa) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.imagenResId = imagenResId;
+        this.ciudad = ciudad;
+        this.fecha = fecha;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+        this.empresa = empresa;
         this.expandido = false;
     }
 
@@ -30,10 +38,12 @@ public class Solicitud {
     public int getImagenResId() { return imagenResId; }
     public boolean isExpandido() { return expandido; }
     public void setExpandido(boolean expandido) { this.expandido = expandido; }
-    public Date getFecha() {return fecha;}
-    public Time getHoraInicio() {return horaInicio;}
-    public Time getHoraFin() {return horaFin;}
+    public String getFecha() {return fecha;}
+    public LocalTime getHoraInicio() {return horaInicio;}
+    public LocalTime getHoraFin() {return horaFin;}
     public String getCiudad() {return ciudad;}
+
+    public String getEmpresa() {return empresa;}
 
 }
 

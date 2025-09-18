@@ -1,6 +1,7 @@
 package com.example.puriqtours;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +35,7 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
         return new SolicitudViewHolder(vista);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull SolicitudViewHolder holder, int position) {
         Solicitud solicitud = solicitudes.get(position);
@@ -42,6 +44,10 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
         holder.tvDescripcionCorta.setText(solicitud.getDescripcion());
         holder.imgSolicitud.setImageResource(solicitud.getImagenResId());
         holder.tvDescripcionCompleta.setText(solicitud.getDescripcion());
+        holder.tvCiudad.setText("Ciudad: " + solicitud.getCiudad());
+        holder.tvFecha.setText("Fecha: " + solicitud.getFecha());
+        holder.tvEmpresa.setText(solicitud.getEmpresa());
+        holder.tvRangoHora.setText("Hora: " + solicitud.getHoraInicio() + "-" + solicitud.getHoraFin());
 
         boolean expandido = solicitud.isExpandido();
         holder.layoutExpandible.setVisibility(expandido ? View.VISIBLE : View.GONE);
@@ -56,11 +62,29 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             bottomSheet.show(fragmentManager, bottomSheet.getTag());
         });
 
-        holder.btnIniciar.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), IniciarTourActivity.class);
-            v.getContext().startActivity(intent);
+        // 🔹 Acción botón Aceptar
+        holder.btnAceptar.setOnClickListener(v -> {
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle("Confirmar")
+                    .setMessage("¿Deseas aceptar esta solicitud?")
+                    .setPositiveButton("Sí", (dialog, which) -> {
+                        Toast.makeText(v.getContext(), "Solicitud aceptada ✅", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
         });
 
+        // 🔹 Acción botón Rechazar
+        holder.btnRechazar.setOnClickListener(v -> {
+            new AlertDialog.Builder(v.getContext())
+                    .setTitle("Confirmar")
+                    .setMessage("¿Deseas rechazar esta solicitud?")
+                    .setPositiveButton("Sí", (dialog, which) -> {
+                        Toast.makeText(v.getContext(), "Solicitud rechazada ❌", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+        });
     }
 
     @Override
@@ -70,9 +94,9 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
 
     public static class SolicitudViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSolicitud;
-        TextView tvTitulo, tvDescripcionCorta, tvDescripcionCompleta;
+        TextView tvTitulo, tvDescripcionCorta, tvDescripcionCompleta, tvCiudad, tvFecha, tvRangoHora, tvEmpresa;
         LinearLayout layoutExpandible;
-        Button btnDetalles, btnIniciar;
+        Button btnDetalles, btnAceptar, btnRechazar;
 
         public SolicitudViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,10 +104,14 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvDescripcionCorta = itemView.findViewById(R.id.tvDescripcionCorta);
             tvDescripcionCompleta = itemView.findViewById(R.id.tvDescripcionCompleta);
+            tvCiudad = itemView.findViewById(R.id.tvCiudad);
+            tvFecha = itemView.findViewById(R.id.tvFecha);
+            tvEmpresa = itemView.findViewById(R.id.tvEmpresa);
+            tvRangoHora = itemView.findViewById(R.id.tvRangoHora);
             layoutExpandible = itemView.findViewById(R.id.layoutExpandible);
             btnDetalles = itemView.findViewById(R.id.btnDetalles);
-            btnIniciar = itemView.findViewById(R.id.btnIniciar);
-
+            btnAceptar = itemView.findViewById(R.id.btnAceptar);
+            btnRechazar = itemView.findViewById(R.id.btnRechazar);
         }
     }
 }

@@ -1,0 +1,306 @@
+[
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_google.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/google.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_kuelap.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/kuelap.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_success.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_success.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_viajeros.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_viajeros.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_bg_dialog.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/bg_dialog.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_chat.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_chat.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_box_bg.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/box_bg.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_tours.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_tours.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_perfil_sinfondo.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/perfil_sinfondo.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_equipo.jpg.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/equipo.jpg"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_phone.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_phone.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_search_background.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/search_background.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_kuelap2.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/kuelap2.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_calendar.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_calendar.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_remove.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_remove.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_valoracion.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_valoracion.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_dot_unselected.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/dot_unselected.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_canotaje.jpg.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/canotaje.jpg"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_reserva_reservada.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_reserva_reservada.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_rounded_button_bg.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/rounded_button_bg.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_pancito.jpg.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/pancito.jpg"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_location.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_location.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_item_image.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/item_image.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_torus_sinfondo.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/torus_sinfondo.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_historial.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_historial.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-anydpi_ic_launcher_round.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-anydpi/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/xml_data_extraction_rules.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_valoracion.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_valoracion.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_filtro_departamentos.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_filtro_departamentos.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_qr2.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/qr2.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ruta.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ruta.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_dot_selected.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/dot_selected.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/menu/bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/xml_backup_rules.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_reserva_registrada.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_reserva_registrada.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_caminata.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_caminata.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_canotaje.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_canotaje.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_add.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_add.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_reserva_finalizada.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_reserva_finalizada.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_detalle_tour.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_detalle_tour.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_menu.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_menu.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_profile_activity.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_profile_activity.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_visa.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/visa.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_radio_button_selector.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/radio_button_selector.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_disponibilidad.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_disponibilidad.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_notifications.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_notifications.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_detalles.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_detalles.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_almuerzo.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_almuerzo.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/menu_top_app_bar_menu.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/menu/top_app_bar_menu.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_tab_selector.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/tab_selector.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_qr_real.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/qr_real.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_rounded_bg.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/rounded_bg.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_kuelap3.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/kuelap3.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_check_circle.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_check_circle.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_reserva_proceso.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_reserva_proceso.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_pago.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_pago.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_activity_main.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_imagen_perfil.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/imagen_perfil.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/mipmap-anydpi_ic_launcher.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/mipmap-anydpi/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_arrow_back.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_arrow_back.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/layout_dialog_tarjeta.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/layout/dialog_tarjeta.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_historial_sinfondo.png.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/historial_sinfondo.png"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/color_nav_item_colors.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/color/nav_item_colors.xml"
+    },
+    {
+        "merged": "com.example.puriqtours.app-debug-34:/drawable_ic_persons.xml.flat",
+        "source": "com.example.puriqtours.app-main-36:/drawable/ic_persons.xml"
+    }
+]
