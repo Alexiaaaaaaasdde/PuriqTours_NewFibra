@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -13,29 +14,32 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private EditText etEmail, etNewPass, etRepeatPass;
     private Button btnReset;
-    private LocalAuth auth; // nuestra clase de "backend local"
+    private ImageButton btnBack;
+    private LocalAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        // Inicializar LocalAuth
         auth = new LocalAuth(this);
 
-        // Vincular vistas
         etEmail = findViewById(R.id.etEmailReset);
         etNewPass = findViewById(R.id.etNewPass);
         etRepeatPass = findViewById(R.id.etRepeatPass);
         btnReset = findViewById(R.id.btnResetOk);
+        btnBack = findViewById(R.id.btnBack);
 
-        // Si venimos desde TempPasswordActivity, ya pasamos el email
+        // Botón atrás → vuelve a TempPasswordActivity
+        btnBack.setOnClickListener(v -> finish());
+
+        // Si venimos desde TempPasswordActivity, recupera email
         String email = getIntent().getStringExtra("email");
         if (email != null) {
             etEmail.setText(email);
         }
 
-        // Acción del botón
+        // Acción de resetear
         btnReset.setOnClickListener(v -> {
             String correo = etEmail.getText().toString().trim();
             String pass1 = etNewPass.getText().toString();
@@ -56,16 +60,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 return;
             }
 
-            // Guardar nueva contraseña
             auth.updatePassword(correo, pass1);
 
-            // Mensaje de éxito
             new AlertDialog.Builder(this)
                     .setTitle("Éxito")
                     .setMessage("Tu contraseña ha sido restablecida correctamente 🎉")
                     .setPositiveButton("Ir al login", (dialog, which) -> {
                         Intent i = new Intent(this, LoginActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         finish();
                     })
@@ -73,3 +74,4 @@ public class ResetPasswordActivity extends AppCompatActivity {
         });
     }
 }
+

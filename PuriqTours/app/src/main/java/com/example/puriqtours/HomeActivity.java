@@ -108,20 +108,20 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.navigation_search) {
+            if (itemId == R.id.nav_search) {
                 // Ya estamos en la búsqueda (Home)
                 return true;
-            } else if (itemId == R.id.navigation_explore) {
+            } else if (itemId == R.id.nav_tours) {
                 // Ir a la actividad de exploración
                 Intent exploreIntent = new Intent(HomeActivity.this, ExploreActivity.class);
                 startActivity(exploreIntent);
                 return true;
-            } else if (itemId == R.id.navigation_trips) {
+            } else if (itemId == R.id.nav_historial) {
                 // Ir a la actividad de viajes
                 Intent tripsIntent = new Intent(HomeActivity.this, TripsActivity.class);
                 startActivity(tripsIntent);
                 return true;
-            } else if (itemId == R.id.navigation_profile) {
+            } else if (itemId == R.id.nav_profile) {
                 // Ir a la actividad de perfil
                 Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
                 startActivity(profileIntent);

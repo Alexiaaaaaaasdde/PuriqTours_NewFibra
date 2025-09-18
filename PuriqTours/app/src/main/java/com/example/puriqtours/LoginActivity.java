@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -15,48 +17,55 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 🎨 ESTA ES LA LÍNEA NUEVA - Instalar el splash screen
+        SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Vincular elementos del layout
+        // 🔹 Vincular elementos del layout
         etEmail = findViewById(R.id.email);
         etPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.btn_login);
-        tvForgotPassword = findViewById(R.id.tvForgotPassword); // Asegúrate que exista en tu XML
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvRegister = findViewById(R.id.tvRegister);
 
-        // Acción "¿Olvidaste tu contraseña?"
+        // 🔹 Acción "¿Olvidaste tu contraseña?"
         if (tvForgotPassword != null) {
             tvForgotPassword.setOnClickListener(v -> {
-                Intent i = new Intent(this, ForgotPasswordActivity.class);
+                Intent i = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(i);
             });
         }
 
-        // 👉 Acción "Registrarse"
+        // 🔹 Acción "Registrarse"
         if (tvRegister != null) {
             tvRegister.setOnClickListener(v -> {
-                Intent i = new Intent(this, RegisterActivity.class);
+                Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(i);
             });
         }
 
-        // 👉 Acción "Iniciar sesión"
+        // 🔹 Acción "Iniciar sesión"
         btnLogin.setOnClickListener(v -> {
             String correo = etEmail.getText().toString().trim();
             String pass = etPassword.getText().toString();
 
-            if (correo.isEmpty() || pass.isEmpty()) {
+            if (correo.isEmpty()) {
                 etEmail.setError("Ingresa tu correo");
+                return;
+            }
+            if (pass.isEmpty()) {
                 etPassword.setError("Ingresa tu contraseña");
                 return;
             }
 
-            // ⚡ Aquí en el futuro puedes validar contra LocalAuth
-            // Por ahora solo mostramos que todo funciona
-            Intent i = new Intent(this, MainActivity.class); // O pantalla principal de tu app
+            // 🚀 Aquí en el futuro podrás validar credenciales
+            // Por ahora solo redirige a la pantalla principal
+            Intent i = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(i);
-            finish();
+            finish(); // evita volver al login con "atrás"
         });
     }
 }
+

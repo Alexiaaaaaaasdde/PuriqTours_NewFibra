@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
-        android:id="@+id/navigation_search"
-        android:icon="@drawable/ic_search"
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search_custom"
         android:title="Buscar" />
 
     <item
-        android:id="@+id/navigation_explore"
-        android:icon="@drawable/ic_explore"
-        android:title="Explorar" />
+        android:id="@+id/nav_tours"
+        android:icon="@drawable/torus_sinfondo"
+        android:title="Tours" />
 
     <item
-        android:id="@+id/navigation_trips"
-        android:icon="@drawable/ic_trips"
-        android:title="Viajes" />
+        android:id="@+id/nav_historial"
+        android:icon="@drawable/historial_sinfondo"
+        android:title="Historial" />
 
     <item
-        android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_profile"
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/perfil_sinfondo"
         android:title="Perfil" />
+
 </menu>

@@ -39,7 +39,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@android:drawable/ic_menu_search"
-            android:tint="@color/teal_700" />
+            app:tint="@color/teal_700"/>
 
         <EditText
             android:id="@+id/etSearch"
@@ -207,18 +207,19 @@
         app:layout_constraintTop_toBottomOf="@id/tvRecentTours"
         app:layout_constraintVertical_bias="0.105" />
 
-    <!-- Bottom Navigation -->
+    <!-- Mantiene los colores originales de los íconos -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:background="@android:color/white"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/nav_item_color"
-        app:itemTextColor="@color/nav_item_color"
+        app:itemIconTint="@null"
+        app:itemTextColor="@color/teal_700"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:itemIconSize="40dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

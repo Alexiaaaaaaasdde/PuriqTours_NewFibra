@@ -17,6 +17,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Logo central más grande -->
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:contentDescription="Logo Puriq Tours"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_logo_puriq"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/loginCard"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="16dp" />
+
     <!-- Logo y nombre de la app -->
     <LinearLayout
         android:id="@+id/logoContainer"
@@ -41,10 +56,9 @@
         android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.734">
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        android:layout_marginBottom="40dp">
 
         <!-- Campo Email -->
         <EditText
@@ -95,17 +109,5 @@
             android:text="Iniciar Sesión"
             android:textColor="@color/white" />
     </LinearLayout>
-
-    <!-- Logo central -->
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="255dp"
-        android:layout_height="280dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="Logo Puriq Tours"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_logo_puriq"
-        tools:layout_editor_absoluteX="75dp"
-        tools:layout_editor_absoluteY="48dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
