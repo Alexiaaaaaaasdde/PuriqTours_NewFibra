@@ -24,13 +24,10 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Habilita EdgeToEdge
         EdgeToEdge.enable(this);
-
-        // Conecta el layout
         setContentView(R.layout.activity_profile_activity);
 
-        // Configuración de insets para pantallas modernas
+        // ✅ Ajustar paddings con insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -39,20 +36,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         // 🔹 BottomNavigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigation.setSelectedItemId(R.id.nav_perfil); // marcar pestaña activa
+
         bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-
             if (id == R.id.nav_perfil) {
                 return true; // Ya estás en perfil
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
+                overridePendingTransition(0,0); // sin animación
                 return true;
             } else if (id == R.id.nav_historial) {
                 startActivity(new Intent(this, HistorialActivity.class));
+                overridePendingTransition(0,0);
                 return true;
             }
             return false;
         });
+
 
         // 🔹 Referencias a vistas
         Button btnUpdate = findViewById(R.id.btnUpdate);
@@ -60,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
         ShapeableImageView profileImage = findViewById(R.id.profileImage);
         EditText etNumeroTelefonico = findViewById(R.id.etNumeroTelefonico);
 
-        // Otros campos (que quedarán bloqueados siempre)
+        // Otros campos (bloqueados)
         EditText etNombre = findViewById(R.id.etNombre);
         EditText etApellido = findViewById(R.id.etApellido);
         EditText etFechaNacimiento = findViewById(R.id.etFechaNacimiento);
@@ -70,9 +71,9 @@ public class ProfileActivity extends AppCompatActivity {
         EditText etCorreo = findViewById(R.id.etCorreo);
 
         // 🔹 Al inicio, botón guardar oculto
-        btnSave.setVisibility(Button.GONE);
+        btnSave.setVisibility(View.GONE);
 
-        // 👉 Cuando presionas "Actualizar datos"
+        // 👉 Botón "Actualizar datos"
         btnUpdate.setOnClickListener(v -> {
             etNumeroTelefonico.setEnabled(true);
             etNumeroTelefonico.requestFocus();
@@ -80,16 +81,16 @@ public class ProfileActivity extends AppCompatActivity {
             profileImage.setClickable(true);
             Toast.makeText(this, "Ahora puedes editar el teléfono o la foto", Toast.LENGTH_SHORT).show();
 
-            btnUpdate.setVisibility(Button.GONE);
-            btnSave.setVisibility(Button.VISIBLE);
+            btnUpdate.setVisibility(View.GONE);
+            btnSave.setVisibility(View.VISIBLE);
         });
 
-        // 👉 Cuando presionas "Guardar cambios"
+        // 👉 Botón "Guardar cambios"
         btnSave.setOnClickListener(v -> {
             etNumeroTelefonico.setEnabled(false);
             profileImage.setClickable(false);
 
-            // ✅ Mostrar el popup personalizado
+            // ✅ Mostrar popup de confirmación
             Dialog dialog = new Dialog(ProfileActivity.this);
             dialog.setContentView(R.layout.dialog_success);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -103,6 +104,5 @@ public class ProfileActivity extends AppCompatActivity {
             btnSave.setVisibility(View.GONE);
             btnUpdate.setVisibility(View.VISIBLE);
         });
-
     }
 }

@@ -12,9 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PuriqTours">
 
-
-
-        <!-- 🔹 Ahora ProfileActivity es la inicial -->
+        <!-- 🔹 Inicial -->
         <activity
             android:name=".ProfileActivity"
             android:exported="true">
@@ -24,12 +22,17 @@
             </intent-filter>
         </activity>
 
-        <!-- Otras actividades, ya no son launcher -->
+        <!-- 🔹 Otras actividades -->
         <activity android:name=".ToursActivity" android:exported="false"/>
         <activity android:name=".MainActivity" android:exported="false"/>
         <activity android:name=".HistorialActivity" android:exported="false"/>
         <activity android:name=".DetalleTourActivity" android:exported="false"/>
-
+        <activity android:name=".PagoActivity" android:exported="false"/>
+        <activity android:name=".ReservadoActivity"/>
+        <activity android:name=".EnProcesoActivity"/>
+        <activity android:name=".FinalizadoActivity"/>
+        <activity android:name=".ValoracionActivity" android:exported="false"/>
 
     </application>
+
 </manifest>

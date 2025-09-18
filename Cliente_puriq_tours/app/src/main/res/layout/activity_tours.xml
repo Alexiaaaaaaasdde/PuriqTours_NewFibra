@@ -151,7 +151,7 @@
                                 android:id="@+id/tvPreciokuelap"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="S/ 165.02"
+                                android:text="S/ 165"
                                 android:textColor="@color/teal_700"
                                 android:textSize="16sp"
                                 android:layout_marginTop="6dp"/>

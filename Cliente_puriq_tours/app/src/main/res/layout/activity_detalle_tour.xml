@@ -51,7 +51,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
+            <!-- 🔹 Flecha atrás -->
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Volver"
+                android:tint="@color/teal_700"
+                android:layout_marginBottom="8dp"/>
             <!-- 🔹 Título -->
             <TextView
                 android:id="@+id/tvTitulo"
@@ -116,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Desde S/ 165.02 por adulto"
+                android:text="Desde S/ 165 por adulto"
                 android:textColor="#2B746C"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -156,6 +165,7 @@
                     android:textColor="#2B746C"
                     android:text="Martes, 15 de Marzo de 2025"
                     android:textSize="16sp" />
+
             </LinearLayout>
 
             <!-- 🔹 Selección de viajeros -->

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@drawable/bg_dialog">
+
+    <!-- Ícono -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_check_circle"
+        android:tint="@color/teal_700"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Texto -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¡Gracias por tu valoración!"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/teal_700"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tu opinión nos ayuda a mejorar nuestros tours."
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Botón -->
+    <Button
+        android:id="@+id/btnCerrarValoracion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cerrar"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white"/>
+</LinearLayout>

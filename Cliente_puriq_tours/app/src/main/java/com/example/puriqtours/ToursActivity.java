@@ -100,6 +100,7 @@ public class ToursActivity extends AppCompatActivity {
         });
 
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigation.setSelectedItemId(R.id.nav_tours);
 
 // Seleccionamos por defecto la pestaña "Tours"
         bottomNavigation.setOnItemSelectedListener(item -> {

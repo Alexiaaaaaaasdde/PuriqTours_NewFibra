@@ -74,9 +74,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="2 opciones disponibles para el viernes 5 de Septiembre"
+        android:text="2 opciones disponibles para el martes, 15 de Marzo de 2025"
         android:textColor="#666"
         android:textSize="13sp" />
+    <Button
+        android:id="@+id/btnDetalles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detalles"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_gravity="start"/>
+
 
     <!-- Card del tour -->
     <LinearLayout
@@ -99,17 +112,11 @@
             android:id="@+id/tvPrecio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2 adultos x S/. 300"
+            android:text="Total: S/. 330"
             android:textColor="#000"
-            android:textSize="14sp"
+            android:textSize="19sp"
             android:layout_marginTop="4dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="(el precio no incluye adicionales)"
-            android:textSize="12sp"
-            android:textColor="#666" />
 
         <!-- Horarios -->
         <LinearLayout
@@ -139,13 +146,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Reservar -->
     <Button
         android:id="@+id/btnReservar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Reservar ahora"
+        android:enabled="false"
+        android:alpha="0.5"
         android:backgroundTint="@color/teal_700"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"/>
+
 </LinearLayout>
