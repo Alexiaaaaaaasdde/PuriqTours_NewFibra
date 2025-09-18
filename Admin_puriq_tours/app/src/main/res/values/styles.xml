@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Estilos para BottomNavigation -->
+    <style name="BottomNavigationTextActive">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="BottomNavigationTextInactive">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+</resources>

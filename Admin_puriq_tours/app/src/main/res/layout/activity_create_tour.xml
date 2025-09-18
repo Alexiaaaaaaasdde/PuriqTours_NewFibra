@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/teal_700"
+        app:title="Crear nuevo tour"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/white" />
+
+    <!-- NestedScrollView principal para arreglar el scroll -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Título Datos -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datos"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/teal_700"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Hora de inicio del tour -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hora de inicio del tour:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etHoraInicio"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ingrese la hora de inicio"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:focusable="false"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_schedule"
+                android:drawablePadding="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Duración del tour -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Duración del tour:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etDuracion"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ingrese la duración del tour"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Costo por persona -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Costo por persona:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etCosto"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ingrese el costo por persona"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Idiomas ofrecidos -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Idiomas ofrecidos:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etIdiomas"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ingrese los idiomas ofrecidos"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Fecha del tour -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha del tour:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etFechaTour"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Seleccione la fecha del tour"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:focusable="false"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_calendar"
+                android:drawablePadding="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Servicios extra -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Servicios extra:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutServiciosExtra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_edittext"
+                android:padding="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/tvCantidadServicios"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Haz click para agregar servicios extra"
+                    android:textSize="14sp"
+                    android:textColor="@color/teal_700"
+                    android:drawableStart="@drawable/ic_add_circle"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <!-- Título Ruta -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ruta"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/teal_700"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Mapa placeholder -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/rounded_corners"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/map_placeholder"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_corners" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mapa de ruta"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:background="#80000000"
+                    android:padding="8dp"
+                    android:layout_margin="8dp" />
+
+            </FrameLayout>
+
+            <!-- Sección de ubicaciones dinámicas -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selecciona las ubicaciones:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutUbicaciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Botón Crear Tour -->
+            <Button
+                android:id="@+id/btnCrearTour"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Crear"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

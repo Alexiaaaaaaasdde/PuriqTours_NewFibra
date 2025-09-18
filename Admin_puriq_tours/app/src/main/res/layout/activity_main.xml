@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- 🔹 Toolbar superior -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#009688"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:title="Puriq Tours"
+        app:titleCentered="true"
+        app:navigationIcon="@drawable/ic_menu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Icono de perfil del admin en el toolbar -->
+                <!-- Icono perfil en toolbar -->
+                    <!-- Icono notificaciones en toolbar -->
+            <ImageView
+                android:id="@+id/notificationIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_notifications"
+                android:scaleType="centerInside"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="16dp"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"/>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- 🔹 Contenido con scroll -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#F8F9FA"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Barra de búsqueda -->
+            <EditText
+                android:id="@+id/searchBar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Buscar"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawableEnd="@android:drawable/ic_menu_close_clear_cancel"
+                android:background="@drawable/search_background"
+                android:padding="12dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#888888"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- Bienvenido administrador -->
+            <TextView
+                android:id="@+id/tvWelcomeAdmin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bienvenido administrador"
+                android:textSize="18sp"
+                android:textColor="#009688"
+                android:textStyle="normal"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Logo de empresa centrado -->
+            <ImageView
+                android:id="@+id/logoCenter"
+                android:layout_width="200dp"
+                android:layout_height="180dp"
+                android:src="@drawable/logo_empresa"
+                android:layout_gravity="center"
+                android:scaleType="fitCenter"
+                android:layout_marginBottom="32dp"
+                android:contentDescription="Logo empresa"/>
+
+            <!-- Últimos tours -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvLatestTours"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Últimos tours"
+                    android:textSize="16sp"
+                    android:textColor="#009688"
+                    android:textStyle="normal"/>
+
+                <TextView
+                    android:id="@+id/tvViewMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="→"
+                    android:textSize="18sp"
+                    android:textColor="#009688"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <!-- Card del tour -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardLatestTour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/tourImage"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/kuelap"
+                        android:scaleType="centerCrop"/>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="8dp">
+
+                        <TextView
+                            android:id="@+id/tourTitle"
+                            android:text="Machu Picchu"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/black"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"/>
+
+                        <TextView
+                            android:id="@+id/tourDescription"
+                            android:text="Descripción del lugar donde se vaa realizar el tour"
+                            android:textSize="12sp"
+                            android:textColor="#666"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Lista de guías -->
+            <TextView
+                android:id="@+id/tvGuidesList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lista de guías"
+                android:textSize="16sp"
+                android:textColor="#009688"
+                android:textStyle="normal"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Contenedor de guías -->
+            <LinearLayout
+                android:id="@+id/guidesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="32dp">
+
+                <!-- Guía 1 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/imagen_perfil"
+                        android:scaleType="centerCrop"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:text="Alejandro G."
+                        android:textSize="12sp"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="#009688"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <!-- Guía 2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/imagen_perfil"
+                        android:scaleType="centerCrop"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:text="Christian F."
+                        android:textSize="12sp"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="#CCCCCC"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <!-- Guía 3 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginStart="8dp">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/imagen_perfil"
+                        android:scaleType="centerCrop"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:text="Nassim N."
+                        android:textSize="12sp"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"/>
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="#CCCCCC"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 🔹 Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:menu="@menu/bottom_nav_admin_menu"
+        app:itemIconTint="@color/nav_item_colors"
+        app:itemTextColor="@color/nav_item_colors"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Tus colores personalizados -->
+    <color name="teal_700">#009688</color> <!-- Verde turquesa -->
+    <color name="teal_500">#009688</color>
+    <color name="teal_200">#009688</color>
+    
+    <!-- Colores adicionales para admin -->
+    <color name="teal_button">#009688</color> <!-- Color para botones -->
+    <color name="mint">#4DB6AC</color> <!-- Verde menta más claro -->
+    <color name="teal_light">#B2DFDB</color> <!-- Teal claro para fondos -->
+    <color name="gray_light">#F5F5F5</color> <!-- Gris claro -->
+    <color name="gray_medium">#9E9E9E</color> <!-- Gris medio -->
+    <color name="gray">#757575</color> <!-- Gris para texto secundario -->
+    <color name="gray_dark">#424242</color> <!-- Gris oscuro para texto principal -->
+    <color name="red">#F44336</color> <!-- Rojo para eliminar -->
+    <color name="background_light">#FAFAFA</color> <!-- Fondo claro -->
+</resources>

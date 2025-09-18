@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity">
+
+    <!-- 🔹 Toolbar superior -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#009688"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:title="Puriq Tours"
+        app:titleCentered="true"
+        app:navigationIcon="@drawable/ic_menu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 🔹 Vista de Perfil Completo (cuando ya tiene datos) -->
+    <ScrollView
+        android:id="@+id/profileView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#F8F9FA"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Título -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bienvenido al perfil de tu empresa"
+                android:textSize="18sp"
+                android:textColor="#009688"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Datos de la empresa con flecha -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Datos de la empresa"
+                    android:textSize="16sp"
+                    android:textColor="#009688"/>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    app:tint="#009688"/>
+            </LinearLayout>
+
+            <!-- Card con imágenes de la empresa -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:layout_marginHorizontal="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <!-- Logo de la empresa -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="2dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/logo_empresa"
+                            android:scaleType="centerCrop"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Imagen de familia feliz -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="2dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/familia_feliz"
+                            android:scaleType="centerCrop"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Datos de la empresa -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <!-- Vista de solo lectura -->
+                <LinearLayout
+                    android:id="@+id/readOnlyView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Nombre empresa -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nombre empresa:"
+                        android:textSize="14sp"
+                        android:textColor="#666"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvCompanyName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Perú Aventura"
+                        android:textSize="16sp"
+                        android:textColor="#333"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Teléfono -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Teléfono / Whatsapp:"
+                        android:textSize="14sp"
+                        android:textColor="#666"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvPhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="987654321"
+                        android:textSize="16sp"
+                        android:textColor="#333"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Correo -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Correo:"
+                        android:textSize="14sp"
+                        android:textColor="#666"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="email123@gmail.com"
+                        android:textSize="16sp"
+                        android:textColor="#333"
+                        android:layout_marginBottom="16dp"/>
+
+                </LinearLayout>
+
+                <!-- Vista de edición -->
+                <LinearLayout
+                    android:id="@+id/editView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!-- Nombre empresa editable -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nombre empresa:"
+                        android:textSize="14sp"
+                        android:textColor="#333"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxStrokeColor="#009688"
+                        app:hintTextColor="#009688">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditCompanyName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Teléfono editable -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Teléfono / Whatsapp:"
+                        android:textSize="14sp"
+                        android:textColor="#333"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxStrokeColor="#009688"
+                        app:hintTextColor="#009688">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:maxLength="9"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Correo editable -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Correo:"
+                        android:textSize="14sp"
+                        android:textColor="#333"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxStrokeColor="#009688"
+                        app:hintTextColor="#009688">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEditEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <!-- Botón de Editar/Guardar -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Editar"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="#009688"
+                    app:cornerRadius="8dp"
+                    android:layout_marginTop="8dp"/>
+
+            </LinearLayout>
+
+            <!-- Ubicación con flecha -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ubicación"
+                    android:textSize="16sp"
+                    android:textColor="#009688"/>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    app:tint="#009688"/>
+            </LinearLayout>
+
+            <!-- Mapa simulado -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:layout_marginHorizontal="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:background="#E8F5E8"
+                    android:gravity="center">
+
+                    <!-- Simulación del mapa -->
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_location"
+                        app:tint="#009688"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mapa de Ubicación"
+                        android:textSize="16sp"
+                        android:textColor="#009688"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Dirección -->
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Santander 165"
+                android:textSize="16sp"
+                android:textColor="#009688"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- 🔹 Vista de Completar Perfil (primera vez) -->
+    <ScrollView
+        android:id="@+id/completeProfileView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#F8F9FA"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Título -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Complete los datos de su perfil"
+                android:textSize="18sp"
+                android:textColor="#009688"
+                android:textStyle="bold"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- Nombre empresa -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre empresa:"
+                android:textSize="14sp"
+                android:textColor="#333"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Ingrese el nombre de su empresa"
+                app:boxStrokeColor="#009688"
+                app:hintTextColor="#009688">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCompanyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Teléfono -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Teléfono / Whatsapp:"
+                android:textSize="14sp"
+                android:textColor="#333"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Ingrese su teléfono"
+                app:boxStrokeColor="#009688"
+                app:hintTextColor="#009688">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:maxLength="9"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Correo -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Correo:"
+                android:textSize="14sp"
+                android:textColor="#333"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:hint="Ingrese su correo"
+                app:boxStrokeColor="#009688"
+                app:hintTextColor="#009688">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Insertar imágenes -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inserte imágenes de su empresa (2 máximo):"
+                android:textSize="14sp"
+                android:textColor="#333"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adjunte dos imágenes (png..)"
+                android:textSize="12sp"
+                android:textColor="#009688"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Ubicación en mapa -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubicación (Seleccione en el mapa):"
+                android:textSize="14sp"
+                android:textColor="#333"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Mapa simulado para selección -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:layout_marginHorizontal="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:background="#E8F5E8"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_location"
+                        app:tint="#009688"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Toque para seleccionar ubicación"
+                        android:textSize="12sp"
+                        android:textColor="#009688"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botón Guardar -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Guardar"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#009688"
+                app:cornerRadius="8dp"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- 🔹 Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:menu="@menu/bottom_nav_admin_menu"
+        app:itemIconTint="@color/nav_item_colors"
+        app:itemTextColor="@color/nav_item_colors"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

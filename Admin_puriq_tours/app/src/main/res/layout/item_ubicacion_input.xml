@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/rounded_corners"
+    android:backgroundTint="@color/white"
+    android:layout_marginBottom="12dp"
+    android:elevation="2dp">
+
+    <!-- Header con número de ubicación y botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <!-- Número de ubicación -->
+        <TextView
+            android:id="@+id/tvNumeroUbicacion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ubicación 1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/teal_700" />
+
+        <!-- Botón agregar ubicación -->
+        <Button
+            android:id="@+id/btnAgregarUbicacion"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="Agregar ruta"
+            android:textSize="12sp"
+            android:background="@drawable/rounded_button_small"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@color/white"
+            android:drawableStart="@drawable/ic_add_white"
+            android:drawablePadding="4dp"
+            android:paddingHorizontal="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Botón eliminar ubicación -->
+        <Button
+            android:id="@+id/btnEliminarUbicacion"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/rounded_button_small"
+            android:backgroundTint="@color/red"
+            android:drawableStart="@drawable/ic_close_small"
+            android:drawablePadding="0dp" />
+
+    </LinearLayout>
+
+    <!-- Sección: Selecciona las ubicaciones -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🗺️ Selecciona las ubicaciones"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Input nombre de ubicación -->
+    <EditText
+        android:id="@+id/etNombreUbicacion"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Ingrese el nombre de la ubicación"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Sección: Añade las actividades por ubicación -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🚶 Añade las actividades por ubicación"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Input actividades -->
+    <EditText
+        android:id="@+id/etActividadesUbicacion"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="Ingrese las actividades en esta ubicación"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:inputType="textMultiLine"
+        android:gravity="top|start" />
+
+</LinearLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Título del dialog -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detalle servicio extra"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/teal_700"
+        android:layout_marginBottom="16dp" />
+
+    <!-- NestedScrollView para servicios dinámicos -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:maxHeight="400dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:id="@+id/layoutServiciosDinamicos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Botón agregar servicio -->
+    <Button
+        android:id="@+id/btnAgregarOtroServicio"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Agregar servicio"
+        android:textSize="14sp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/teal_200"
+        android:textColor="@color/teal_700"
+        android:drawableStart="@drawable/ic_add_circle"
+        android:drawablePadding="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Botón Guardar -->
+    <Button
+        android:id="@+id/btnGuardarServicios"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Guardar"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@color/white" />
+
+</LinearLayout>

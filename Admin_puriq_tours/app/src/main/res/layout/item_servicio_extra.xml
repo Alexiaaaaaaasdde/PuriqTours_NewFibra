@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/rounded_corners"
+    android:backgroundTint="@color/background_light"
+    android:layout_marginBottom="16dp">
+
+    <!-- Header con número de servicio y botón eliminar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:id="@+id/tvNumeroServicio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Servicio 1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/teal_700" />
+
+        <Button
+            android:id="@+id/btnEliminarServicio"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/rounded_button_small"
+            android:backgroundTint="@color/red"
+            android:drawableStart="@drawable/ic_close_small"
+            android:drawablePadding="0dp" />
+
+    </LinearLayout>
+
+    <!-- Nombre servicio -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre servicio:"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etNombreServicio"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Ingrese el nombre del servicio"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Precio servicio -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Precio servicio:"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etPrecioServicio"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Ingrese el precio (ej: 30 soles o Gratis)"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Descripción servicio -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descripción servicio:"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etDescripcionServicio"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:hint="Ingrese la descripción del servicio"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:inputType="textMultiLine"
+        android:gravity="top|start"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Adjuntar imágenes servicio -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Adjuntar imágenes de servicio:"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAdjuntarImagen"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Adjuntar imagen"
+            android:textSize="14sp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/teal_200"
+            android:textColor="@color/teal_700"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tvImagenSeleccionada"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Adjuntar imagen"
+            android:textSize="12sp"
+            android:textColor="@color/gray"
+            android:gravity="center_vertical"
+            android:background="@drawable/rounded_edittext"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
