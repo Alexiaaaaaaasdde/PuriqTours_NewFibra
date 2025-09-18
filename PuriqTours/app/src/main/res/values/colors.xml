@@ -5,4 +5,12 @@
     <color name="teal_dark">#0B6B6B</color>
     <color name="mint">#CFF9EB</color>
     <color name="teal_button">#0A3D62</color>
+    <color name="primaryColor">#006970</color>
+    <color name="green">#54B2A7</color>
+    <color name="gray">#787676</color>
+    <color name="lightgreen">#A5EDD9</color>
+    <color name="lightgray">#EFE8F2</color>
+    <color name="darkgreen">#2B746C</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="teal_700">#00796B</color>
 </resources>
