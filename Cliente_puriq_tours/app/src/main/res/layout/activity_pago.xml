@@ -15,12 +15,11 @@
         app:title="Puriq Tours"
         app:titleCentered="true"
         app:navigationIcon="@drawable/ic_menu"
-        app:menu="@menu/top_app_bar_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Icono perfil -->
+        <!-- 🔹 Icono perfil -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profileIcon"
             android:layout_width="40dp"
@@ -33,7 +32,6 @@
             app:strokeColor="@android:color/white"
             app:strokeWidth="2dp"/>
     </com.google.android.material.appbar.MaterialToolbar>
-
 
     <ScrollView
         android:id="@+id/scrollContent"

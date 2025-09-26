@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".DetalleTourActivity">
 
-    <!-- 🔹 Toolbar superior -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="0dp"
@@ -17,12 +16,11 @@
         app:title="Puriq Tours"
         app:titleCentered="true"
         app:navigationIcon="@drawable/ic_menu"
-        app:menu="@menu/top_app_bar_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Icono perfil -->
+        <!-- 🔹 Icono perfil -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profileIcon"
             android:layout_width="40dp"

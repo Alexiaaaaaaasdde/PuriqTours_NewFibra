@@ -9,7 +9,7 @@
         android:id="@+id/etBuscar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Buscar departamento..."
+        android:hint="Buscar ..."
         android:drawableStart="@android:drawable/ic_menu_search"
         android:padding="8dp"
         android:background="@android:drawable/editbox_background_normal"/>

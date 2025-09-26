@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PuriqTours">
 
-        <!-- 🔹 Inicial -->
+        <!-- 🔹 Activity de inicio (con launcher) -->
         <activity
             android:name=".ProfileActivity"
             android:exported="true">
@@ -22,16 +22,23 @@
             </intent-filter>
         </activity>
 
-        <!-- 🔹 Otras actividades -->
-        <activity android:name=".ToursActivity" android:exported="false"/>
-        <activity android:name=".MainActivity" android:exported="false"/>
-        <activity android:name=".HistorialActivity" android:exported="false"/>
-        <activity android:name=".DetalleTourActivity" android:exported="false"/>
-        <activity android:name=".PagoActivity" android:exported="false"/>
-        <activity android:name=".ReservadoActivity"/>
-        <activity android:name=".EnProcesoActivity"/>
-        <activity android:name=".FinalizadoActivity"/>
-        <activity android:name=".ValoracionActivity" android:exported="false"/>
+        <!-- 🔹 Navegación principal -->
+        <activity android:name=".ToursActivity" android:exported="false" />
+        <activity android:name=".HistorialActivity" android:exported="false" />
+
+        <!-- 🔹 Pantalla de login/entrada -->
+
+        <!-- 🔹 Flujo de tours -->
+        <activity android:name=".DetalleTourActivity" android:exported="false" />
+        <activity android:name=".PagoActivity" android:exported="false" />
+
+        <!-- 🔹 Estados de tours -->
+        <activity android:name=".ReservadoActivity" android:exported="false" />
+        <activity android:name=".EnProcesoActivity" android:exported="false" />
+        <activity android:name=".FinalizadoActivity" android:exported="false" />
+
+        <!-- 🔹 Valoración -->
+        <activity android:name=".ValoracionActivity" android:exported="false" />
 
     </application>
 

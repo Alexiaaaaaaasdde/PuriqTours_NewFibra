@@ -6,24 +6,24 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.navigation.NavigationView;
 
 public class HistorialActivity extends AppCompatActivity {
 
     private TextView tvEstado1, tvEstado2, tvEstado3, tvEstado4;
     private TextView tvTitulo1, tvTitulo2, tvTitulo3, tvTitulo4;
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,36 +77,44 @@ public class HistorialActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        // 🔹 Botón Filtro
-        Button btnFiltro = findViewById(R.id.btnFiltro);
-        btnFiltro.setOnClickListener(v -> mostrarDialogoFiltro());
-        // 🔹 Referencias a los CardView
-        View cardReservado1 = findViewById(R.id.cardReservado1);
-        View cardEnProceso = findViewById(R.id.cardEnProceso);
-        View cardFinalizado = findViewById(R.id.cardFinalizado);
-        View cardFinalizado2 = findViewById(R.id.cardFinalizado2);
+        // 🔹 Chips de filtro
+        Chip chipTodos = findViewById(R.id.chipTodos);
+        Chip chipEnProceso = findViewById(R.id.chipEnProceso);
+        Chip chipFinalizado = findViewById(R.id.chipFinalizado);
+        Chip chipReservado = findViewById(R.id.chipReservado);
 
-// 🔹 Click para abrir detalle según estado
-        cardReservado1.setOnClickListener(v -> {
-            Intent intent = new Intent(HistorialActivity.this, ReservadoActivity.class);
-            startActivity(intent);
+        chipTodos.setOnClickListener(v -> aplicarFiltroEstado("")); // muestra todo
+        chipEnProceso.setOnClickListener(v -> aplicarFiltroEstado("En proceso"));
+        chipFinalizado.setOnClickListener(v -> aplicarFiltroEstado("Finalizado"));
+        chipReservado.setOnClickListener(v -> aplicarFiltroEstado("Reservado"));
+
+        // 🔹 Drawer references
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+
+        // 👉 abrir menú lateral con ☰
+        toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_perfil) {
+                startActivity(new Intent(this, ProfileActivity.class));
+            } else if (id == R.id.nav_tours) {
+                startActivity(new Intent(this, ToursActivity.class));
+            } else if (id == R.id.nav_historial) {
+                // ya estás en historial
+            } else if (id == R.id.nav_logout) {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         });
-
-        cardEnProceso.setOnClickListener(v -> {
-            Intent intent = new Intent(HistorialActivity.this, EnProcesoActivity.class);
-            startActivity(intent);
-        });
-
-        cardFinalizado.setOnClickListener(v -> {
-            Intent intent = new Intent(HistorialActivity.this, FinalizadoActivity.class);
-            startActivity(intent);
-        });
-
-        cardFinalizado2.setOnClickListener(v -> {
-            Intent intent = new Intent(HistorialActivity.this, FinalizadoActivity.class);
-            startActivity(intent);
-        });
-
     }
 
     private void pintarEstado(TextView tvEstado) {
@@ -138,42 +146,6 @@ public class HistorialActivity extends AppCompatActivity {
         }
     }
 
-    private void mostrarDialogoFiltro() {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_filtro_departamentos, null);
-
-        EditText etBuscar = dialogView.findViewById(R.id.etBuscar);
-        ListView listEstados = dialogView.findViewById(R.id.listDepartamentos);
-
-        String[] estados = {"Finalizado", "En proceso", "Reservado"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>(Arrays.asList(estados))
-        );
-
-        listEstados.setAdapter(adapter);
-
-        etBuscar.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
-            }
-            @Override public void afterTextChanged(Editable s) {}
-        });
-
-        listEstados.setOnItemClickListener((parent, view1, position, id) -> {
-            String seleccionado = adapter.getItem(position);
-            aplicarFiltroEstado(seleccionado);
-        });
-
-        new AlertDialog.Builder(this)
-                .setTitle("Filtrar por estado")
-                .setView(dialogView)
-                .setNegativeButton("Cerrar", (dialog, which) -> dialog.dismiss())
-                .show();
-    }
-
     private void aplicarFiltroEstado(String estado) {
         aplicarFiltro(tvEstado1, estado);
         aplicarFiltro(tvEstado2, estado);
@@ -184,7 +156,7 @@ public class HistorialActivity extends AppCompatActivity {
     private void aplicarFiltro(TextView tvEstado, String estado) {
         if (tvEstado == null) return;
         View card = (View) tvEstado.getParent().getParent();
-        if (tvEstado.getText().toString().toLowerCase().contains(estado.toLowerCase())) {
+        if (estado.isEmpty() || tvEstado.getText().toString().toLowerCase().contains(estado.toLowerCase())) {
             card.setVisibility(View.VISIBLE);
         } else {
             card.setVisibility(View.GONE);

@@ -12,4 +12,10 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
+
+    <style name="NavDrawerTextStyle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">58sp</item> <!-- 👈 tamaño del texto -->
+        <item name="android:textColor">@color/black</item> <!-- opcional -->
+    </style>
+
 </resources>

@@ -13,20 +13,19 @@
         app:title="Puriq Tours"
         app:titleCentered="true"
         app:navigationIcon="@drawable/ic_menu"
-        app:menu="@menu/top_app_bar_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Icono perfil en toolbar -->
+        <!-- 🔹 Icono perfil -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profileIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/imagen_perfil"
             android:scaleType="centerCrop"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="8dp"
+            android:src="@drawable/imagen_perfil"
             app:shapeAppearanceOverlay="@style/RoundedImage"
             app:strokeColor="@android:color/white"
             app:strokeWidth="2dp"/>
