@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_perfil"
+        android:title="Perfil"
+
+        android:icon="@drawable/ic_profile"/>
+    <item
+        android:id="@+id/nav_tours"
+        android:title="Tours"
+        android:icon="@drawable/ic_tour"/>
+    <item
+        android:id="@+id/nav_historial"
+        android:title="Historial de Tours"
+        android:icon="@drawable/ic_home"/>
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Cerrar Sesión"
+        android:icon="@drawable/ic_remove"/>
+
+</menu>

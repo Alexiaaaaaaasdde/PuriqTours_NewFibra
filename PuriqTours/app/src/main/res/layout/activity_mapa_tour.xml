@@ -5,12 +5,11 @@
     android:layout_height="match_parent">
 
     <!-- 🔹 Imagen de mapa como fondo -->
-    <ImageView
-        android:id="@+id/imgMapaFondo"
+    <org.osmdroid.views.MapView
+        android:id="@+id/osmMap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/map_vertical"
-        android:scaleType="centerCrop" />
+        android:clickable="true" />
 
     <!-- 🔹 Bottom sheet con info del destino -->
     <com.google.android.material.card.MaterialCardView
