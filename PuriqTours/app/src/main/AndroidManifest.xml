@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PuriqTours">
         <activity
-            android:name=".MainActivity"
+            android:name=".superadmin.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,12 +20,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".TempPasswordActivity" />
         <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".superadmin.UsuariosActivity" />
+        <activity android:name=".superadmin.LogsActivity" />
+        <activity android:name=".superadmin.ReportesActivity" />
 
     </application>
 

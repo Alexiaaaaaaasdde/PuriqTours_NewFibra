@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="SuperadminToolbarStyle" parent="Widget.Material3.Toolbar">
+        <item name="backgroundTint">#1DE9B6</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="navigationIconTint">@android:color/white</item>
+    </style>
+
+    <style name="ProfileItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@drawable/box_bg</item>
+    </style>
+
+    <style name="RoundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+</resources>
