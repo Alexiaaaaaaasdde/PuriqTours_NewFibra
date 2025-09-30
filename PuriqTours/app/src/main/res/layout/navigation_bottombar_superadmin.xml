@@ -1,0 +1,114 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomBar"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal"
+    android:background="#F7F0FA"
+    android:weightSum="4"
+    android:elevation="8dp">
+
+    <!-- Botón Principal -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageButton
+            android:id="@+id/btnPrincipal"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/estrella_superadmin"
+            android:background="@android:color/transparent"
+            android:contentDescription="Principal"
+            android:scaleType="centerInside"
+            android:padding="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Principal"
+            android:textColor="#4DB6AC"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
+
+    <!-- Botón Usuarios -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/btnUsuarios"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/usuarios_superadmin"
+            android:background="@android:color/transparent"
+            android:contentDescription="Usuarios"
+            android:scaleType="centerInside"
+            android:padding="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Usuarios"
+            android:textColor="#4DB6AC"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Botón Reportes -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageButton
+            android:id="@+id/btnReportes"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/reportes_superadmin"
+            android:background="@android:color/transparent"
+            android:contentDescription="Reportes"
+            android:scaleType="centerInside"
+            android:padding="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reportes"
+            android:textColor="#4DB6AC"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/btnLogs"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/reloj_superadmin"
+            android:background="@android:color/transparent"
+            android:contentDescription="Logs"
+            android:scaleType="centerInside"
+            android:padding="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logs"
+            android:textColor="#4DB6AC"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
+</LinearLayout>

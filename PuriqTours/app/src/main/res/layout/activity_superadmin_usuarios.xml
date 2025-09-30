@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
+
+        <!-- TopBar fija -->
+        <include layout="@layout/top_app_bar_superadmin"/>
+
+        <!-- Título Usuarios y avatar -->
+        <LinearLayout
+            android:id="@+id/usuariosHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/topAppBar"
+            app:layout_constraintStart_toStartOf="parent">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/avatar1"
+                android:contentDescription="Avatar"/>
+            <TextView
+                android:id="@+id/tvUsuariosTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usuarios"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#00B8D4"
+                android:layout_marginStart="8dp"
+                android:gravity="start"
+                android:textAlignment="viewStart"/>
+        </LinearLayout>
+
+        <!-- Botones de filtro con borde -->
+        <HorizontalScrollView
+            android:id="@+id/usuariosFiltersScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:layout_marginTop="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:layout_constraintTop_toBottomOf="@id/usuariosHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <LinearLayout
+                android:id="@+id/usuariosFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnClientes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Clientes"
+                    android:textColor="#00B8D4"
+                    app:strokeColor="#00B8D4"
+                    app:strokeWidth="2dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    android:layout_marginEnd="8dp"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGuias"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Guías"
+                    android:textColor="#00B8D4"
+                    app:strokeColor="#00B8D4"
+                    app:strokeWidth="2dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    android:layout_marginEnd="8dp"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAdministradores"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Administradores"
+                    android:textColor="#00B8D4"
+                    app:strokeColor="#00B8D4"
+                    app:strokeWidth="2dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    android:layout_marginEnd="8dp"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTodos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Todos"
+                    android:textColor="#00B8D4"
+                    app:strokeColor="#00B8D4"
+                    app:strokeWidth="2dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Botón Ordenar -->
+        <LinearLayout
+            android:id="@+id/ordenarLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/usuariosFiltersScroll"
+            app:layout_constraintStart_toStartOf="parent">
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/flechitas_superadmin"
+                android:contentDescription="Ordenar"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ordenar"
+                android:textColor="#26A69A"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:gravity="start"
+                android:textAlignment="viewStart"/>
+        </LinearLayout>
+
+        <!-- Contenedor de fragmentos de usuarios -->
+        <FrameLayout
+            android:id="@+id/usuariosContentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/ordenarLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- BottomBar fija fuera del ConstraintLayout -->
+    <include layout="@layout/navigation_bottombar_superadmin"/>
+</FrameLayout>
+
