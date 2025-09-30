@@ -17,5 +17,6 @@
     <color name="gray">#757575</color> <!-- Gris para texto secundario -->
     <color name="gray_dark">#424242</color> <!-- Gris oscuro para texto principal -->
     <color name="red">#F44336</color> <!-- Rojo para eliminar -->
+    <color name="yellow">#FFC107</color> <!-- Amarillo para estrellas -->
     <color name="background_light">#FAFAFA</color> <!-- Fondo claro -->
 </resources>

@@ -120,59 +120,15 @@
                     android:textStyle="bold"/>
             </LinearLayout>
 
-            <!-- Card del tour -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardLatestTour"
+            <!-- RecyclerView para tours recientes -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTours"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="@android:color/white">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/tourImage"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/kuelap"
-                        android:scaleType="centerCrop"/>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="8dp">
-
-                        <TextView
-                            android:id="@+id/tourTitle"
-                            android:text="Machu Picchu"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColor="@android:color/black"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"/>
-
-                        <TextView
-                            android:id="@+id/tourDescription"
-                            android:text="Descripción del lugar donde se vaa realizar el tour"
-                            android:textSize="12sp"
-                            android:textColor="#666"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                android:clipToPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
             <!-- Lista de guías -->
             <TextView
@@ -185,110 +141,15 @@
                 android:textStyle="normal"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Contenedor de guías -->
-            <LinearLayout
-                android:id="@+id/guidesContainer"
+            <!-- RecyclerView para guías -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewGuides"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginBottom="32dp">
-
-                <!-- Guía 1 -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginEnd="8dp">
-
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/imagen_perfil"
-                        android:scaleType="centerCrop"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:text="Alejandro G."
-                        android:textSize="12sp"
-                        android:textColor="@android:color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="#009688"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-
-                <!-- Guía 2 -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp">
-
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/imagen_perfil"
-                        android:scaleType="centerCrop"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:text="Christian F."
-                        android:textSize="12sp"
-                        android:textColor="@android:color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="#CCCCCC"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-
-                <!-- Guía 3 -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginStart="8dp">
-
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/imagen_perfil"
-                        android:scaleType="centerCrop"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:text="Nassim N."
-                        android:textSize="12sp"
-                        android:textColor="@android:color/black"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"/>
-
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="#CCCCCC"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-
-            </LinearLayout>
+                android:layout_marginBottom="32dp"
+                android:clipToPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
         </LinearLayout>
     </ScrollView>

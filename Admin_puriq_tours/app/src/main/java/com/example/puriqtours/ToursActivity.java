@@ -14,19 +14,27 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.puriqtours.adapter.TourAdapter;
+import com.example.puriqtours.model.Tour;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ToursActivity extends AppCompatActivity {
 
-    private CardView cardTour1, cardTour2, cardTour3, cardTour4, cardTour5;
+    private RecyclerView recyclerViewTours;
+    private TourAdapter tourAdapter;
+    private List<Tour> tourList;
     private Button btnFiltrar;
     private FloatingActionButton fabCrearTour;
+    private TextInputEditText searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,12 @@ public class ToursActivity extends AppCompatActivity {
         // Inicializar vistas
         initViews();
         
+        // Crear datos de ejemplo
+        createSampleData();
+        
+        // Configurar RecyclerView
+        setupRecyclerView();
+        
         // Configurar listeners
         setupListeners();
         
@@ -44,15 +58,25 @@ public class ToursActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        recyclerViewTours = findViewById(R.id.recyclerViewTours);
         btnFiltrar = findViewById(R.id.btnFiltro);
         fabCrearTour = findViewById(R.id.fabCrearTour);
-        
-        // Cards de tours
-        cardTour1 = findViewById(R.id.cardTour1);
-        cardTour2 = findViewById(R.id.cardTour2);
-        cardTour3 = findViewById(R.id.cardTour3);
-        cardTour4 = findViewById(R.id.cardTour4);
-        cardTour5 = findViewById(R.id.cardTour5);
+        searchBar = findViewById(R.id.searchBar);
+    }
+
+    private void createSampleData() {
+        tourList = new ArrayList<>();
+        tourList.add(new Tour(1, "Tour número 1", "Cusco", "Guía asignado correctamente", "Hoy • 3 h", R.drawable.kuelap, 150.0, 1, "Juan Pérez"));
+        tourList.add(new Tour(2, "Tour número 2", "Lima", "Se requiere guía para un tour...", "Mañana • 3 h", R.drawable.kuelap, 200.0, 1, ""));
+        tourList.add(new Tour(3, "Tour número 3", "Cusco", "Esperando a respuesta de guía", "23/08/2026 • 3 h", R.drawable.kuelap, 180.0, 1, ""));
+        tourList.add(new Tour(4, "Tour número 4", "Cusco", "Guía asignado correctamente", "Hoy • 3 h", R.drawable.kuelap, 220.0, 1, "Ana Torres"));
+        tourList.add(new Tour(5, "Tour número 5", "Arequipa", "Se requiere guía para un tour...", "Mañana • 3 h", R.drawable.kuelap, 170.0, 1, ""));
+    }
+
+    private void setupRecyclerView() {
+        tourAdapter = new TourAdapter(this, tourList);
+        recyclerViewTours.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTours.setAdapter(tourAdapter);
     }
 
     private void setupListeners() {
@@ -61,8 +85,7 @@ public class ToursActivity extends AppCompatActivity {
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
                 // TODO: Implementar vista de notificaciones
-                // Intent intent = new Intent(ToursActivity.this, NotificationsActivity.class);
-                // startActivity(intent);
+                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
             });
         }
 
@@ -88,53 +111,21 @@ public class ToursActivity extends AppCompatActivity {
             startActivityForResult(intent, 100);
         });
 
-        // Click listeners para tours existentes
-        setupTourClickListeners();
-    }
+        // Configurar búsqueda en tiempo real
+        if (searchBar != null) {
+            searchBar.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-    private void setupTourClickListeners() {
-        if (cardTour1 != null) {
-            cardTour1.setOnClickListener(v -> {
-                Intent intent = new Intent(ToursActivity.this, TourDetailActivity.class);
-                intent.putExtra("tour_id", 1);
-                intent.putExtra("tour_name", "Tour Machupicchu");
-                startActivityForResult(intent, 200);
-            });
-        }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (tourAdapter != null) {
+                        tourAdapter.getFilter().filter(s);
+                    }
+                }
 
-        if (cardTour2 != null) {
-            cardTour2.setOnClickListener(v -> {
-                Intent intent = new Intent(ToursActivity.this, TourDetailActivity.class);
-                intent.putExtra("tour_id", 2);
-                intent.putExtra("tour_name", "Tour Lima Centro");
-                startActivityForResult(intent, 200);
-            });
-        }
-
-        if (cardTour3 != null) {
-            cardTour3.setOnClickListener(v -> {
-                Intent intent = new Intent(ToursActivity.this, TourDetailActivity.class);
-                intent.putExtra("tour_id", 3);
-                intent.putExtra("tour_name", "Tour Cusco Aventura");
-                startActivityForResult(intent, 200);
-            });
-        }
-
-        if (cardTour4 != null) {
-            cardTour4.setOnClickListener(v -> {
-                Intent intent = new Intent(ToursActivity.this, TourDetailActivity.class);
-                intent.putExtra("tour_id", 4);
-                intent.putExtra("tour_name", "Tour Amazonas");
-                startActivityForResult(intent, 200);
-            });
-        }
-
-        if (cardTour5 != null) {
-            cardTour5.setOnClickListener(v -> {
-                Intent intent = new Intent(ToursActivity.this, TourDetailActivity.class);
-                intent.putExtra("tour_id", 5);
-                intent.putExtra("tour_name", "Tour Arequipa");
-                startActivityForResult(intent, 200);
+                @Override
+                public void afterTextChanged(Editable s) {}
             });
         }
     }
@@ -173,7 +164,11 @@ public class ToursActivity extends AppCompatActivity {
         // Acción al seleccionar un departamento
         listDepartamentos.setOnItemClickListener((parent, view, position, id) -> {
             String departamentoSeleccionado = adapter.getItem(position);
-            filterToursByDepartment(departamentoSeleccionado);
+            
+            // Usar el método filterByDepartment del adapter
+            if (tourAdapter != null) {
+                tourAdapter.filterByDepartment(departamentoSeleccionado);
+            }
             
             Toast.makeText(ToursActivity.this,
                     "Filtrando tours de " + departamentoSeleccionado,
@@ -186,52 +181,12 @@ public class ToursActivity extends AppCompatActivity {
                 .setView(dialogView)
                 .setNegativeButton("Cerrar", (dialog, which) -> dialog.dismiss())
                 .setPositiveButton("Mostrar todos", (dialog, which) -> {
-                    showAllTours();
+                    if (tourAdapter != null) {
+                        tourAdapter.filterByDepartment("todos");
+                    }
                     dialog.dismiss();
                 })
                 .show();
-    }
-
-    private void filterToursByDepartment(String departamento) {
-        // Ocultar todos los tours primero
-        hideAllTours();
-
-        // Mostrar tours según el departamento seleccionado
-        switch (departamento.toLowerCase()) {
-            case "cusco":
-                if (cardTour1 != null) cardTour1.setVisibility(View.VISIBLE);
-                if (cardTour3 != null) cardTour3.setVisibility(View.VISIBLE);
-                break;
-            case "lima":
-                if (cardTour2 != null) cardTour2.setVisibility(View.VISIBLE);
-                break;
-            case "amazonas":
-                if (cardTour4 != null) cardTour4.setVisibility(View.VISIBLE);
-                break;
-            case "arequipa":
-                if (cardTour5 != null) cardTour5.setVisibility(View.VISIBLE);
-                break;
-            default:
-                // Si no hay tours para ese departamento, mostrar mensaje
-                Toast.makeText(this, "No hay tours disponibles para " + departamento, Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    private void hideAllTours() {
-        if (cardTour1 != null) cardTour1.setVisibility(View.GONE);
-        if (cardTour2 != null) cardTour2.setVisibility(View.GONE);
-        if (cardTour3 != null) cardTour3.setVisibility(View.GONE);
-        if (cardTour4 != null) cardTour4.setVisibility(View.GONE);
-        if (cardTour5 != null) cardTour5.setVisibility(View.GONE);
-    }
-
-    private void showAllTours() {
-        if (cardTour1 != null) cardTour1.setVisibility(View.VISIBLE);
-        if (cardTour2 != null) cardTour2.setVisibility(View.VISIBLE);
-        if (cardTour3 != null) cardTour3.setVisibility(View.VISIBLE);
-        if (cardTour4 != null) cardTour4.setVisibility(View.VISIBLE);
-        if (cardTour5 != null) cardTour5.setVisibility(View.VISIBLE);
     }
 
     private void setupBottomNavigation() {

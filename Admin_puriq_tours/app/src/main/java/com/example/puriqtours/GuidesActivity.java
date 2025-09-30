@@ -14,17 +14,27 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.puriqtours.adapter.GuideAdapter;
+import com.example.puriqtours.model.Guide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class GuidesActivity extends AppCompatActivity {
 
-    private CardView cardGuide1, cardGuide2, cardGuide3, cardGuide4, cardGuide5;
+    private RecyclerView recyclerViewGuides;
+    private GuideAdapter guideAdapter;
+    private List<Guide> guideList;
     private Button btnFiltrar;
+    private TextInputEditText etBuscar;
+    private FloatingActionButton fabAgregarGuia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,12 @@ public class GuidesActivity extends AppCompatActivity {
         // Inicializar vistas
         initViews();
         
+        // Crear datos de ejemplo
+        createSampleData();
+        
+        // Configurar RecyclerView
+        setupRecyclerView();
+        
         // Configurar listeners
         setupListeners();
         
@@ -42,14 +58,24 @@ public class GuidesActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        recyclerViewGuides = findViewById(R.id.recyclerViewGuides);
         btnFiltrar = findViewById(R.id.btnFiltro);
-        
-        // Cards de guías
-        cardGuide1 = findViewById(R.id.cardGuide1);
-        cardGuide2 = findViewById(R.id.cardGuide2);
-        cardGuide3 = findViewById(R.id.cardGuide3);
-        cardGuide4 = findViewById(R.id.cardGuide4);
-        cardGuide5 = findViewById(R.id.cardGuide5);
+        etBuscar = findViewById(R.id.etBuscar);
+    }
+
+    private void createSampleData() {
+        guideList = new ArrayList<>();
+        guideList.add(new Guide(1, "Nassim Ahmed", "Cusco", 5, true, R.drawable.avatar));
+        guideList.add(new Guide(2, "Carlos Mendoza", "Cusco", 4, false, R.drawable.avatar));
+        guideList.add(new Guide(3, "Ana Torres", "Cusco", 5, true, R.drawable.avatar));
+        guideList.add(new Guide(4, "Pedro Silva", "Cusco", 5, true, R.drawable.avatar));
+        guideList.add(new Guide(5, "María Quispe", "Cusco", 4, false, R.drawable.avatar));
+    }
+
+    private void setupRecyclerView() {
+        guideAdapter = new GuideAdapter(this, guideList);
+        recyclerViewGuides.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewGuides.setAdapter(guideAdapter);
     }
 
     private void setupListeners() {
@@ -78,68 +104,28 @@ public class GuidesActivity extends AppCompatActivity {
         // Botón de filtro por provincia
         btnFiltrar.setOnClickListener(v -> showFilterDialog());
 
-        // Click listeners para guías
-        setupGuideClickListeners();
-    }
+        // FloatingActionButton para agregar nuevo guía
+        fabAgregarGuia.setOnClickListener(v -> {
+            // Intent intent = new Intent(GuidesActivity.this, CreateGuideActivity.class);
+            // startActivity(intent);
+            Toast.makeText(this, "Agregar nuevo guía", Toast.LENGTH_SHORT).show();
+        });
 
-    private void setupGuideClickListeners() {
-        if (cardGuide1 != null) {
-            cardGuide1.setOnClickListener(v -> {
-                Intent intent = new Intent(GuidesActivity.this, GuideDetailActivity.class);
-                intent.putExtra("guide_id", 1);
-                intent.putExtra("guide_name", "Nassim Ahmed");
-                intent.putExtra("guide_location", "Cusco");
-                intent.putExtra("guide_rating", 5);
-                intent.putExtra("guide_available", true);
-                startActivity(intent);
-            });
-        }
+        // Configurar búsqueda en tiempo real
+        if (etBuscar != null) {
+            etBuscar.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        if (cardGuide2 != null) {
-            cardGuide2.setOnClickListener(v -> {
-                Intent intent = new Intent(GuidesActivity.this, GuideDetailActivity.class);
-                intent.putExtra("guide_id", 2);
-                intent.putExtra("guide_name", "Carlos Mendoza");
-                intent.putExtra("guide_location", "Cusco");
-                intent.putExtra("guide_rating", 4);
-                intent.putExtra("guide_available", false);
-                startActivity(intent);
-            });
-        }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (guideAdapter != null) {
+                        guideAdapter.getFilter().filter(s);
+                    }
+                }
 
-        if (cardGuide3 != null) {
-            cardGuide3.setOnClickListener(v -> {
-                Intent intent = new Intent(GuidesActivity.this, GuideDetailActivity.class);
-                intent.putExtra("guide_id", 3);
-                intent.putExtra("guide_name", "Ana Torres");
-                intent.putExtra("guide_location", "Cusco");
-                intent.putExtra("guide_rating", 5);
-                intent.putExtra("guide_available", true);
-                startActivity(intent);
-            });
-        }
-
-        if (cardGuide4 != null) {
-            cardGuide4.setOnClickListener(v -> {
-                Intent intent = new Intent(GuidesActivity.this, GuideDetailActivity.class);
-                intent.putExtra("guide_id", 4);
-                intent.putExtra("guide_name", "Pedro Silva");
-                intent.putExtra("guide_location", "Cusco");
-                intent.putExtra("guide_rating", 5);
-                intent.putExtra("guide_available", true);
-                startActivity(intent);
-            });
-        }
-
-        if (cardGuide5 != null) {
-            cardGuide5.setOnClickListener(v -> {
-                Intent intent = new Intent(GuidesActivity.this, GuideDetailActivity.class);
-                intent.putExtra("guide_id", 5);
-                intent.putExtra("guide_name", "María Quispe");
-                intent.putExtra("guide_location", "Cusco");
-                intent.putExtra("guide_rating", 4);
-                intent.putExtra("guide_available", false);
-                startActivity(intent);
+                @Override
+                public void afterTextChanged(Editable s) {}
             });
         }
     }
@@ -178,7 +164,11 @@ public class GuidesActivity extends AppCompatActivity {
         // Acción al seleccionar un departamento
         listDepartamentos.setOnItemClickListener((parent, view, position, id) -> {
             String departamentoSeleccionado = adapter.getItem(position);
-            filterGuidesByDepartment(departamentoSeleccionado);
+            
+            // Usar el método filterByDepartment del adapter
+            if (guideAdapter != null) {
+                guideAdapter.filterByDepartment(departamentoSeleccionado);
+            }
             
             Toast.makeText(GuidesActivity.this,
                     "Filtrando guías de " + departamentoSeleccionado,
@@ -191,54 +181,12 @@ public class GuidesActivity extends AppCompatActivity {
                 .setView(dialogView)
                 .setNegativeButton("Cerrar", (dialog, which) -> dialog.dismiss())
                 .setPositiveButton("Mostrar todos", (dialog, which) -> {
-                    showAllGuides();
+                    if (guideAdapter != null) {
+                        guideAdapter.filterByDepartment("todos");
+                    }
                     dialog.dismiss();
                 })
                 .show();
-    }
-
-    private void filterGuidesByDepartment(String departamento) {
-        // Ocultar todos los guías primero
-        hideAllGuides();
-
-        // Mostrar guías según el departamento seleccionado
-        switch (departamento.toLowerCase()) {
-            case "cusco":
-                if (cardGuide1 != null) cardGuide1.setVisibility(View.VISIBLE);
-                if (cardGuide2 != null) cardGuide2.setVisibility(View.VISIBLE);
-                if (cardGuide3 != null) cardGuide3.setVisibility(View.VISIBLE);
-                if (cardGuide4 != null) cardGuide4.setVisibility(View.VISIBLE);
-                if (cardGuide5 != null) cardGuide5.setVisibility(View.VISIBLE);
-                break;
-            case "lima":
-                // Aquí mostrarías guías de Lima si los tienes
-                Toast.makeText(this, "No hay guías disponibles para " + departamento, Toast.LENGTH_SHORT).show();
-                break;
-            case "arequipa":
-                // Aquí mostrarías guías de Arequipa si los tienes
-                Toast.makeText(this, "No hay guías disponibles para " + departamento, Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                // Si no hay guías para ese departamento, mostrar mensaje
-                Toast.makeText(this, "No hay guías disponibles para " + departamento, Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    private void hideAllGuides() {
-        if (cardGuide1 != null) cardGuide1.setVisibility(View.GONE);
-        if (cardGuide2 != null) cardGuide2.setVisibility(View.GONE);
-        if (cardGuide3 != null) cardGuide3.setVisibility(View.GONE);
-        if (cardGuide4 != null) cardGuide4.setVisibility(View.GONE);
-        if (cardGuide5 != null) cardGuide5.setVisibility(View.GONE);
-    }
-
-    private void showAllGuides() {
-        if (cardGuide1 != null) cardGuide1.setVisibility(View.VISIBLE);
-        if (cardGuide2 != null) cardGuide2.setVisibility(View.VISIBLE);
-        if (cardGuide3 != null) cardGuide3.setVisibility(View.VISIBLE);
-        if (cardGuide4 != null) cardGuide4.setVisibility(View.VISIBLE);
-        if (cardGuide5 != null) cardGuide5.setVisibility(View.VISIBLE);
     }
 
     private void setupBottomNavigation() {

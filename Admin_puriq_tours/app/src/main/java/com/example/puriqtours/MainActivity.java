@@ -10,10 +10,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.puriqtours.adapter.TourAdapter;
+import com.example.puriqtours.adapter.GuideAdapter;
+import com.example.puriqtours.model.Tour;
+import com.example.puriqtours.model.Guide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerViewTours;
+    private RecyclerView recyclerViewGuides;
+    private TourAdapter tourAdapter;
+    private GuideAdapter guideAdapter;
+    private List<Tour> tourList;
+    private List<Guide> guideList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
                 // startActivity(intent);
             });
         }
+
+        // Inicializar RecyclerViews
+        setupRecyclerViews();
 
         // 🔹 Navegación a vista de tours
         TextView tvLatestTours = findViewById(R.id.tvLatestTours);
@@ -65,6 +84,54 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 🔹 BottomNavigation
+        setupBottomNavigation();
+    }
+
+    private void setupRecyclerViews() {
+        // Configurar RecyclerView para tours
+        recyclerViewTours = findViewById(R.id.recyclerViewTours);
+        if (recyclerViewTours != null) {
+            recyclerViewTours.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            
+            // Crear lista de tours de ejemplo
+            tourList = createSampleTours();
+            tourAdapter = new TourAdapter(this, tourList);
+            recyclerViewTours.setAdapter(tourAdapter);
+        }
+
+        // Configurar RecyclerView para guías
+        recyclerViewGuides = findViewById(R.id.recyclerViewGuides);
+        if (recyclerViewGuides != null) {
+            recyclerViewGuides.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            
+            // Crear lista de guías de ejemplo
+            guideList = createSampleGuides();
+            guideAdapter = new GuideAdapter(this, guideList);
+            recyclerViewGuides.setAdapter(guideAdapter);
+        }
+    }
+
+    private List<Tour> createSampleTours() {
+        List<Tour> tours = new ArrayList<>();
+        
+        Tour tour1 = new Tour(1, "Machu Picchu", "Descripción del lugar donde se va realizar el tour", "Cusco", 350.0, 3);
+        tour1.setImageResource(R.drawable.kuelap);
+        tours.add(tour1);
+        
+        return tours;
+    }
+
+    private List<Guide> createSampleGuides() {
+        List<Guide> guides = new ArrayList<>();
+        
+        guides.add(new Guide(1, "Alejandro G.", "Cusco", 5, true));
+        guides.add(new Guide(2, "Christian F.", "Cusco", 4, true));
+        guides.add(new Guide(3, "Nassim N.", "Cusco", 5, false));
+        
+        return guides;
+    }
+
+    private void setupBottomNavigation() {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         if (bottomNavigation != null) {
             bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
