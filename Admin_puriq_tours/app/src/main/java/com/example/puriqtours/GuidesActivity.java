@@ -34,7 +34,7 @@ public class GuidesActivity extends AppCompatActivity {
     private List<Guide> guideList;
     private Button btnFiltrar;
     private TextInputEditText etBuscar;
-    private FloatingActionButton fabAgregarGuia;
+    // private FloatingActionButton fabAgregarGuia; // Comentado porque no existe en el layout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,13 @@ public class GuidesActivity extends AppCompatActivity {
         recyclerViewGuides = findViewById(R.id.recyclerViewGuides);
         btnFiltrar = findViewById(R.id.btnFiltro);
         etBuscar = findViewById(R.id.etBuscar);
+        
+        // Verificar que las vistas críticas existan
+        if (recyclerViewGuides == null) {
+            Toast.makeText(this, "Error: RecyclerView no encontrado", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
     }
 
     private void createSampleData() {
@@ -102,14 +109,18 @@ public class GuidesActivity extends AppCompatActivity {
         }
 
         // Botón de filtro por provincia
-        btnFiltrar.setOnClickListener(v -> showFilterDialog());
+        if (btnFiltrar != null) {
+            btnFiltrar.setOnClickListener(v -> showFilterDialog());
+        }
 
-        // FloatingActionButton para agregar nuevo guía
+        // FloatingActionButton para agregar nuevo guía - COMENTADO porque no existe en layout
+        /*
         fabAgregarGuia.setOnClickListener(v -> {
             // Intent intent = new Intent(GuidesActivity.this, CreateGuideActivity.class);
             // startActivity(intent);
             Toast.makeText(this, "Agregar nuevo guía", Toast.LENGTH_SHORT).show();
         });
+        */
 
         // Configurar búsqueda en tiempo real
         if (etBuscar != null) {
