@@ -52,86 +52,113 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
                     android:layout_marginBottom="16dp">
+
+                    <!-- Fila superior: Usuarios activos y Guías habilitados -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center">
-                        <ImageView
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:src="@drawable/ic_avatar_placeholder_superadmin"
-                            android:contentDescription="Usuarios activos"
-                            android:scaleType="centerInside"/>
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginBottom="0dp">
+
+                        <!-- Usuarios activos (izquierda) -->
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="125"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"/>
-                        <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <ImageView
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:src="@drawable/avatar"
+                                android:contentDescription="Usuarios activos"
+                                android:scaleType="centerInside"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="125"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:textColor="#26A69A"
+                                android:gravity="center"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Usuarios activos"
+                                android:textSize="16sp"
+                                android:textColor="#26A69A"
+                                android:gravity="center"/>
+                        </LinearLayout>
+
+                        <!-- Guías habilitados (derecha) -->
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Usuarios activos"
-                            android:textSize="13sp"
-                            android:gravity="center"/>
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <ImageView
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:src="@drawable/ic_guide_superadmin"
+                                android:contentDescription="Guías habilitados"
+                                android:scaleType="centerInside"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="120"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:textColor="#26A69A"
+                                android:gravity="center"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Guías habilitados"
+                                android:textSize="16sp"
+                                android:textColor="#26A69A"
+                                android:gravity="center"/>
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <!-- Fila inferior: Empresas registradas (centrado) -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center">
-                        <ImageView
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:src="@drawable/ic_company_superadmin"
-                            android:contentDescription="Empresas registradas"
-                            android:scaleType="centerInside"/>
-                        <TextView
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="0dp">
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="35"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Empresas registradas"
-                            android:textSize="13sp"
-                            android:gravity="center"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:gravity="center">
-                        <ImageView
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:src="@drawable/ic_guide_superadmin"
-                            android:contentDescription="Guías habilitados"
-                            android:scaleType="centerInside"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="120"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:gravity="center"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Guías habilitados"
-                            android:textSize="13sp"
-                            android:gravity="center"/>
+                            android:orientation="vertical"
+                            android:gravity="center">
+                            <ImageView
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:src="@drawable/ic_company_superadmin"
+                                android:contentDescription="Empresas registradas"
+                                android:scaleType="centerInside"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="35"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:textColor="#26A69A"
+                                android:gravity="center"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Empresas registradas"
+                                android:textSize="16sp"
+                                android:textColor="#26A69A"
+                                android:gravity="center"/>
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -211,54 +238,15 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"/>
-                <HorizontalScrollView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGuiasHorizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="110dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:fillViewport="true">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="110dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <!-- Guía 1 -->
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="Alejandro G." android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Alejandro G." android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <!-- Más guías para scroll -->
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="Cristhian F." android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cristhian F." android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="Nassim H." android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nassim H." android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="Guía" android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Guía" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="tralalero trala" android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="tralalero trala" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <!-- Más guías aleatorios -->
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="María P." android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="María P." android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="Juan L." android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Juan L." android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="72dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_horizontal">
-                            <ImageView android:layout_width="95dp" android:layout_height="85dp" android:src="@drawable/ic_avatar_placeholder_superadmin" android:contentDescription="Pedro Q." android:scaleType="fitXY"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pedro Q." android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                    </LinearLayout>
-                </HorizontalScrollView>
+                    android:clipToPadding="false"
+                    android:overScrollMode="always"
+                    android:scrollbars="horizontal"/>
 
                 <!-- Empresas registradas -->
                 <TextView
@@ -272,69 +260,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"/>
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:fillViewport="true">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="140dp"
-                        android:orientation="horizontal"
-                        android:gravity="bottom">
-                        <!-- Gráfico de líneas simulado con Views (más de 6 para scroll) -->
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="60dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ene" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="90dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Feb" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="120dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mar" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="70dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Abr" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="110dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="May" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="100dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jun" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <!-- Más meses para scroll -->
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="80dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jul" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="60dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ago" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="130dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sep" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="90dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Oct" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="120dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nov" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="80dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="32dp" android:layout_height="100dp" android:background="#80CBC4"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dic" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                    </LinearLayout>
-                </HorizontalScrollView>
+
 
                 <!-- Gráfico de líneas para Empresas registradas -->
                 <com.google.android.material.card.MaterialCardView

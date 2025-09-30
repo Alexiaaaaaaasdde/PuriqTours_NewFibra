@@ -19,7 +19,7 @@
         android:scaleType="centerCrop"
         android:layout_gravity="end|center_vertical"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/avatar"
+        android:src="@drawable/avatar1"
         app:shapeAppearanceOverlay="@style/RoundedImage"
         app:strokeColor="@android:color/white"
         app:strokeWidth="2dp"/>

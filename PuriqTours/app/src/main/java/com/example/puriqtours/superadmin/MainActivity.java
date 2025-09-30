@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -105,6 +107,18 @@ public class MainActivity extends AppCompatActivity {
             lineChart.getAxisLeft().setTextColor(Color.parseColor("#26A69A"));
             lineChart.setExtraOffsets(10, 10, 10, 10);
             lineChart.invalidate();
+        }
+
+        // Inicializar RecyclerView horizontal de guías
+        RecyclerView rvGuiasHorizontal = findViewById(R.id.rvGuiasHorizontal);
+        if (rvGuiasHorizontal != null) {
+            rvGuiasHorizontal.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            java.util.List<UsuarioGuia> guias = new java.util.ArrayList<>();
+            for (int i = 1; i <= 20; i++) {
+                guias.add(new UsuarioGuia("Guía " + i, "Ciudad " + i, (i % 5) + 1));
+            }
+            GuiasHorizontalAdapter adapter = new GuiasHorizontalAdapter(this, guias);
+            rvGuiasHorizontal.setAdapter(adapter);
         }
     }
 }
