@@ -24,7 +24,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         auth = new LocalAuth(this);
 
-        etEmail = findViewById(R.id.etEmailReset);
+        //etEmail = findViewById(R.id.etEmailReset);
         etNewPass = findViewById(R.id.etNewPass);
         etRepeatPass = findViewById(R.id.etRepeatPass);
         btnReset = findViewById(R.id.btnResetOk);

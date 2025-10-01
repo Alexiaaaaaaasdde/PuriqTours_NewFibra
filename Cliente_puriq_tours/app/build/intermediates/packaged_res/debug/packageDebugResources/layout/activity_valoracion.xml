@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#F8F9FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ciudadela de Kuélap"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/teal_700"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Sección valoración del tour -->
+        <TextView
+            android:text="Valoración del tour:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="¿El tour cumplió con tus expectativas?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RatingBar
+            android:id="@+id/ratingExpectativasTour"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:rating="0"
+            android:progressTint="@color/teal_700"/>
+
+        <TextView
+            android:text="¿El tour cumplió ofreciendo todos sus servicios?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingServiciosTour"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:rating="0"
+            android:progressTint="@color/teal_700"/>
+
+        <!-- Caja de comentarios -->
+        <EditText
+            android:id="@+id/etComentarios"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Cuéntanos tu experiencia..."
+            android:gravity="top|start"
+            android:background="@android:drawable/edit_text"
+            android:padding="8dp"
+            android:maxLength="400"
+            android:layout_marginTop="12dp"/>
+
+        <!-- Sección valoración del guía -->
+        <TextView
+            android:text="Valoración del guía:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="¿El guía cumplió con tus expectativas?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RatingBar
+            android:id="@+id/ratingGuia"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:rating="0"
+            android:progressTint="@color/teal_700"/>
+
+        <!-- Botón enviar -->
+        <Button
+            android:id="@+id/btnEnviarValoracion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enviar Valoración"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
+</ScrollView>

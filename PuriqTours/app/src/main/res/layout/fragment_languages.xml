@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:background="@drawable/bg_card_rounded"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Elige tu idioma"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:textColor="@color/md_theme_onSurface"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Esto ajustará los textos y el contenido a tus preferencias."
+                android:textSize="14sp"
+                android:textColor="@color/teal_dark"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupLangs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEsPe"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Español (Perú)"
+                    android:checked="true"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEsLatam"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Español (LatAm)"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEn"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="English"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipQu"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Quechua (Runa Simi)"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAy"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Aymara"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <Button
+                android:id="@+id/btnLangContinue"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Continuar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_button"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

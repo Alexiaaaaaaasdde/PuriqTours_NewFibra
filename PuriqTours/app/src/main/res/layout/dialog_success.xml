@@ -1,0 +1,32 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="20dp" app:cardCornerRadius="20dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent" android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/ic_check_success_72"
+            android:layout_width="72dp" android:layout_height="72dp"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:text="Registro hecho con éxito"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:text="Se ha registrado su información adecuadamente."
+            android:gravity="center"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClose"
+            android:text="Cerrar"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <!-- Tarjeta centrada -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_rounded"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿Qué regiones te gustaría visitar?"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Regiones / ciudades principales -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Regiones / ciudades"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/grpRegions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+
+                <!-- Ejemplos Perú -->
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Cusco" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Arequipa" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Lima" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Puno (Lago Titicaca)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Huaraz (Áncash)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Ica / Paracas" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Trujillo (La Libertad)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Chiclayo (Lambayeque)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Piura" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Iquitos (Loreto)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Tarapoto (San Martín)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Chachapoyas (Amazonas)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Cajamarca" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Ayacucho" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Huancayo (Junín)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Tacna" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Tumbes" android:checkable="true"/>
+
+                <!-- Otro -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipOtherRegion"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Otro"
+                    android:checkable="true"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <EditText
+                android:id="@+id/etOtherRegion"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Escribe región/ciudad"
+                android:background="@drawable/bg_input"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"/>
+
+            <!-- Pueblitos / zonas turísticas -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pueblitos / zonas turísticas"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/grpTowns"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Máncora (Piura)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Paracas (Ica)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Huacachina (Ica)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Aguas Calientes (Cusco)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Ollantaytambo (Cusco)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Pisac (Cusco)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Maras &amp; Moray (Cusco)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Chivay (Colca)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Nazca (Ica)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Lunahuaná (Lima)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Caral (Lima)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Pozuzo (Pasco)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Oxapampa (Pasco)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Kuelap (Amazonas)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Catarata Gocta (Amazonas)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Colán (Piura)" android:checkable="true"/>
+                <com.google.android.material.chip.Chip style="@style/Widget.Material3.Chip.Filter" android:text="Zorritos (Tumbes)" android:checkable="true"/>
+
+                <!-- Otro -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipOtherTown"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:text="Otro"
+                    android:checkable="true"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <EditText
+                android:id="@+id/etOtherTown"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Escribe pueblo/lugar"
+                android:background="@drawable/bg_input"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"/>
+
+            <Button
+                android:id="@+id/btnRegionsContinue"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Continuar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_button"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

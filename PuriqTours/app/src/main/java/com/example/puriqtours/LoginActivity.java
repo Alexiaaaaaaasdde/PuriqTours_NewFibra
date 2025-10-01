@@ -38,11 +38,15 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        // 🔹 Acción "Registrarse"
+        // 🔹 Acción "Registrarse" - SOLUCIÓN APPLICADA
         if (tvRegister != null) {
             tvRegister.setOnClickListener(v -> {
                 Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                // ❌ ELIMINA ESTA LÍNEA: i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                // ✅ USA ESTO EN SU LUGAR:
                 startActivity(i);
+                // Opcional: agregar animación
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             });
         }
 
@@ -63,9 +67,8 @@ public class LoginActivity extends AppCompatActivity {
             // 🚀 Aquí en el futuro podrás validar credenciales
             // Por ahora solo redirige a la pantalla principal
             Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
-            finish(); // evita volver al login con "atrás"
         });
     }
 }
-

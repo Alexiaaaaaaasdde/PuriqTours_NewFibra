@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,166 +10,153 @@
     <!-- Fondo -->
     <ImageView
         android:id="@+id/bgImage"
-        android:src="@drawable/background_puriq"
-        android:scaleType="centerCrop"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_puriq"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Scroll para formulario -->
+    <!-- Contenido centrado -->
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="16dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Este contenedor hace el centrado vertical/horizontal -->
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_card_rounded"
-            android:padding="20dp">
+            android:layout_height="match_parent"
+            android:gravity="center">
 
-            <!-- Título -->
-            <TextView
-                android:text="Registro"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Imagen de perfil circular -->
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:src="@drawable/avatar"
-                android:background="@drawable/bg_circle"
-                android:scaleType="centerCrop"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Botón subir foto -->
-            <Button
-                android:id="@+id/btnUploadPhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Subir foto"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_button"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Campos del formulario -->
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Nombres"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
-
-            <EditText
-                android:id="@+id/etLastName"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Apellidos"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
-
-            <EditText
-                android:id="@+id/etUsername"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Usuario"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
-
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Correo electrónico"
-                android:inputType="textEmailAddress"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
-
-            <EditText
-                android:id="@+id/etBirthDate"
+            <!-- Tarjeta / Formulario -->
+            <LinearLayout
+                android:id="@+id/card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_input"
-                android:hint="Fecha de nacimiento"
-                android:focusable="false"
-                android:inputType="none"
-                android:drawableStart="@android:drawable/ic_menu_today"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp"/>
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@drawable/bg_card_rounded"
+                android:elevation="2dp">
 
+                <!-- Título -->
+                <TextView
+                    android:text="Registro"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp" />
 
-            <EditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Número telefónico"
-                android:inputType="phone"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
+                <!-- Campos del formulario -->
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Nombres"
+                    android:background="@drawable/bg_input"
+                    android:layout_marginBottom="12dp"/>
 
-            <EditText
-                android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Dirección"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
+                <EditText
+                    android:id="@+id/etLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Apellidos"
+                    android:background="@drawable/bg_input"
+                    android:layout_marginBottom="12dp"/>
 
-            <Spinner
-                android:id="@+id/spnDocumentType"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_spinner"
-                android:spinnerMode="dropdown"
-                android:layout_marginBottom="12dp"/>
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Correo electrónico"
+                    android:inputType="textEmailAddress"
+                    android:background="@drawable/bg_input"
+                    android:layout_marginBottom="12dp"/>
 
+                <EditText
+                    android:id="@+id/etBirthDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input"
+                    android:hint="Fecha de nacimiento"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:inputType="none"
+                    android:drawableStart="@android:drawable/ic_menu_today"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp"/>
 
-            <EditText
-                android:id="@+id/etDocumentNumber"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Número de documento"
-                android:inputType="number"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
+                <EditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Número telefónico"
+                    android:inputType="phone"
+                    android:background="@drawable/bg_input"
+                    android:layout_marginBottom="12dp"/>
 
+                <EditText
+                    android:id="@+id/etAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Dirección"
+                    android:background="@drawable/bg_input"
+                    android:layout_marginBottom="12dp"/>
 
+                <Spinner
+                    android:id="@+id/spnDocumentType"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_spinner"
+                    android:spinnerMode="dropdown"
+                    android:layout_marginBottom="12dp"/>
 
-            <EditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Contraseña"
-                android:inputType="textPassword"
-                android:background="@drawable/bg_input"
-                android:layout_marginBottom="12dp"/>
+                <EditText
+                    android:id="@+id/etDocumentNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="Número de documento"
+                    android:inputType="number"
+                    android:background="@drawable/bg_input"
+                    android:layout_marginBottom="12dp"/>
 
-            <!-- Botón registrar -->
-            <Button
-                android:id="@+id/btnRegister"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Registrar Datos"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_button"
-                android:layout_marginTop="16dp"/>
+                <!-- Botón Registrar (alto cómodo, no all-caps) -->
+                <Button
+                    android:id="@+id/btnRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Registrar Datos"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_button"
+                    android:layout_marginTop="16dp"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <!-- Botón Atrás (flotante encima del scroll) -->
+    <ImageButton
+        android:id="@+id/btnBackRegister"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/bg_circle_teal"
+        android:contentDescription="Atrás"
+        android:elevation="12dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -6,4 +6,18 @@
     <color name="mint">#CFF9EB</color>
     <color name="teal_button">#0A3D62</color>
     <color name="teal_700">#FF018786</color>
+    <color name="ic_launcher_background">#009688</color>
+
+    <color name="md_theme_primary">@color/teal_button</color>
+    <color name="md_theme_onPrimary">@color/white</color>
+    <color name="md_theme_primaryContainer">@color/mint</color>
+    <color name="md_theme_onPrimaryContainer">@color/teal_dark</color>
+
+    <color name="md_theme_surface">@color/white</color>
+    <color name="md_theme_onSurface">@color/teal_dark</color>
+    <color name="md_theme_outline">@color/teal_700</color>
+
+    <!-- éxito para el check del modal -->
+    <color name="md_theme_success">@color/teal_button</color>
+
 </resources>

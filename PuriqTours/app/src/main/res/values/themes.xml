@@ -1,10 +1,25 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Tema principal de la app -->
     <style name="Theme.PuriqTours" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Paleta -->
         <item name="colorPrimary">@color/teal_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/mint</item>
+        <item name="colorOnPrimaryContainer">@color/teal_dark</item>
+
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/teal_dark</item>
+        <item name="colorOutline">@color/teal_700</item>
+
+        <!-- Barras del sistema -->
         <item name="android:statusBarColor">@color/black</item>
         <item name="android:navigationBarColor">@color/black</item>
+
+        <!-- Estilos globales -->
+        <item name="materialButtonStyle">@style/AppButton</item>
+        <item name="chipStyle">@style/AppChip</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Puriq.Dialog</item>
     </style>
 
     <!-- Tema para el Splash Screen -->
@@ -13,6 +28,24 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="postSplashScreenTheme">@style/Theme.PuriqTours</item>
+    </style>
+
+    <!-- Botones -->
+    <style name="AppButton" parent="Widget.Material3.Button">
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <!-- Chips filtro -->
+    <style name="AppChip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/teal_700</item>
+    </style>
+
+    <!-- Overlay para diálogos MaterialAlertDialog -->
+    <style name="ThemeOverlay.Puriq.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="materialAlertDialogBodyTextStyle">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.Material3.HeadlineSmall</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.Material3.Corner.Medium</item>
     </style>
 
 </resources>

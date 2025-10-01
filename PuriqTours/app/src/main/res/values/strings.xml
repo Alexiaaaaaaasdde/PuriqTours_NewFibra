@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">PuriqTours</string>
+    <string name="onboarding_title">Cuéntanos tus intereses</string>
+    <string name="action_skip">Omitir</string>
+    <string name="action_next">Siguiente</string>
+    <string name="action_finish">Finalizar</string>
+
+    <string name="reg_success_title">Registro hecho con éxito</string>
+    <string name="reg_success_desc">Se ha registrado su información adecuadamente.</string>
+    <string name="close">Cerrar</string>
+
 </resources>

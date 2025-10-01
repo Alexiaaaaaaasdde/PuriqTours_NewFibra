@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@android:color/white">
+
+    <!-- Adultos -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adultos (12 - 90)"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#2B746C" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="S/ 165.02"
+                android:textSize="14sp"
+                android:textColor="#666" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnMenosAdultos"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_remove"
+            android:contentDescription="Quitar adulto" />
+
+        <TextView
+            android:id="@+id/tvCantidadAdultos"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="2"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/btnMasAdultos"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_add"
+            android:tint="@android:color/white"
+            android:contentDescription="Agregar adulto" />
+    </LinearLayout>
+
+    <!-- Niños -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Niños (3 - 11)"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#2B746C" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="S/ 20.00"
+                android:textSize="14sp"
+                android:textColor="#666" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnMenosNinos"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_remove"
+            android:tint="@android:color/white"
+            android:contentDescription="Quitar niño" />
+
+        <TextView
+            android:id="@+id/tvCantidadNinos"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/btnMasNinos"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_add"
+            android:tint="@android:color/white"
+            android:contentDescription="Agregar niño" />
+    </LinearLayout>
+
+    <!-- Bebés -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bebés (0 - 2)"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#2B746C" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gratis"
+                android:textSize="14sp"
+                android:textColor="#666" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnMenosBebes"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_remove"
+            android:tint="@android:color/white"
+            android:contentDescription="Quitar bebé" />
+
+        <TextView
+            android:id="@+id/tvCantidadBebes"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/btnMasBebes"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_add"
+            android:tint="@android:color/white"
+            android:contentDescription="Agregar bebé" />
+    </LinearLayout>
+
+    <!-- Botón aceptar -->
+    <Button
+        android:id="@+id/btnAceptarViajeros"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/teal_700"
+        android:text="Aceptar"
+        android:textColor="@android:color/white" />
+</LinearLayout>
