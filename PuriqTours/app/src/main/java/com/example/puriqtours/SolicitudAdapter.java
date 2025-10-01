@@ -1,6 +1,7 @@
 package com.example.puriqtours;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,26 +65,59 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
 
         // 🔹 Acción botón Aceptar
         holder.btnAceptar.setOnClickListener(v -> {
-            new AlertDialog.Builder(v.getContext())
-                    .setTitle("Confirmar")
-                    .setMessage("¿Deseas aceptar esta solicitud?")
-                    .setPositiveButton("Sí", (dialog, which) -> {
-                        Toast.makeText(v.getContext(), "Solicitud aceptada ✅", Toast.LENGTH_SHORT).show();
-                    })
-                    .setNegativeButton("Cancelar", null)
-                    .show();
+            Dialog dialog = new Dialog(v.getContext());
+            dialog.setContentView(R.layout.dialog_aceptar); // Tu XML modificado
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+            // 🔹 Referencias a botones
+            Button btnAceptar = dialog.findViewById(R.id.btnAceptar);
+            Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
+
+            btnAceptar.setOnClickListener(view -> {
+                Toast.makeText(v.getContext(), "Solicitud aceptada ✅", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            });
+
+            btnCancelar.setOnClickListener(view -> dialog.dismiss());
+
+            dialog.show();
+
+            // 🔹 Ajustar ancho al máximo después de mostrarlo
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+            }
         });
+
 
         // 🔹 Acción botón Rechazar
         holder.btnRechazar.setOnClickListener(v -> {
-            new AlertDialog.Builder(v.getContext())
-                    .setTitle("Confirmar")
-                    .setMessage("¿Deseas rechazar esta solicitud?")
-                    .setPositiveButton("Sí", (dialog, which) -> {
-                        Toast.makeText(v.getContext(), "Solicitud rechazada ❌", Toast.LENGTH_SHORT).show();
-                    })
-                    .setNegativeButton("Cancelar", null)
-                    .show();
+            Dialog dialog = new Dialog(v.getContext());
+            dialog.setContentView(R.layout.dialog_rechazar); // Tu XML modificado
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+            // 🔹 Referencias a botones
+            Button btnAceptar = dialog.findViewById(R.id.btnRechazar);
+            Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
+
+            btnAceptar.setOnClickListener(view -> {
+                Toast.makeText(v.getContext(), "Solicitud Rechazada ❌", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            });
+
+            btnCancelar.setOnClickListener(view -> dialog.dismiss());
+
+            dialog.show();
+
+            // 🔹 Ajustar ancho al máximo después de mostrarlo
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+            }
         });
     }
 
