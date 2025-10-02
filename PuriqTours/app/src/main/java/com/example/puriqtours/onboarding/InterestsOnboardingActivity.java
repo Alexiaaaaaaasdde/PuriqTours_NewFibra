@@ -37,43 +37,5 @@ public class InterestsOnboardingActivity extends AppCompatActivity {
         }
     }
 
-    /** Llamado por LanguagesFragment: va a REGIONES */
-    public void onLanguageChosen(String code) {
-        // Debug visual para confirmar que llegaste aquí:
-        android.widget.Toast.makeText(this, "Idioma elegido: " + code, android.widget.Toast.LENGTH_SHORT).show();
 
-        getSharedPreferences("onboarding", MODE_PRIVATE)
-                .edit().putString("language", code).apply();
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.onboarding_container, new RegionsFragment())
-                .addToBackStack(null)
-                .commit();
-    }
-
-
-    /** Llamado por RegionsFragment: va a INTERESES */
-    public void onRegionsChosen(ArrayList<String> regions) {
-        getSharedPreferences("onboarding", MODE_PRIVATE)
-                .edit().putString("regions", android.text.TextUtils.join(",", regions))
-                .apply();
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.onboarding_container, new PreferencesFragment())
-                .addToBackStack(null)
-                .commit();
-    }
-
-    /** Llamado por PreferencesFragment: termina (o navega adonde prefieras) */
-    public void onPreferencesChosen(ArrayList<String> prefs) {
-        getSharedPreferences("onboarding", MODE_PRIVATE)
-                .edit().putString("preferences", android.text.TextUtils.join(",", prefs))
-                .apply();
-
-        // TODO: si quieres, envía todo a Firestore aquí
-
-        finish(); // o empieza HomeActivity si quieres
-    }
 }

@@ -36,6 +36,8 @@
 
         <activity android:name=".onboarding.RegionsActivity" />
 
+        <activity android:name=".onboarding.ActivitiesActivity" />
+
 
         <activity android:name=".MainActivity" />
         <activity android:name=".RegisterActivity" />

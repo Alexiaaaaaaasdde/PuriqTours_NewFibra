@@ -25,6 +25,8 @@ public class RegionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regions);
 
+        findViewById(R.id.btnBackRegions).setOnClickListener(v -> finish());
+
         grpRegions      = findViewById(R.id.grpRegions);
         grpTowns        = findViewById(R.id.grpTowns);
         chipOtherRegion = findViewById(R.id.chipOtherRegion);
@@ -49,6 +51,11 @@ public class RegionsActivity extends AppCompatActivity {
             addChecked(grpTowns, sel);
             if (chipOtherRegion.isChecked() && !isEmpty(etOtherRegion)) sel.add(etOtherRegion.getText().toString().trim());
             if (chipOtherTown.isChecked() && !isEmpty(etOtherTown)) sel.add(etOtherTown.getText().toString().trim());
+
+            startActivity(new android.content.Intent(
+                    RegionsActivity.this,
+                    com.example.puriqtours.onboarding.ActivitiesActivity.class
+            ));
 
             // guarda simple en SharedPreferences (opcional)
             getSharedPreferences("onboarding", MODE_PRIVATE)

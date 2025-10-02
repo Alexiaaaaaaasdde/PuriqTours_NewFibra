@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class OnboardingPagerAdapter extends FragmentStateAdapter {
     public final LanguagesFragment fLang = new LanguagesFragment();
-    public final RegionsFragment fReg = new RegionsFragment();
+
     public final PreferencesFragment fPref = new PreferencesFragment();
 
     public OnboardingPagerAdapter(@NonNull FragmentActivity fa) { super(fa); }
@@ -15,7 +15,6 @@ public class OnboardingPagerAdapter extends FragmentStateAdapter {
     @NonNull @Override public Fragment createFragment(int position) {
         switch (position) {
             case 0: return fLang;
-            case 1: return fReg;
             default: return fPref;
         }
     }
