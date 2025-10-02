@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,39 +30,59 @@ public class LanguagesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // Asegúrate que ESTE layout existe y tiene los ids de tu XML
         return inflater.inflate(R.layout.fragment_languages_simple, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
-        group = v.findViewById(R.id.groupLangs);
-        rbOther = v.findViewById(R.id.rbOther);
-        etOther = v.findViewById(R.id.etOtherLanguage);
+        group       = v.findViewById(R.id.groupLangs);
+        rbOther     = v.findViewById(R.id.rbOther);
+        etOther     = v.findViewById(R.id.etOtherLanguage);
         btnContinue = v.findViewById(R.id.btnLangContinue);
 
-        // Mostrar/ocultar input según selección
+        // Mostrar/ocultar el input "Otro"
         group.setOnCheckedChangeListener((g, checkedId) -> {
-            boolean isOther = checkedId == R.id.rbOther;
+            boolean isOther = (checkedId == R.id.rbOther);
             etOther.setVisibility(isOther ? View.VISIBLE : View.GONE);
             if (!isOther) etOther.setError(null);
             updateButtonEnabled();
         });
 
-        // Habilitar botón cuando “Otro” tiene texto
+        // Habilitar el botón cuando hay texto en "Otro"
         etOther.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { updateButtonEnabled(); }
             @Override public void afterTextChanged(Editable s) {}
         });
 
+        // 🔥 FORZAR NAVEGACIÓN A REGIONES DESDE AQUÍ
         btnContinue.setOnClickListener(view -> {
             if (rbOther.isChecked() && TextUtils.isEmpty(etOther.getText().toString().trim())) {
                 etOther.setError("Escribe el idioma");
                 etOther.requestFocus();
                 return;
             }
+
+            // (debug) muestra en qué Activity estás
+            Toast.makeText(requireContext(),
+                    "Host: " + requireActivity().getClass().getSimpleName(),
+                    Toast.LENGTH_SHORT).show();
+
+            // Guarda el idioma elegido (opcional)
             String code = mapSelectionToCode();
-            ((InterestsOnboardingActivity) requireActivity()).onLanguageChosen(code);
+            requireActivity().getSharedPreferences("onboarding", android.content.Context.MODE_PRIVATE)
+                    .edit().putString("language", code).apply();
+
+            // 👉 Cambia al fragment de REGIONES usando el MISMO contenedor del activity
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                            android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.onboarding_container, new RegionsFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         updateButtonEnabled();
@@ -80,14 +101,13 @@ public class LanguagesFragment extends Fragment {
         int id = group.getCheckedRadioButtonId();
         if (id == R.id.rbOther) {
             String txt = etOther.getText() == null ? "" : etOther.getText().toString().trim();
-            // Devuelve un marcador “other:<texto>”
             return "other:" + txt;
         }
-        if (id == R.id.rbEn)   return "en";
-        if (id == R.id.rbQu)   return "qu";
-        if (id == R.id.rbAy)   return "ay";
+        if (id == R.id.rbEn)      return "en";
+        if (id == R.id.rbQu)      return "qu";
+        if (id == R.id.rbAy)      return "ay";
         if (id == R.id.rbEsLatam) return "es-419";
-        // default
+        if (id == R.id.rbEsPe)    return "es-PE";  // <-- coincide con tu XML
         return "es-PE";
     }
 }

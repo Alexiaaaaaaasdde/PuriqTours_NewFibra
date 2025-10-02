@@ -69,11 +69,13 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             if (!validateForm()) return;
 
-            // ➜ Nueva pantalla de contraseña
+            // ✅ Paso 1: ir a crear contraseña (como estaba antes)
             Intent i = new Intent(RegisterActivity.this, SetPasswordActivity.class);
-            i.putExtra("prefill_username", etName.getText().toString().trim());
+            i.putExtra("prefill_username", safeText(etName));
             startActivity(i);
-            // NO hacemos finish() para que el back desde la siguiente te regrese aquí si quieres
+
+            // (si NO quieres volver con back) descomenta:
+            // finish();
         });
     }
 
@@ -90,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
             setError(etLastName, "Ingresa tus apellidos"); ok = false; firstError = firstError == null ? etLastName : firstError;
         }
 
-        String email = etEmail.getText().toString().trim();
+        String email = safeText(etEmail);
         if (TextUtils.isEmpty(email)) {
             setError(etEmail, "Ingresa tu correo"); ok = false; firstError = firstError == null ? etEmail : firstError;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -104,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
             ok = false; if (firstError == null) firstError = spnDocumentType;
         }
 
-        String docNum = etDocumentNumber.getText().toString().trim();
+        String docNum = safeText(etDocumentNumber);
         if (TextUtils.isEmpty(docNum)) {
             setError(etDocumentNumber, "Ingresa tu número de documento"); ok = false; firstError = firstError == null ? etDocumentNumber : firstError;
         } else if (spnDocumentType.getSelectedItemPosition() == 1 && !docNum.matches("\\d{8}")) {
@@ -120,8 +122,12 @@ public class RegisterActivity extends AppCompatActivity {
         return ok;
     }
 
+    private String safeText(EditText et) {
+        return et == null || et.getText() == null ? "" : et.getText().toString().trim();
+    }
+
     private boolean isEmpty(EditText et) {
-        return et == null || TextUtils.isEmpty(et.getText().toString().trim());
+        return et == null || TextUtils.isEmpty(safeText(et));
     }
 
     private void setError(EditText et, String msg) {
@@ -138,5 +144,6 @@ public class RegisterActivity extends AppCompatActivity {
         return Math.round(dp * d);
     }
 }
+
 
 

@@ -5,6 +5,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.puriqtours.R;
 
+import java.util.ArrayList;
+
 public class InterestsOnboardingActivity extends AppCompatActivity {
 
     public String selectedLanguageCode = null; // "es-PE", "en", "qu", "ay", "es-419"
@@ -14,7 +16,7 @@ public class InterestsOnboardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interests_onboarding);
 
-        // Botón atrás (null-safe por si el layout equivocado se inflara)
+        // Botón atrás (asegúrate que exista en el XML con este id)
         View back = findViewById(R.id.btnBackOnboarding);
         if (back != null) {
             back.setOnClickListener(v -> {
@@ -37,7 +39,9 @@ public class InterestsOnboardingActivity extends AppCompatActivity {
 
     /** Llamado por LanguagesFragment: va a REGIONES */
     public void onLanguageChosen(String code) {
-        selectedLanguageCode = code;
+        // Debug visual para confirmar que llegaste aquí:
+        android.widget.Toast.makeText(this, "Idioma elegido: " + code, android.widget.Toast.LENGTH_SHORT).show();
+
         getSharedPreferences("onboarding", MODE_PRIVATE)
                 .edit().putString("language", code).apply();
 
@@ -48,15 +52,28 @@ public class InterestsOnboardingActivity extends AppCompatActivity {
                 .commit();
     }
 
+
     /** Llamado por RegionsFragment: va a INTERESES */
-    public void onRegionsChosen(java.util.ArrayList<String> regions) {
+    public void onRegionsChosen(ArrayList<String> regions) {
         getSharedPreferences("onboarding", MODE_PRIVATE)
-                .edit().putString("regions", android.text.TextUtils.join(",", regions)).apply();
+                .edit().putString("regions", android.text.TextUtils.join(",", regions))
+                .apply();
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.onboarding_container, new PreferencesFragment())
                 .addToBackStack(null)
                 .commit();
+    }
+
+    /** Llamado por PreferencesFragment: termina (o navega adonde prefieras) */
+    public void onPreferencesChosen(ArrayList<String> prefs) {
+        getSharedPreferences("onboarding", MODE_PRIVATE)
+                .edit().putString("preferences", android.text.TextUtils.join(",", prefs))
+                .apply();
+
+        // TODO: si quieres, envía todo a Firestore aquí
+
+        finish(); // o empieza HomeActivity si quieres
     }
 }

@@ -31,9 +31,9 @@
             android:exported="false"
             android:parentActivityName=".RegisterActivity" />
 
-        <activity
-            android:name=".onboarding.InterestsOnboardingActivity"
-            android:exported="false" />
+        <activity android:name=".onboarding.InterestsOnboardingActivity"
+            android:exported="false"/>
+
 
         <activity android:name=".MainActivity" />
         <activity android:name=".RegisterActivity" />
