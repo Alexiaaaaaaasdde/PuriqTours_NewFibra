@@ -36,6 +36,7 @@
         <activity android:name=".ReservadoActivity" android:exported="false" />
         <activity android:name=".EnProcesoActivity" android:exported="false" />
         <activity android:name=".FinalizadoActivity" android:exported="false" />
+        <activity android:name=".ChatActivity"/>
 
         <!-- 🔹 Valoración -->
         <activity android:name=".ValoracionActivity" android:exported="false" />

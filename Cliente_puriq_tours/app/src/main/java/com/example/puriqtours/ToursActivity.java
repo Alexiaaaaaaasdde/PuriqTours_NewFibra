@@ -32,6 +32,7 @@ public class ToursActivity extends BaseActivity {   // ✅ Ahora hereda de BaseA
         setContentView(R.layout.activity_tours);   // ✅ Inflamos el layout correcto
 
         setupDrawer();  // ✅ Habilita toolbar y drawer
+        enableDrawerIcon(); // 👈 esto activa el ☰ para abrir el menú lateral
 
         // 🔹 Inicializamos vistas
         btnFiltrar = findViewById(R.id.btnFiltro);

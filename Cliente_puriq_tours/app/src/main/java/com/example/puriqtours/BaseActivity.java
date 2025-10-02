@@ -30,9 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-
-            // abrir drawer con ☰
-            toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
         }
 
         if (navigationView != null) {
@@ -51,6 +48,14 @@ public abstract class BaseActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             });
+        }
+    }
+
+    // 👇 Método auxiliar que las Activities principales llaman si quieren ☰
+    protected void enableDrawerIcon() {
+        if (toolbar != null && drawerLayout != null) {
+            toolbar.setNavigationIcon(R.drawable.ic_menu);
+            toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
         }
     }
 }
