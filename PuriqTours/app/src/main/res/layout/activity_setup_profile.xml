@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Fondo -->
+
+<!-- Fondo -->
     <ImageView
         android:id="@+id/bgImage"
         android:layout_width="0dp"
@@ -66,15 +67,16 @@
                     android:layout_marginBottom="20dp"/>
 
                 <!-- Avatar -->
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imgProfile"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/avatar"
-                    android:background="@drawable/bg_profile_ring"
                     android:scaleType="centerCrop"
-                    android:layout_marginBottom="12dp"/>
+                    android:src="@drawable/avatar"
+                    app:shapeAppearanceOverlay="@style/CircleImage"
+                    app:strokeColor="@color/teal_700"
+                    app:strokeWidth="2dp" />
 
                 <!-- Subir foto -->
                 <Button
