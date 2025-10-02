@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // ⚡ Aquí en el futuro puedes validar contra LocalAuth
             // Por ahora solo mostramos que todo funciona
-            Intent i = new Intent(this, MainActivity.class); // O pantalla principal de tu app
+            Intent i = new Intent(this, MainGuiaActivity.class); // O pantalla principal de tu app
             startActivity(i);
             finish();
         });

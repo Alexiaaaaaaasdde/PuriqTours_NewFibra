@@ -25,7 +25,7 @@ public class FinalizarTourBottomSheet extends BottomSheetDialogFragment {
         btnFinalizar.setOnClickListener(v -> {
             dismiss();
 
-            Intent intent = new Intent(requireContext(), MainActivity.class);
+            Intent intent = new Intent(requireContext(), MainGuiaActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
 
