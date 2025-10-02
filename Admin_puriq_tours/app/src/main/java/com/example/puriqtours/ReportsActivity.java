@@ -46,4 +46,14 @@ public class ReportsActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void setupToolbar() {
+        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> {
+                // TODO: Implementar cerrar sesión
+                android.widget.Toast.makeText(this, "Cerrar sesión", android.widget.Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
 }

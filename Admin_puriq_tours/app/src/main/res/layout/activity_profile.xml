@@ -15,10 +15,25 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:title="Puriq Tours"
         app:titleCentered="true"
-        app:navigationIcon="@drawable/ic_menu"
+        app:navigationIcon="@drawable/ic_logout"
+        app:navigationIconTint="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/notificationIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_notifications"
+            android:scaleType="centerInside"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"/>
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- 🔹 Vista de Perfil Completo (cuando ya tiene datos) -->
     <ScrollView

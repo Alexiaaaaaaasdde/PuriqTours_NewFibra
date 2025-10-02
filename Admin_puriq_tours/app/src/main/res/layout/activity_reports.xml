@@ -15,7 +15,8 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:title="Puriq Tours"
         app:titleCentered="true"
-        app:navigationIcon="@drawable/ic_menu"
+        app:navigationIcon="@drawable/ic_logout"
+        app:navigationIconTint="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

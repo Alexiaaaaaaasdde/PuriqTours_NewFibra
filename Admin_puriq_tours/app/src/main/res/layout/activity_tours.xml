@@ -20,7 +20,8 @@
             app:title="Mis lista de tours"
             app:titleCentered="false"
             app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIcon="@drawable/ic_logout"
+            app:navigationIconTint="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">

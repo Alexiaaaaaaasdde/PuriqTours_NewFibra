@@ -14,15 +14,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.adapter.GuideAdapter;
 import com.example.puriqtours.model.Guide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -36,9 +33,6 @@ public class GuidesActivity extends AppCompatActivity {
     private List<Guide> guideList;
     private Button btnFiltrar;
     private TextInputEditText etBuscar;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    // private FloatingActionButton fabAgregarGuia; // Comentado porque no existe en el layout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +53,6 @@ public class GuidesActivity extends AppCompatActivity {
         
         // Configurar bottom navigation
         setupBottomNavigation();
-        
-        // Configurar navigation drawer
-        setupNavigationDrawer();
     }
 
     private void initViews() {
@@ -102,34 +93,19 @@ public class GuidesActivity extends AppCompatActivity {
             });
         }
 
-        // Configurar toolbar navigation (botón atrás) - COMENTADO PARA USAR DRAWER
-        /*
+        // Configurar toolbar navigation (botón de logout)
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setDisplayShowHomeEnabled(true);
-            }
             toolbar.setNavigationOnClickListener(v -> {
-                finish(); // Volver a MainActivity
+                // TODO: Implementar cerrar sesión
+                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
             });
         }
-        */
 
         // Botón de filtro por provincia
         if (btnFiltrar != null) {
             btnFiltrar.setOnClickListener(v -> showFilterDialog());
         }
-
-        // FloatingActionButton para agregar nuevo guía - COMENTADO porque no existe en layout
-        /*
-        fabAgregarGuia.setOnClickListener(v -> {
-            // Intent intent = new Intent(GuidesActivity.this, CreateGuideActivity.class);
-            // startActivity(intent);
-            Toast.makeText(this, "Agregar nuevo guía", Toast.LENGTH_SHORT).show();
-        });
-        */
 
         // Configurar búsqueda en tiempo real
         if (etBuscar != null) {
@@ -228,48 +204,6 @@ public class GuidesActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(this, ProfileActivity.class));
                     overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
-            });
-        }
-    }
-
-    private void setupNavigationDrawer() {
-        drawerLayout = findViewById(R.id.drawerLayout);
-        navigationView = findViewById(R.id.navigationView);
-
-        // Configurar el ícono del menú en la toolbar para abrir drawer
-        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        if (toolbar != null) {
-            // Cambiar el navigationIcon para que abra el drawer en lugar de volver atrás
-            toolbar.setNavigationOnClickListener(v -> {
-                if (drawerLayout != null) {
-                    drawerLayout.openDrawer(androidx.core.view.GravityCompat.START);
-                }
-            });
-        }
-
-        // Configurar navegación del drawer
-        if (navigationView != null) {
-            navigationView.setNavigationItemSelectedListener(item -> {
-                int id = item.getItemId();
-                
-                if (id == R.id.nav_principal) {
-                    startActivity(new Intent(this, MainActivity.class));
-                    drawerLayout.closeDrawers();
-                    return true;
-                } else if (id == R.id.nav_estadisticas) {
-                    startActivity(new Intent(this, ReportsActivity.class));
-                    drawerLayout.closeDrawers();
-                    return true;
-                } else if (id == R.id.nav_perfil_drawer) {
-                    startActivity(new Intent(this, ProfileActivity.class));
-                    drawerLayout.closeDrawers();
-                    return true;
-                } else if (id == R.id.nav_logout) {
-                    // TODO: Implementar cerrar sesión
-                    drawerLayout.closeDrawers();
                     return true;
                 }
                 return false;

@@ -89,16 +89,12 @@ public class ToursActivity extends AppCompatActivity {
             });
         }
 
-        // Configurar toolbar navigation (botón atrás)
+        // Configurar toolbar navigation (botón de logout)
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setDisplayShowHomeEnabled(true);
-            }
             toolbar.setNavigationOnClickListener(v -> {
-                finish(); // Volver a MainActivity
+                // TODO: Implementar cerrar sesión
+                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
             });
         }
 

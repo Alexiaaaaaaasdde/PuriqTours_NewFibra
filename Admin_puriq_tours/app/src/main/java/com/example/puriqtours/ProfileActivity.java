@@ -53,6 +53,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        // Icono de notificaciones en toolbar
+        android.widget.ImageView notificationIcon = findViewById(R.id.notificationIcon);
+        if (notificationIcon != null) {
+            notificationIcon.setOnClickListener(v -> {
+                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        // Configurar toolbar con botón de logout
+        setupToolbar();
+
         // Vistas del formulario
         completeProfileView = findViewById(R.id.completeProfileView);
         etCompanyName = findViewById(R.id.etCompanyName);
@@ -86,6 +97,16 @@ public class ProfileActivity extends AppCompatActivity {
                 enterEditMode();
             }
         });
+    }
+
+    private void setupToolbar() {
+        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> {
+                // TODO: Implementar cerrar sesión
+                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 
     private void checkProfileStatus() {

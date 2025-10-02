@@ -17,7 +17,7 @@
             android:background="@color/teal_700"
             app:title="Lista de guías"
             app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIcon="@drawable/ic_logout"
             app:navigationIconTint="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
