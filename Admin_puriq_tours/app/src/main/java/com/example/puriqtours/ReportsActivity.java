@@ -37,6 +37,10 @@ public class ReportsActivity extends AppCompatActivity {
                     return true;
                 } else if (id == R.id.nav_reports) {
                     return true; // Ya estás en reports
+                } else if (id == R.id.nav_chat) {
+                    startActivity(new Intent(this, ChatListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(this, ProfileActivity.class));
                     overridePendingTransition(0, 0);

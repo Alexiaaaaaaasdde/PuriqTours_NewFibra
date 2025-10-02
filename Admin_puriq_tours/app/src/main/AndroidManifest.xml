@@ -29,6 +29,8 @@
         <activity android:name=".EditTourActivity" android:exported="false"/>
         <activity android:name=".GuidesActivity" android:exported="false"/>
         <activity android:name=".GuideDetailActivity" android:exported="false"/>
+        <activity android:name=".ChatListActivity" android:exported="false"/>
+        <activity android:name=".ChatActivity" android:exported="false"/>
 
     </application>
 

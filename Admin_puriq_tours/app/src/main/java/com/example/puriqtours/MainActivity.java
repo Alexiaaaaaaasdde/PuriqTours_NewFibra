@@ -95,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(this, ReportsActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
+                } else if (id == R.id.nav_chat) {
+                    startActivity(new Intent(this, ChatListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(this, ProfileActivity.class));
                     overridePendingTransition(0, 0);

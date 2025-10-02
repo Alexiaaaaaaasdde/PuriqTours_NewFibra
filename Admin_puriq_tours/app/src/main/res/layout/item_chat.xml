@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardChat"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Avatar del cliente -->
+        <ImageView
+            android:id="@+id/clientAvatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/avatar"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_circle" />
+
+        <!-- Indicador de mensajes no leídos -->
+        <View
+            android:id="@+id/unreadBadge"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignTop="@id/clientAvatar"
+            android:layout_alignEnd="@id/clientAvatar"
+            android:background="@drawable/circle_background_green"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/unreadCount"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignTop="@id/clientAvatar"
+            android:layout_alignEnd="@id/clientAvatar"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <!-- Información del chat -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/clientAvatar"
+            android:layout_toStartOf="@id/menuButton"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/clientName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Cliente"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tourName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tour: Machu Picchu"
+                android:textSize="12sp"
+                android:textColor="@color/teal_700"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/lastMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Último mensaje del chat..."
+                android:textSize="14sp"
+                android:textColor="#666"
+                android:layout_marginTop="4dp"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+        <!-- Tiempo y menú -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:30"
+                android:textSize="12sp"
+                android:textColor="#999"
+                android:layout_marginBottom="8dp" />
+
+            <ImageView
+                android:id="@+id/menuButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_menu"
+                android:contentDescription="Opciones"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:rotation="90" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
