@@ -43,7 +43,6 @@
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".TempPasswordActivity" />
         <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".HomeActivity" />
 
         <!-- 🔹 Navegación principal -->
         <activity android:name=".ToursActivity" android:exported="false" />
