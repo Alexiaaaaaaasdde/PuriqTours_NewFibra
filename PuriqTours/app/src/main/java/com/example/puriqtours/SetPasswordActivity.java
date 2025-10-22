@@ -9,11 +9,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import com.example.puriqtours.LocalAuth;
 
 public class SetPasswordActivity extends AppCompatActivity {
 
@@ -42,6 +45,7 @@ public class SetPasswordActivity extends AppCompatActivity {
 
         prefillUsername = getIntent().getStringExtra("prefill_username");
 
+        // Listener para actualizar nivel de seguridad
         TextWatcher watcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { updateUI(); }
@@ -51,14 +55,29 @@ public class SetPasswordActivity extends AppCompatActivity {
         etConfirm.addTextChangedListener(watcher);
         updateUI();
 
+        // Botón continuar
         btnContinue.setOnClickListener(v -> {
             if (!validate()) return;
 
+            // ✅ Guardar la contraseña real en almacenamiento local (SharedPreferences)
+            String passReal = etPassword.getText() != null ? etPassword.getText().toString() : "";
+            LocalAuth localAuth = new LocalAuth(this);
+            localAuth.saveUser(
+                    localAuth.getEmail(),     // conserva el correo ya guardado
+                    passReal,                 // guarda la nueva contraseña
+                    localAuth.getName(),      // conserva nombre
+                    localAuth.getLastname()   // conserva apellido
+            );
+
+            Toast.makeText(this, "Contraseña guardada correctamente", Toast.LENGTH_SHORT).show();
+
+            // Continuar al siguiente paso (SetupProfile)
             Intent i = new Intent(this, SetupProfileActivity.class);
             if (!TextUtils.isEmpty(prefillUsername)) {
                 i.putExtra("prefill_username", prefillUsername);
             }
             startActivity(i);
+            finish();
         });
     }
 

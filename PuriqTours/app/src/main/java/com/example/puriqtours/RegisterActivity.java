@@ -14,6 +14,8 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.puriqtours.LocalAuth;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -69,14 +71,21 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             if (!validateForm()) return;
 
-            // ✅ Paso 1: ir a crear contraseña (como estaba antes)
+            // ✅ Guardar los datos localmente antes de pasar a SetPasswordActivity
+            LocalAuth localAuth = new LocalAuth(this);
+            localAuth.saveUser(
+                    etEmail.getText().toString(),
+                    "contrasena", // o el campo real si lo tienes
+                    etName.getText().toString(),
+                    etLastName.getText().toString()
+            );
+
+            // Luego continuas como antes
             Intent i = new Intent(RegisterActivity.this, SetPasswordActivity.class);
             i.putExtra("prefill_username", safeText(etName));
             startActivity(i);
-
-            // (si NO quieres volver con back) descomenta:
-            // finish();
         });
+
     }
 
     private boolean validateForm() {
