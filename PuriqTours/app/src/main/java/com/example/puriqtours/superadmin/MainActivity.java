@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
                 android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }
-        // Forzar color del TopAppBar
+        // Cambiar color del TopAppBar al mismo que otras secciones
         com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
-            toolbar.setBackgroundColor(Color.parseColor("#1DE9B6"));
+            toolbar.setBackgroundColor(Color.parseColor("#009688")); // Cambiar de #1DE9B6 a #009688
         }
         // Navegación al hacer click en el botón Usuarios
         findViewById(R.id.btnUsuarios).setOnClickListener(new View.OnClickListener() {
