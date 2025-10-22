@@ -28,14 +28,29 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         return new UsuarioViewHolder(view);
     }
 
+    public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
+        TextView txtNombre, txtCiudad, txtEmpresa, txtFechaRegistro;
+        LinearLayout layoutBotones;
+        RatingBar ratingBar;
+        public UsuarioViewHolder(@NonNull View itemView) {
+            super(itemView);
+            txtNombre = itemView.findViewById(R.id.txtNombre);
+            txtCiudad = itemView.findViewById(R.id.txtCiudad);
+            txtEmpresa = itemView.findViewById(R.id.txtEmpresa);
+            txtFechaRegistro = itemView.findViewById(R.id.txtFechaRegistro);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
+            layoutBotones = itemView.findViewById(R.id.layoutBotones);
+        }
+    }
+
     @Override
     public void onBindViewHolder(@NonNull UsuarioViewHolder holder, int position) {
         Usuario usuario = listaUsuarios.get(position);
         holder.txtNombre.setText(usuario.nombre);
         holder.txtCiudad.setText(usuario.ciudad);
-        holder.layoutValoracion.setVisibility(View.GONE);
         holder.txtEmpresa.setVisibility(View.GONE);
         holder.txtFechaRegistro.setVisibility(View.GONE);
+        holder.ratingBar.setVisibility(View.GONE);
         holder.layoutBotones.removeAllViews();
 
         int btnWidth = (int) (holder.itemView.getResources().getDisplayMetrics().density * 110); // 110dp
@@ -64,18 +79,9 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
             holder.layoutBotones.addView(btnBloquear);
             holder.layoutBotones.addView(btnDesbloquear);
         } else if (usuario.getTipo() == 1) { // Guía
-            holder.layoutValoracion.setVisibility(View.VISIBLE);
+            holder.ratingBar.setVisibility(View.VISIBLE);
             int valoracion = ((UsuarioGuia) usuario).valoracion;
-            holder.layoutValoracion.removeAllViews();
-            int starSize = (int) (holder.itemView.getResources().getDisplayMetrics().density * 28); // 28dp
-            for (int i = 0; i < valoracion; i++) {
-                ImageView star = new ImageView(context);
-                star.setImageResource(R.drawable.estrellita);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(starSize, starSize);
-                params.setMarginEnd(4);
-                star.setLayoutParams(params);
-                holder.layoutValoracion.addView(star);
-            }
+            holder.ratingBar.setRating(valoracion);
             Button btnHabilitar = new Button(context);
             btnHabilitar.setText("Habilitar");
             btnHabilitar.setAllCaps(false);
@@ -105,19 +111,5 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
     @Override
     public int getItemCount() {
         return listaUsuarios.size();
-    }
-
-    public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNombre, txtCiudad, txtEmpresa, txtFechaRegistro;
-        LinearLayout layoutValoracion, layoutBotones;
-        public UsuarioViewHolder(@NonNull View itemView) {
-            super(itemView);
-            txtNombre = itemView.findViewById(R.id.txtNombre);
-            txtCiudad = itemView.findViewById(R.id.txtCiudad);
-            txtEmpresa = itemView.findViewById(R.id.txtEmpresa);
-            txtFechaRegistro = itemView.findViewById(R.id.txtFechaRegistro);
-            layoutValoracion = itemView.findViewById(R.id.layoutValoracion);
-            layoutBotones = itemView.findViewById(R.id.layoutBotones);
-        }
     }
 }

@@ -43,7 +43,7 @@
                     android:text="Hey, Superadmin"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="#26A69A"
+                    android:textColor="#009688"
                     android:layout_marginTop="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="16dp"/>
@@ -83,14 +83,14 @@
                                 android:text="125"
                                 android:textStyle="bold"
                                 android:textSize="22sp"
-                                android:textColor="#26A69A"
+                                android:textColor="#009688"
                                 android:gravity="center"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Usuarios activos"
                                 android:textSize="16sp"
-                                android:textColor="#26A69A"
+                                android:textColor="#009688"
                                 android:gravity="center"/>
                         </LinearLayout>
 
@@ -113,14 +113,14 @@
                                 android:text="120"
                                 android:textStyle="bold"
                                 android:textSize="22sp"
-                                android:textColor="#26A69A"
+                                android:textColor="#009688"
                                 android:gravity="center"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Guías habilitados"
                                 android:textSize="16sp"
-                                android:textColor="#26A69A"
+                                android:textColor="#009688"
                                 android:gravity="center"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -149,7 +149,7 @@
                                 android:text="35"
                                 android:textStyle="bold"
                                 android:textSize="22sp"
-                                android:textColor="#26A69A"
+                                android:textColor="#009688"
                                 android:gravity="center"/>
                             <TextView
                                 android:layout_width="wrap_content"
@@ -170,7 +170,7 @@
                     android:text="Usuarios"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#26A69A"
+                    android:textColor="#009688"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"/>
@@ -234,7 +234,7 @@
                     android:text="Solicitud de Guías de Turismo"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#26A69A"
+                    android:textColor="#009688"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"/>
@@ -256,7 +256,7 @@
                     android:text="Empresas registradas"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#26A69A"
+                    android:textColor="#009688"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"/>

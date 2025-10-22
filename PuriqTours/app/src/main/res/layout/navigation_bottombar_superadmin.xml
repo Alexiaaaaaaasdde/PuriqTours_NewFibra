@@ -4,7 +4,7 @@
     android:layout_height="70dp"
     android:layout_gravity="bottom"
     android:orientation="horizontal"
-    android:background="#F7F0FA"
+    android:background="#EFE8F2"
     android:weightSum="4"
     android:elevation="8dp">
 

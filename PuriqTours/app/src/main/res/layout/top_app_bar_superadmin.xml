@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/topAppBar"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="false"
     android:layout_height="?attr/actionBarSize"
     android:background="#009688"
     android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
@@ -11,9 +10,8 @@
     app:titleCentered="true"
     app:navigationIcon="@drawable/ic_menu_superadmin">
 
-    <!-- 🔹 Icono perfil -->
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/avatarPlaceholder"
+        android:id="@+id/profileIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:scaleType="centerCrop"
@@ -21,6 +19,6 @@
         android:layout_marginEnd="8dp"
         android:src="@drawable/avatar1"
         app:shapeAppearanceOverlay="@style/RoundedImage"
-        app:strokeColor="@android:color/white"
+        app:strokeColor="@color/darkgreen"
         app:strokeWidth="2dp"/>
 </com.google.android.material.appbar.MaterialToolbar>

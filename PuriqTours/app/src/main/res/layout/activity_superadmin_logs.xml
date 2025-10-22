@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F8F9FA">
+        android:background="#FFFFFF">
 
-        <!-- TopBar fija -->
-        <include layout="@layout/top_app_bar_superadmin"/>
+        <!-- TopBar fija envuelta en AppBarLayout transparente -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:elevation="0dp"
+            app:layout_constraintTop_toTopOf="parent">
+            
+            <include
+                android:id="@+id/topAppBar"
+                layout="@layout/top_app_bar_superadmin"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!-- Título Registro de Eventos y avatar -->
         <LinearLayout
@@ -20,13 +33,15 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/topAppBar"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
             app:layout_constraintStart_toStartOf="parent">
+
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/avatar1"
                 android:contentDescription="Avatar"/>
+
             <TextView
                 android:id="@+id/tvLogsTitle"
                 android:layout_width="wrap_content"
@@ -34,10 +49,8 @@
                 android:text="Registro de Eventos"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#00B8D4"
-                android:layout_marginStart="8dp"
-                android:gravity="start"
-                android:textAlignment="viewStart"/>
+                android:textColor="#009688"
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
 
         <!-- Filtros scrollables -->
@@ -49,37 +62,39 @@
             android:layout_marginTop="16dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/logsHeader"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/logsHeader">
+
             <LinearLayout
                 android:id="@+id/logsFilters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGeneral"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="General"
-                    android:textColor="#00B8D4"
-                    app:strokeColor="#00B8D4"
+                    android:textColor="#009688"
+                    app:strokeColor="#009688"
                     app:strokeWidth="2dp"
-                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTint="#FDFBFB"
                     android:elevation="0dp"
                     android:layout_marginEnd="8dp"/>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnUsuariosFiltro"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="Usuarios"
-                    android:textColor="#00B8D4"
+                    android:textColor="#009688"
                     app:strokeColor="#00B8D4"
                     app:strokeWidth="2dp"
                     android:backgroundTint="#FFFFFF"
                     android:elevation="0dp"
                     android:layout_marginEnd="8dp"/>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPagos"
                     android:layout_width="wrap_content"
@@ -91,6 +106,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:elevation="0dp"
                     android:layout_marginEnd="8dp"/>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGuias"
                     android:layout_width="wrap_content"
@@ -102,6 +118,7 @@
                     android:backgroundTint="#FFFFFF"
                     android:elevation="0dp"
                     android:layout_marginEnd="8dp"/>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEmpresas"
                     android:layout_width="wrap_content"
@@ -115,49 +132,72 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <!-- Botón Ordenar -->
+        <!-- Ordenar y Exportar -->
         <LinearLayout
             android:id="@+id/ordenarLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/logsFiltersScroll"
-            app:layout_constraintStart_toStartOf="parent">
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/flechitas_superadmin"
-                android:contentDescription="Ordenar"/>
-            <TextView
+            app:layout_constraintTop_toBottomOf="@id/logsFiltersScroll">
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ordenar"
-                android:textColor="#26A69A"
-                android:textSize="16sp"
-                android:layout_marginStart="8dp"
-                android:gravity="start"
-                android:textAlignment="viewStart"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/flechitas_superadmin"
+                    android:contentDescription="Ordenar"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ordenar"
+                    android:textColor="#26A69A"
+                    android:textSize="16sp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportLogs"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Exportar"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#009688"
+                app:cornerRadius="8dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"/>
         </LinearLayout>
 
-        <!-- Lista scrollable de logs -->
+        <!-- RecyclerView para los logs -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvLogs"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/ordenarLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingBottom="90dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="16dp"
             android:clipToPadding="false"
-            android:overScrollMode="always"
-            android:scrollbars="vertical"/>
-
+            app:layout_constraintTop_toBottomOf="@id/ordenarLayout"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- BottomBar fija fuera del ConstraintLayout -->
     <include layout="@layout/navigation_bottombar_superadmin"/>
+
 </FrameLayout>
