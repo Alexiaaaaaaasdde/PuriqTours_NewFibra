@@ -1,32 +1,46 @@
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:padding="20dp" app:cardCornerRadius="20dp">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_dialog"
+    android:gravity="center">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_width="match_parent" android:layout_height="wrap_content">
+    <!-- ✅ Icono de check -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_check_circle"
+        android:tint="@color/teal_700"
+        android:layout_marginBottom="16dp"/>
 
-        <ImageView
-            android:src="@drawable/ic_check_success_72"
-            android:layout_width="72dp" android:layout_height="72dp"
-            android:layout_marginBottom="12dp"/>
+    <!-- ✅ Título -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Actualización Realizada"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:text="Registro hecho con éxito"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"/>
+    <!-- ✅ Mensaje -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Se ha actualizado con éxito los datos personales"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
 
-        <TextView
-            android:text="Se ha registrado su información adecuadamente."
-            android:gravity="center"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnClose"
-            android:text="Cerrar"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    <!-- ✅ Botón cerrar -->
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/teal_700"
+        android:text="Cerrar"
+        android:textColor="@android:color/white"/>
+</LinearLayout>

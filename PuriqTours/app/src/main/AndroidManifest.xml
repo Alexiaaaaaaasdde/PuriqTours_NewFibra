@@ -39,12 +39,28 @@
         <activity android:name=".onboarding.ActivitiesActivity" />
 
 
-        <activity android:name=".MainActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".TempPasswordActivity" />
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".HomeActivity" />
+
+        <!-- 🔹 Navegación principal -->
+        <activity android:name=".ToursActivity" android:exported="false" />
+        <activity android:name=".HistorialActivity" android:exported="false" />
+        <!-- 🔹 Pantalla de login/entrada -->
+        <!-- 🔹 Flujo de tours -->
+        <activity android:name=".DetalleTourActivity" android:exported="false" />
+        <activity android:name=".PagoActivity" android:exported="false" />
+        <!-- 🔹 Estados de tours -->
+        <activity android:name=".ReservadoActivity" android:exported="false" />
+        <activity android:name=".EnProcesoActivity" android:exported="false" />
+        <activity android:name=".FinalizadoActivity" android:exported="false" />
+        <activity android:name=".ChatActivity"/>
+
+        <!-- 🔹 Valoración -->
+        <activity android:name=".ValoracionActivity" android:exported="false" />
+
 
     </application>
 

@@ -17,6 +17,9 @@
     <color name="md_theme_onSurface">@color/teal_dark</color>
     <color name="md_theme_outline">@color/teal_700</color>
 
+    <color name="teal_500">#009688</color>
+    <color name="teal_200">#009688</color>
+
     <!-- éxito para el check del modal -->
     <color name="md_theme_success">@color/teal_button</color>
 
