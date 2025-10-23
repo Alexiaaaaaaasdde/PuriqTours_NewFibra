@@ -74,7 +74,7 @@ public class DetalleTourActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_tours) {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 overridePendingTransition(0,0);
                 return true;
 

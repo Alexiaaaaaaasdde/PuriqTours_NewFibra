@@ -8,8 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
-import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -39,29 +38,34 @@ public class SetupProfileActivity extends AppCompatActivity {
         imgProfile = findViewById(R.id.imgProfile);
         etUsername = findViewById(R.id.etUsername);
         Button btnUpload = findViewById(R.id.btnUploadPhoto);
-        Button btnNext   = findViewById(R.id.btnNext);
-
+        Button btnNext   = findViewById(R.id.btnNext);   // ✅ aquí está bien, sin punto
         ImageButton btnBack = findViewById(R.id.btnBackForgot);
-        btnBack.setOnClickListener(v ->
-                        getOnBackPressedDispatcher().onBackPressed()
 
-        );
+        btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        btnUpload.setOnClickListener(v -> pickImage.launch("image/*"));
 
         // Prefill opcional
         String prefill = getIntent().getStringExtra("prefill_username");
         if (prefill != null && !prefill.trim().isEmpty()) etUsername.setText(prefill.trim());
 
-        btnUpload.setOnClickListener(v -> pickImage.launch("image/*"));
-
         btnNext.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
-            if (TextUtils.isEmpty(username)) { etUsername.setError("El usuario no puede estar vacío"); return; }
+            if (TextUtils.isEmpty(username)) {
+                etUsername.setError("El usuario no puede estar vacío");
+                return;
+            }
 
-            Intent i = new Intent(SetupProfileActivity.this,
-                    com.example.puriqtours.onboarding.InterestsOnboardingActivity.class);
-            i.putExtra("username", username);
+            // Guarda username y foto en LocalAuth
+            LocalAuth localAuth = new LocalAuth(this);
+            String photoUri = (selectedImageUri != null) ? selectedImageUri.toString() : "";
+            localAuth.saveProfile(username, "", "", photoUri);
+
+            Toast.makeText(this, "Perfil guardado", Toast.LENGTH_SHORT).show();
+
+            // ➡️ Siguiente pantalla: intereses e idiomas
+            Intent i = new Intent(this, com.example.puriqtours.onboarding.InterestsOnboardingActivity.class);
             startActivity(i);
-            // finish();  // opcional
+            finish();
         });
 
         if (savedInstanceState != null) {
@@ -76,11 +80,8 @@ public class SetupProfileActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@Nullable Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (selectedImageUri != null) {
+        if (selectedImageUri != null && outState != null) {
             outState.putString("photo_uri", selectedImageUri.toString());
         }
     }
-
-
 }
-

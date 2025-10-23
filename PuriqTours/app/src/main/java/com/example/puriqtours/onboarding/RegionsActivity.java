@@ -52,6 +52,17 @@ public class RegionsActivity extends AppCompatActivity {
             if (chipOtherRegion.isChecked() && !isEmpty(etOtherRegion)) sel.add(etOtherRegion.getText().toString().trim());
             if (chipOtherTown.isChecked() && !isEmpty(etOtherTown)) sel.add(etOtherTown.getText().toString().trim());
 
+            // ✅ Guardar selección de regiones en LocalAuth
+            com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(this);
+            String regions = TextUtils.join(", ", sel);
+            localAuth.saveProfile(
+                    localAuth.getNickname(),
+                    localAuth.getLanguage(),
+                    regions,                 // guarda las regiones elegidas
+                    localAuth.getPhotoUri()
+            );
+
+            // continuar con tu flujo normal
             startActivity(new android.content.Intent(
                     RegionsActivity.this,
                     com.example.puriqtours.onboarding.ActivitiesActivity.class
@@ -62,8 +73,9 @@ public class RegionsActivity extends AppCompatActivity {
                     .edit().putString("regions_list", TextUtils.join(",", sel)).apply();
 
             Toast.makeText(this, "Regiones guardadas (" + sel.size() + ")", Toast.LENGTH_SHORT).show();
-            finish(); // regresa al flujo o aquí podrías abrir PreferencesActivity si la tienes
+            finish();
         });
+
     }
 
     private void addChecked(ChipGroup group, ArrayList<String> out) {

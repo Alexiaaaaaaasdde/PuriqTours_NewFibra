@@ -69,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(this, HistorialActivity.class));
             } else if (id == R.id.nav_logout) {
                 // 🔹 Sin Firebase: solo volver al login
-                Intent intent = new Intent(this, MainActivity.class); // o LoginActivity
+                Intent intent = new Intent(this, LoginActivity.class); // o LoginActivity
                 startActivity(intent);
                 finish(); // cerrar ProfileActivity
             }
@@ -113,6 +113,32 @@ public class ProfileActivity extends AppCompatActivity {
         EditText etDireccion = findViewById(R.id.etDireccion);
         EditText etCorreo = findViewById(R.id.etCorreo);
 
+        // 🟩 Cargar datos del usuario desde LocalAuth
+        LocalAuth localAuth = new LocalAuth(this);
+
+        // Colocar los datos en los campos existentes
+        etNombre.setText(localAuth.getName());
+        etApellido.setText(localAuth.getLastname());
+        etCorreo.setText(localAuth.getEmail());
+
+        // Si tienes estos campos, puedes llenarlos así también:
+        etDireccion.setText(localAuth.getActivities()); // aquí ponemos actividades o regiones
+        etTipoDocumento.setText(localAuth.getLanguage()); // aquí mostramos el idioma
+
+        // Mostrar la foto de perfil si existe
+        if (localAuth.getPhotoUri() != null && !localAuth.getPhotoUri().isEmpty()) {
+            profileImage.setImageURI(android.net.Uri.parse(localAuth.getPhotoUri()));
+        }
+
+        // Mostrar un resumen de otros datos (para verificar que todo se guardó)
+        android.util.Log.d("PROFILE_DATA", "Nombre: " + localAuth.getName());
+        android.util.Log.d("PROFILE_DATA", "Apellido: " + localAuth.getLastname());
+        android.util.Log.d("PROFILE_DATA", "Correo: " + localAuth.getEmail());
+        android.util.Log.d("PROFILE_DATA", "Contraseña: " + localAuth.getPassword());
+        android.util.Log.d("PROFILE_DATA", "Idioma: " + localAuth.getLanguage());
+        android.util.Log.d("PROFILE_DATA", "Actividades: " + localAuth.getActivities());
+
+
         btnSave.setVisibility(View.GONE);
 
         btnUpdate.setOnClickListener(v -> {
@@ -143,9 +169,5 @@ public class ProfileActivity extends AppCompatActivity {
             btnUpdate.setVisibility(View.VISIBLE);
         });
     }
-
-
-
-
 }
 

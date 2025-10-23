@@ -70,6 +70,16 @@ public class LanguagesFragment extends Fragment {
                 // requireActivity().getSharedPreferences("onboarding", android.content.Context.MODE_PRIVATE)
                 //         .edit().putString("language", code).apply();
 
+                // ✅ Guardar idioma seleccionado en LocalAuth
+                String language = mapSelectionToCode();
+                com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(requireContext());
+                localAuth.saveProfile(
+                        localAuth.getNickname(),
+                        language,                // guarda el idioma elegido
+                        localAuth.getActivities(),
+                        localAuth.getPhotoUri()
+                );
+
                 // Confirmación visual
                 android.widget.Toast.makeText(requireContext(), "Abriendo Regiones…", android.widget.Toast.LENGTH_SHORT).show();
 

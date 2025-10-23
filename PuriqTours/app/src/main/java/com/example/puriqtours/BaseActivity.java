@@ -42,7 +42,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_historial) {
                     startActivity(new Intent(this, HistorialActivity.class));
                 } else if (id == R.id.nav_logout) {
-                    startActivity(new Intent(this, MainActivity.class));
+                    startActivity(new Intent(this, LoginActivity.class));
                     finish();
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);

@@ -67,7 +67,7 @@ public class HistorialActivity extends AppCompatActivity {
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
             } else if (id == R.id.nav_logout) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }

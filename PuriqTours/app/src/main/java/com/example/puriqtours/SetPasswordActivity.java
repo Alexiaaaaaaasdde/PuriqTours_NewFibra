@@ -60,13 +60,14 @@ public class SetPasswordActivity extends AppCompatActivity {
             if (!validate()) return;
 
             // ✅ Guardar la contraseña real en almacenamiento local (SharedPreferences)
-            String passReal = etPassword.getText() != null ? etPassword.getText().toString() : "";
+            // Guarda la contraseña real
             LocalAuth localAuth = new LocalAuth(this);
+            String passReal = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
             localAuth.saveUser(
-                    localAuth.getEmail(),     // conserva el correo ya guardado
-                    passReal,                 // guarda la nueva contraseña
-                    localAuth.getName(),      // conserva nombre
-                    localAuth.getLastname()   // conserva apellido
+                    localAuth.getEmail(),
+                    passReal,
+                    localAuth.getName(),
+                    localAuth.getLastname()
             );
 
             Toast.makeText(this, "Contraseña guardada correctamente", Toast.LENGTH_SHORT).show();

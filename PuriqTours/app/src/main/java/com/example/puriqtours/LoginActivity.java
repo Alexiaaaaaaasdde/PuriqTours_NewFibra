@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // ✅ Si ya hay usuario guardado, saltar directamente al Home
         if (localAuth.isLogged()) {
-            Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+            Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             finish();
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 );
 
                 Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
             } else {

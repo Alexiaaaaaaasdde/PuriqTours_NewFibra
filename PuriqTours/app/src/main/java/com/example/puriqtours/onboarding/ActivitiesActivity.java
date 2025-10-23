@@ -37,15 +37,30 @@ public class ActivitiesActivity extends AppCompatActivity {
                 }
             }
 
-            // Guardar simple
+            // ✅ Guardar selección de actividades en LocalAuth
+            com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(this);
+            String activities = android.text.TextUtils.join(", ", sel);
+            localAuth.saveProfile(
+                    localAuth.getNickname(),
+                    localAuth.getLanguage(),
+                    activities,               // guarda las actividades elegidas
+                    localAuth.getPhotoUri()
+            );
+
+            // Guardar simple (tu parte original)
             getSharedPreferences("onboarding", MODE_PRIVATE)
                     .edit().putString("activities_list", android.text.TextUtils.join(",", sel))
                     .apply();
 
             Toast.makeText(this, "Intereses guardados (" + sel.size() + ")", Toast.LENGTH_SHORT).show();
 
-            // Aquí decide a dónde ir (Home, SetupProfile, etc.). Por ahora solo cerramos:
+            // ✅ Ir al perfil final
+            startActivity(new android.content.Intent(
+                    com.example.puriqtours.onboarding.ActivitiesActivity.this,
+                    com.example.puriqtours.ProfileActivity.class
+            ));
             finish();
         });
+
     }
 }

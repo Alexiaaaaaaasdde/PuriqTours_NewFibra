@@ -71,19 +71,18 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             if (!validateForm()) return;
 
-            // ✅ Guardar los datos localmente antes de pasar a SetPasswordActivity
+            // Guarda datos del usuario localmente
             LocalAuth localAuth = new LocalAuth(this);
             localAuth.saveUser(
                     etEmail.getText().toString(),
-                    "contrasena", // o el campo real si lo tienes
+                    "",  // contraseña todavía no
                     etName.getText().toString(),
                     etLastName.getText().toString()
             );
 
-            // Luego continuas como antes
             Intent i = new Intent(RegisterActivity.this, SetPasswordActivity.class);
-            i.putExtra("prefill_username", safeText(etName));
             startActivity(i);
+            finish();
         });
 
     }
