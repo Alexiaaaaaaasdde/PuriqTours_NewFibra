@@ -56,7 +56,6 @@ public class LanguagesFragment extends Fragment {
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        // CONTINUAR -> abrir RegionsActivity (sin fragments)
         btnContinue.setOnClickListener(view -> {
             if (rbOther.isChecked() && TextUtils.isEmpty(etOther.getText().toString().trim())) {
                 etOther.setError("Escribe el idioma");
@@ -65,25 +64,28 @@ public class LanguagesFragment extends Fragment {
             }
 
             try {
-                // (opcional) guarda el idioma si lo necesitas
-                // String code = mapSelectionToCode();
-                // requireActivity().getSharedPreferences("onboarding", android.content.Context.MODE_PRIVATE)
-                //         .edit().putString("language", code).apply();
-
                 // ✅ Guardar idioma seleccionado en LocalAuth
                 String language = mapSelectionToCode();
                 com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(requireContext());
-                localAuth.saveProfile(
-                        localAuth.getNickname(),
-                        language,                // guarda el idioma elegido
+
+                localAuth.saveUser(
+                        localAuth.getName(),
+                        localAuth.getLastname(),
+                        localAuth.getEmail(),
+                        localAuth.getPassword(),
+                        localAuth.getBirthdate(),
+                        localAuth.getDocument(),
+                        localAuth.getPhone(),
+                        localAuth.getAddress(),
+                        localAuth.getDocType(),
+                        language,               // ✅ idioma
                         localAuth.getActivities(),
                         localAuth.getPhotoUri()
                 );
 
-                // Confirmación visual
-                android.widget.Toast.makeText(requireContext(), "Abriendo Regiones…", android.widget.Toast.LENGTH_SHORT).show();
+                android.widget.Toast.makeText(requireContext(), "Idioma guardado correctamente", android.widget.Toast.LENGTH_SHORT).show();
 
-                // 👉 Cambia a la Activity de Regiones
+                // 👉 Ir a RegionsActivity
                 Intent i = new Intent(requireContext(), com.example.puriqtours.onboarding.RegionsActivity.class);
                 startActivity(i);
 

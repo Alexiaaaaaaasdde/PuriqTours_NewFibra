@@ -55,14 +55,29 @@ public class SetupProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            // Guarda username y foto en LocalAuth
+            // ✅ Guardar username y foto en LocalAuth
             LocalAuth localAuth = new LocalAuth(this);
             String photoUri = (selectedImageUri != null) ? selectedImageUri.toString() : "";
-            localAuth.saveProfile(username, "", "", photoUri);
 
-            Toast.makeText(this, "Perfil guardado", Toast.LENGTH_SHORT).show();
+            // 🔹 Guardamos con los datos existentes y actualizamos foto
+            localAuth.saveUser(
+                    localAuth.getName(),
+                    localAuth.getLastname(),
+                    localAuth.getEmail(),
+                    localAuth.getPassword(),
+                    localAuth.getBirthdate(),
+                    localAuth.getDocument(),
+                    localAuth.getPhone(),
+                    localAuth.getAddress(),
+                    localAuth.getDocType(),
+                    localAuth.getLanguage(),      // idioma aún vacío
+                    localAuth.getActivities(),    // actividades aún vacías
+                    photoUri                      // nueva foto
+            );
 
-            // ➡️ Siguiente pantalla: intereses e idiomas
+            Toast.makeText(this, "Perfil guardado correctamente", Toast.LENGTH_SHORT).show();
+
+            // ➡️ Siguiente pantalla: selección de idioma o intereses
             Intent i = new Intent(this, com.example.puriqtours.onboarding.InterestsOnboardingActivity.class);
             startActivity(i);
             finish();

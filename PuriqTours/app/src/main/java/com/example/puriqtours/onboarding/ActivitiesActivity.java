@@ -32,24 +32,35 @@ public class ActivitiesActivity extends AppCompatActivity {
             ArrayList<String> sel = new ArrayList<>();
             for (int i = 0; i < grpActivities.getChildCount(); i++) {
                 View c = grpActivities.getChildAt(i);
-                if (c instanceof Chip && ((Chip) c).isChecked()) {
-                    sel.add(((Chip) c).getText().toString());
+                if (c instanceof com.google.android.material.chip.Chip && ((com.google.android.material.chip.Chip) c).isChecked()) {
+                    sel.add(((com.google.android.material.chip.Chip) c).getText().toString());
                 }
             }
 
             // ✅ Guardar selección de actividades en LocalAuth
             com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(this);
             String activities = android.text.TextUtils.join(", ", sel);
-            localAuth.saveProfile(
-                    localAuth.getNickname(),
-                    localAuth.getLanguage(),
-                    activities,               // guarda las actividades elegidas
+
+            // Guardamos con todos los datos anteriores + nuevas actividades
+            localAuth.saveUser(
+                    localAuth.getName(),
+                    localAuth.getLastname(),
+                    localAuth.getEmail(),
+                    localAuth.getPassword(),
+                    localAuth.getBirthdate(),
+                    localAuth.getDocument(),
+                    localAuth.getPhone(),
+                    localAuth.getAddress(),
+                    localAuth.getDocType(),
+                    localAuth.getLanguage(),  // mantenemos idioma
+                    activities,               // ✅ nuevas actividades
                     localAuth.getPhotoUri()
             );
 
-            // Guardar simple (tu parte original)
+            // Guardar copia en SharedPreferences (opcional)
             getSharedPreferences("onboarding", MODE_PRIVATE)
-                    .edit().putString("activities_list", android.text.TextUtils.join(",", sel))
+                    .edit()
+                    .putString("activities_list", android.text.TextUtils.join(",", sel))
                     .apply();
 
             Toast.makeText(this, "Intereses guardados (" + sel.size() + ")", Toast.LENGTH_SHORT).show();
@@ -61,6 +72,5 @@ public class ActivitiesActivity extends AppCompatActivity {
             ));
             finish();
         });
-
     }
 }

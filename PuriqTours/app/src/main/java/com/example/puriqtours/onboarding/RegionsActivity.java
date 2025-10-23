@@ -55,10 +55,20 @@ public class RegionsActivity extends AppCompatActivity {
             // ✅ Guardar selección de regiones en LocalAuth
             com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(this);
             String regions = TextUtils.join(", ", sel);
-            localAuth.saveProfile(
-                    localAuth.getNickname(),
-                    localAuth.getLanguage(),
-                    regions,                 // guarda las regiones elegidas
+
+            // Guardamos las regiones/intereses junto con los datos existentes
+            localAuth.saveUser(
+                    localAuth.getName(),
+                    localAuth.getLastname(),
+                    localAuth.getEmail(),
+                    localAuth.getPassword(),
+                    localAuth.getBirthdate(),
+                    localAuth.getDocument(),
+                    localAuth.getPhone(),
+                    localAuth.getAddress(),
+                    localAuth.getDocType(),
+                    localAuth.getLanguage(),  // mantenemos el idioma guardado previamente
+                    regions,                  // ✅ nuevo campo: regiones/actividades seleccionadas
                     localAuth.getPhotoUri()
             );
 

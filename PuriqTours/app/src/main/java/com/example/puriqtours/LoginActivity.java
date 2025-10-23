@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         // 🔹 Instancia de almacenamiento local
         LocalAuth localAuth = new LocalAuth(this);
 
-        // ✅ Si ya hay usuario guardado, saltar directamente al Home
+        // ✅ Si ya hay sesión activa, ir directo al perfil
         if (localAuth.isLogged()) {
             Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -75,20 +75,16 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // ✅ Validar con los datos guardados localmente
+            // ✅ Validar credenciales
             String savedEmail = localAuth.getEmail();
             String savedPass = localAuth.getPassword();
 
             if (correo.equals(savedEmail) && pass.equals(savedPass)) {
-                // Guarda estado de sesión activa
-                localAuth.saveUser(
-                        savedEmail,
-                        savedPass,
-                        localAuth.getName(),
-                        localAuth.getLastname()
-                );
+                // Guardar estado de sesión activa
+                localAuth.setLogged(true);
 
                 Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+
                 Intent i = new Intent(LoginActivity.this, ProfileActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);

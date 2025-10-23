@@ -71,20 +71,28 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> {
             if (!validateForm()) return;
 
-            // Guarda datos del usuario localmente
+            // ✅ Guardar datos básicos del usuario (sin contraseña aún)
             LocalAuth localAuth = new LocalAuth(this);
             localAuth.saveUser(
-                    etEmail.getText().toString(),
-                    "",  // contraseña todavía no
-                    etName.getText().toString(),
-                    etLastName.getText().toString()
+                    etName.getText().toString(),                     // nombre
+                    etLastName.getText().toString(),                 // apellido
+                    etEmail.getText().toString(),                    // correo
+                    "",                                              // contraseña todavía no
+                    etBirthDate.getText().toString(),                // fecha de nacimiento
+                    etDocumentNumber.getText().toString(),           // documento
+                    etPhone.getText().toString(),                    // teléfono
+                    etAddress.getText().toString(),                  // dirección
+                    spnDocumentType.getSelectedItem().toString(),    // tipo de documento
+                    "",                                              // idioma (se completará luego)
+                    "",                                              // actividades (se completará luego)
+                    ""                                               // fotoUri (se completará luego)
             );
 
+            // Ir a crear contraseña
             Intent i = new Intent(RegisterActivity.this, SetPasswordActivity.class);
             startActivity(i);
             finish();
         });
-
     }
 
     private boolean validateForm() {
@@ -152,6 +160,3 @@ public class RegisterActivity extends AppCompatActivity {
         return Math.round(dp * d);
     }
 }
-
-
-

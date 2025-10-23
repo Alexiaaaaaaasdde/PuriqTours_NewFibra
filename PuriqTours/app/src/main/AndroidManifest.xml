@@ -44,6 +44,12 @@
         <activity android:name=".TempPasswordActivity" />
         <activity android:name=".ResetPasswordActivity" />
 
+        <activity android:name=".ProfileActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PuriqTours"/>
+
+
         <!-- 🔹 Navegación principal -->
         <activity android:name=".ToursActivity" android:exported="false" />
         <activity android:name=".HistorialActivity" android:exported="false" />

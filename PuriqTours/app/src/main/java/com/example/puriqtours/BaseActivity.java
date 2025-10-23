@@ -20,6 +20,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createNotificationChannel();
     }
 
     // 👇 Llamar esto en cada Activity hija después de setContentView()
@@ -58,4 +59,19 @@ public abstract class BaseActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
         }
     }
+
+    // 🔹 Crear canal de notificaciones (solo se ejecuta 1 vez)
+    protected void createNotificationChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            android.app.NotificationChannel channel = new android.app.NotificationChannel(
+                    "puriqtours_channel", // ID del canal
+                    "Reservas PuriqTours", // Nombre visible
+                    android.app.NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("Notificaciones sobre reservas y pagos de tours");
+            android.app.NotificationManager manager = getSystemService(android.app.NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+
 }

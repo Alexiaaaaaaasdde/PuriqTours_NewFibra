@@ -62,13 +62,22 @@ public class SetPasswordActivity extends AppCompatActivity {
             // ✅ Guardar la contraseña real en almacenamiento local (SharedPreferences)
             // Guarda la contraseña real
             LocalAuth localAuth = new LocalAuth(this);
-            String passReal = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
+            // Guardamos la contraseña en los datos existentes
             localAuth.saveUser(
-                    localAuth.getEmail(),
-                    passReal,
                     localAuth.getName(),
-                    localAuth.getLastname()
+                    localAuth.getLastname(),
+                    localAuth.getEmail(),
+                    etPassword.getText().toString(),   // ahora sí la contraseña real
+                    localAuth.getBirthdate(),
+                    localAuth.getDocument(),
+                    localAuth.getPhone(),
+                    localAuth.getAddress(),
+                    localAuth.getDocType(),
+                    localAuth.getLanguage(),              // o "" si aún no eligió idioma
+                    localAuth.getActivities(),            // o "" si aún no eligió actividades
+                    localAuth.getPhotoUri()
             );
+
 
             Toast.makeText(this, "Contraseña guardada correctamente", Toast.LENGTH_SHORT).show();
 
