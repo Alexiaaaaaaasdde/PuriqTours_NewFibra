@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.puriqtours.model.Tour;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -39,6 +41,9 @@ public class CreateTourActivity extends AppCompatActivity {
     // Calendario para fecha
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
+    
+    // Storage helper para guardar el tour
+    private StorageHelper storageHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,7 @@ public class CreateTourActivity extends AppCompatActivity {
         serviciosExtra = new ArrayList<>();
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        storageHelper = new StorageHelper(this);
 
         // Configurar toolbar
         setupToolbar();
@@ -292,15 +298,103 @@ public class CreateTourActivity extends AppCompatActivity {
 
     private void createTour() {
         if (validateForm()) {
-            // Aquí procesarías los datos del tour
-            Toast.makeText(this, "Tour creado exitosamente", Toast.LENGTH_SHORT).show();
+            // Recopilar datos del formulario
+            String nombreTour = getFirstLocationName(); // Usar primera ubicación como nombre
+            String destino = getDestinationSummary(); // Resumen de ubicaciones
+            String descripcion = getDescriptionSummary(); // Resumen de actividades
+            String fecha = etFechaTour.getText().toString() + " • " + etDuracion.getText().toString();
+            double precio = Double.parseDouble(etCosto.getText().toString());
             
-            // Retornar a ToursActivity con resultado
+            // Generar nuevo ID único
+            int newId = (int) System.currentTimeMillis();
+            
+            // Crear objeto Tour
+            Tour nuevoTour = new Tour(
+                newId,
+                nombreTour,
+                destino,
+                descripcion,
+                fecha,
+                android.R.drawable.ic_menu_gallery, // Imagen por defecto
+                precio,
+                1, // Duración en días por defecto
+                "" // Sin guía asignado inicialmente
+            );
+            
+            // Guardar en storage local
+            storageHelper.addTour(nuevoTour);
+            
+            Toast.makeText(this, "¡Tour creado exitosamente!", Toast.LENGTH_SHORT).show();
+            
+            // Retornar a ToursActivity con datos del tour creado
             Intent resultIntent = new Intent();
             resultIntent.putExtra("tour_created", true);
+            resultIntent.putExtra("tour_name", nombreTour);
+            resultIntent.putExtra("tour_destination", destino);
             setResult(RESULT_OK, resultIntent);
             finish();
         }
+    }
+    
+    private String getFirstLocationName() {
+        if (layoutUbicaciones.getChildCount() > 0) {
+            View firstLocation = layoutUbicaciones.getChildAt(0);
+            EditText etNombre = firstLocation.findViewById(R.id.etNombreUbicacion);
+            String nombre = etNombre.getText().toString().trim();
+            return nombre.isEmpty() ? "Tour personalizado" : "Tour " + nombre;
+        }
+        return "Tour personalizado";
+    }
+    
+    private String getDestinationSummary() {
+        StringBuilder destinos = new StringBuilder();
+        int count = Math.min(2, layoutUbicaciones.getChildCount()); // Máximo 2 ubicaciones en resumen
+        
+        for (int i = 0; i < count; i++) {
+            View child = layoutUbicaciones.getChildAt(i);
+            EditText etNombre = child.findViewById(R.id.etNombreUbicacion);
+            String nombre = etNombre.getText().toString().trim();
+            
+            if (!nombre.isEmpty()) {
+                if (destinos.length() > 0) {
+                    destinos.append(", ");
+                }
+                destinos.append(nombre);
+            }
+        }
+        
+        if (layoutUbicaciones.getChildCount() > 2) {
+            destinos.append(" y ").append(layoutUbicaciones.getChildCount() - 2).append(" más");
+        }
+        
+        return destinos.length() > 0 ? destinos.toString() : "Múltiples destinos";
+    }
+    
+    private String getDescriptionSummary() {
+        StringBuilder descripcion = new StringBuilder();
+        
+        // Agregar información de servicios
+        if (!serviciosExtra.isEmpty()) {
+            descripcion.append("Incluye ").append(serviciosExtra.size()).append(" servicio(s) extra. ");
+        }
+        
+        // Agregar primera actividad como ejemplo
+        if (layoutUbicaciones.getChildCount() > 0) {
+            View firstLocation = layoutUbicaciones.getChildAt(0);
+            EditText etActividades = firstLocation.findViewById(R.id.etActividadesUbicacion);
+            String actividades = etActividades.getText().toString().trim();
+            
+            if (!actividades.isEmpty()) {
+                descripcion.append(actividades.length() > 100 ? 
+                    actividades.substring(0, 97) + "..." : actividades);
+            }
+        }
+        
+        if (descripcion.length() == 0) {
+            descripcion.append("Tour personalizado con actividades únicas");
+        }
+        
+        return descripcion.toString();
     }
 
     private boolean validateForm() {

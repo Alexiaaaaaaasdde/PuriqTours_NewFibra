@@ -10,8 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -21,6 +24,8 @@ public class ChatActivity extends AppCompatActivity {
     private ChatMessageAdapter chatMessageAdapter;
     private List<ChatMessage> mensajes;
     private TextView tvClientName, tvTourName;
+    private StorageHelper storageHelper;
+    private String chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +35,13 @@ public class ChatActivity extends AppCompatActivity {
         // Recibir datos del intent
         String clientName = getIntent().getStringExtra("client_name");
         String tourName = getIntent().getStringExtra("tour_name");
-        int chatId = getIntent().getIntExtra("chat_id", 0);
+        chatId = getIntent().getStringExtra("chat_id");
+        if (chatId == null) {
+            chatId = String.valueOf(getIntent().getIntExtra("chat_id", 0));
+        }
+
+        // Inicializar storage
+        storageHelper = new StorageHelper(this);
 
         // Inicializar vistas
         initViews();
@@ -38,8 +49,8 @@ public class ChatActivity extends AppCompatActivity {
         // Configurar información del chat
         setupChatInfo(clientName, tourName);
         
-        // Crear mensajes de ejemplo
-        createSampleMessages(clientName);
+        // Cargar mensajes desde storage
+        loadChatMessages();
         
         // Configurar RecyclerView
         setupRecyclerView();
@@ -67,17 +78,21 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    private void loadChatMessages() {
+        mensajes = storageHelper.loadChatMessages(chatId);
+    }
+
     private void createSampleMessages(String clientName) {
         mensajes = new ArrayList<>();
         
         // Mensajes de simulación
         String nombreCliente = clientName != null ? clientName : "Cliente";
         
-        mensajes.add(new ChatMessage(nombreCliente + ": Hola, tengo una consulta sobre el tour", false));
-        mensajes.add(new ChatMessage("Tú: ¡Hola! Estoy aquí para ayudarte. ¿Cuál es tu consulta?", true));
-        mensajes.add(new ChatMessage(nombreCliente + ": ¿A qué hora debemos llegar al punto de encuentro?", false));
-        mensajes.add(new ChatMessage("Tú: El punto de encuentro es a las 7:00 AM en la Plaza de Armas", true));
-        mensajes.add(new ChatMessage(nombreCliente + ": Perfecto, ¿necesito llevar algo especial?", false));
+        mensajes.add(new ChatMessage(nombreCliente + ": Hola, tengo una consulta sobre el tour", false, "10:20"));
+        mensajes.add(new ChatMessage("Tú: ¡Hola! Estoy aquí para ayudarte. ¿Cuál es tu consulta?", true, "10:21"));
+        mensajes.add(new ChatMessage(nombreCliente + ": ¿A qué hora debemos llegar al punto de encuentro?", false, "10:22"));
+        mensajes.add(new ChatMessage("Tú: El punto de encuentro es a las 7:00 AM en la Plaza de Armas", true, "10:23"));
+        mensajes.add(new ChatMessage(nombreCliente + ": Perfecto, ¿necesito llevar algo especial?", false, "10:24"));
     }
 
     private void setupRecyclerView() {
@@ -99,7 +114,12 @@ public class ChatActivity extends AppCompatActivity {
         btnSend.setOnClickListener(v -> {
             String msg = etMensaje.getText().toString().trim();
             if (!msg.isEmpty()) {
-                mensajes.add(new ChatMessage("Tú: " + msg, true));
+                String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                ChatMessage newMessage = new ChatMessage(msg, true, currentTime);
+                
+                mensajes.add(newMessage);
+                storageHelper.addChatMessage(chatId, newMessage);
+                
                 chatMessageAdapter.notifyItemInserted(mensajes.size() - 1);
                 recyclerChat.scrollToPosition(mensajes.size() - 1);
                 etMensaje.setText("");
@@ -116,14 +136,17 @@ public class ChatActivity extends AppCompatActivity {
     public static class ChatMessage {
         private String message;
         private boolean isFromAdmin;
+        private String time;
 
-        public ChatMessage(String message, boolean isFromAdmin) {
+        public ChatMessage(String message, boolean isFromAdmin, String time) {
             this.message = message;
             this.isFromAdmin = isFromAdmin;
+            this.time = time;
         }
 
         public String getMessage() { return message; }
         public boolean isFromAdmin() { return isFromAdmin; }
+        public String getTime() { return time; }
     }
 
     // Adapter simple para mensajes

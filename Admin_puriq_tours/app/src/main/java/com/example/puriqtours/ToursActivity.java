@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.adapter.TourAdapter;
 import com.example.puriqtours.model.Tour;
+import com.example.puriqtours.StorageHelper;
+import com.example.puriqtours.NotificationHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -35,6 +37,8 @@ public class ToursActivity extends AppCompatActivity {
     private Button btnFiltrar;
     private FloatingActionButton fabCrearTour;
     private TextInputEditText searchBar;
+    private StorageHelper storageHelper;
+    private NotificationHelper notificationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,15 @@ public class ToursActivity extends AppCompatActivity {
         // Configurar bottom navigation
         setupBottomNavigation();
     }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refrescar la lista cuando se regrese a esta actividad
+        if (storageHelper != null && tourAdapter != null) {
+            refreshToursList();
+        }
+    }
 
     private void initViews() {
         recyclerViewTours = findViewById(R.id.recyclerViewTours);
@@ -65,12 +78,11 @@ public class ToursActivity extends AppCompatActivity {
     }
 
     private void createSampleData() {
-        tourList = new ArrayList<>();
-        tourList.add(new Tour(1, "Tour número 1", "Cusco", "Guía asignado correctamente", "Hoy • 3 h", R.drawable.kuelap, 150.0, 1, "Juan Pérez"));
-        tourList.add(new Tour(2, "Tour número 2", "Lima", "Se requiere guía para un tour...", "Mañana • 3 h", R.drawable.kuelap, 200.0, 1, ""));
-        tourList.add(new Tour(3, "Tour número 3", "Cusco", "Esperando a respuesta de guía", "23/08/2026 • 3 h", R.drawable.kuelap, 180.0, 1, ""));
-        tourList.add(new Tour(4, "Tour número 4", "Cusco", "Guía asignado correctamente", "Hoy • 3 h", R.drawable.kuelap, 220.0, 1, "Ana Torres"));
-        tourList.add(new Tour(5, "Tour número 5", "Arequipa", "Se requiere guía para un tour...", "Mañana • 3 h", R.drawable.kuelap, 170.0, 1, ""));
+        storageHelper = new StorageHelper(this);
+        notificationHelper = new NotificationHelper(this);
+        
+        // Cargar tours desde SharedPreferences
+        tourList = storageHelper.loadTours();
     }
 
     private void setupRecyclerView() {
@@ -218,14 +230,37 @@ public class ToursActivity extends AppCompatActivity {
         if (requestCode == 100 && resultCode == RESULT_OK) {
             if (data != null && data.getBooleanExtra("tour_created", false)) {
                 Toast.makeText(this, "¡Tour creado exitosamente!", Toast.LENGTH_LONG).show();
-                // Aquí podrías actualizar la lista de tours o recargar los datos
-                // refreshToursList();
+                
+                // Obtener datos del tour creado
+                String tourName = data.getStringExtra("tour_name");
+                String destination = data.getStringExtra("tour_destination");
+                
+                // Mostrar notificación
+                if (tourName != null && destination != null) {
+                    notificationHelper.notifyTourCreated(tourName, destination);
+                }
+                
+                // Recargar la lista de tours
+                refreshToursList();
             }
         } else if (requestCode == 200 && resultCode == RESULT_OK) {
             if (data != null && data.getBooleanExtra("tour_updated", false)) {
                 Toast.makeText(this, "¡Tour actualizado exitosamente!", Toast.LENGTH_LONG).show();
-                // Aquí podrías actualizar la lista de tours o recargar los datos
-                // refreshToursList();
+                // Recargar la lista de tours
+                refreshToursList();
+            }
+        }
+    }
+    
+    private void refreshToursList() {
+        if (storageHelper != null && tourAdapter != null) {
+            tourList = storageHelper.loadTours();
+            tourAdapter.updateTours(tourList);
+            
+            // Log para debug
+            System.out.println("DEBUG: Tours cargados: " + tourList.size());
+            for (Tour tour : tourList) {
+                System.out.println("DEBUG: Tour - " + tour.getName() + " | " + tour.getLocation());
             }
         }
     }

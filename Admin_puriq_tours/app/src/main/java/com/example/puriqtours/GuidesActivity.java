@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.adapter.GuideAdapter;
 import com.example.puriqtours.model.Guide;
+import com.example.puriqtours.StorageHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -33,6 +34,8 @@ public class GuidesActivity extends AppCompatActivity {
     private List<Guide> guideList;
     private Button btnFiltrar;
     private TextInputEditText etBuscar;
+    private StorageHelper storageHelper;
+    private NotificationHelper notificationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +72,11 @@ public class GuidesActivity extends AppCompatActivity {
     }
 
     private void createSampleData() {
-        guideList = new ArrayList<>();
-        guideList.add(new Guide(1, "Nassim Ahmed", "Cusco", 5, true, R.drawable.avatar));
-        guideList.add(new Guide(2, "Carlos Mendoza", "Cusco", 4, false, R.drawable.avatar));
-        guideList.add(new Guide(3, "Ana Torres", "Cusco", 5, true, R.drawable.avatar));
-        guideList.add(new Guide(4, "Pedro Silva", "Cusco", 5, true, R.drawable.avatar));
-        guideList.add(new Guide(5, "María Quispe", "Cusco", 4, false, R.drawable.avatar));
+        storageHelper = new StorageHelper(this);
+        notificationHelper = new NotificationHelper(this);
+        
+        // Cargar guías desde SharedPreferences
+        guideList = storageHelper.loadGuides();
     }
 
     private void setupRecyclerView() {
@@ -84,12 +86,16 @@ public class GuidesActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Icono de notificaciones en toolbar
+        // Icono de notificaciones en toolbar (simular propuesta a guía)
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                // TODO: Implementar vista de notificaciones
-                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
+                // Simular propuesta de tour a guía seleccionado
+                if (!guideList.isEmpty()) {
+                    Guide randomGuide = guideList.get((int) (Math.random() * guideList.size()));
+                    notificationHelper.notifyTourProposedToGuide("Tour Machu Picchu", randomGuide.getName(), "Cusco");
+                    Toast.makeText(this, "Simulando propuesta de tour a " + randomGuide.getName(), Toast.LENGTH_SHORT).show();
+                }
             });
         }
 

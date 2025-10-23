@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.adapter.ChatAdapter;
 import com.example.puriqtours.model.Chat;
+import com.example.puriqtours.StorageHelper;
+import com.example.puriqtours.NotificationHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -25,6 +27,8 @@ public class ChatListActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
     private List<Chat> chatList;
     private TextInputEditText searchBar;
+    private StorageHelper storageHelper;
+    private NotificationHelper notificationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +57,11 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     private void createSampleData() {
-        chatList = new ArrayList<>();
-        chatList.add(new Chat(1, "María González", "Hola, tengo una consulta sobre el tour", "10:30", true, 2, "Tour Machu Picchu"));
-        chatList.add(new Chat(2, "Carlos Mendoza", "¿A qué hora es el punto de encuentro?", "09:15", true, 1, "Tour Kuelap"));
-        chatList.add(new Chat(3, "Ana Torres", "Gracias por la información", "Ayer", false, 0, "Tour Lima Colonial"));
-        chatList.add(new Chat(4, "Pedro Silva", "¿Puedo reprogramar mi tour?", "08:45", true, 3, "Tour Arequipa"));
-        chatList.add(new Chat(5, "Lucía Ramírez", "Perfecto, nos vemos mañana", "Lunes", false, 0, "Tour Cusco"));
+        storageHelper = new StorageHelper(this);
+        notificationHelper = new NotificationHelper(this);
+        
+        // Cargar chats desde SharedPreferences
+        chatList = storageHelper.loadChats();
     }
 
     private void setupRecyclerView() {
@@ -76,7 +79,10 @@ public class ChatListActivity extends AppCompatActivity {
 
             @Override
             public void onDeleteChat(Chat chat, int position) {
-                // Eliminar chat de la lista
+                // Eliminar chat del storage
+                storageHelper.deleteChat(chat.getId());
+                
+                // Eliminar chat de la lista visual
                 chatAdapter.removeChat(position);
                 Toast.makeText(ChatListActivity.this, 
                     "Chat con " + chat.getClientName() + " eliminado", 
@@ -89,11 +95,13 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Icono de notificaciones en toolbar
+        // Icono de notificaciones en toolbar (ahora con simulación)
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
+                // Simular llegada de mensaje para demostración
+                notificationHelper.simulateIncomingMessage();
+                Toast.makeText(this, "Simulando llegada de mensaje...", Toast.LENGTH_SHORT).show();
             });
         }
 
