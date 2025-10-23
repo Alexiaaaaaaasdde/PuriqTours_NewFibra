@@ -44,7 +44,12 @@
             android:numStars="5"
             android:stepSize="1"
             android:rating="0"
-            android:progressTint="@color/teal_700"/>
+            android:isIndicator="false"
+            android:clickable="true"
+            android:focusable="true"
+            app:progressTint="@color/teal_700"
+            app:secondaryProgressTint="@color/teal_200"
+            app:progressBackgroundTint="@color/teal_50" />
 
         <TextView
             android:text="¿El tour cumplió ofreciendo todos sus servicios?"
@@ -60,7 +65,13 @@
             android:numStars="5"
             android:stepSize="1"
             android:rating="0"
-            android:progressTint="@color/teal_700"/>
+            android:isIndicator="false"
+            android:clickable="true"
+            android:focusable="true"
+            app:progressTint="@color/teal_700"
+            app:secondaryProgressTint="@color/teal_200"
+            app:progressBackgroundTint="@color/teal_50"
+            />
 
         <!-- Caja de comentarios -->
         <EditText
@@ -98,7 +109,13 @@
             android:numStars="5"
             android:stepSize="1"
             android:rating="0"
-            android:progressTint="@color/teal_700"/>
+            android:isIndicator="false"
+            android:clickable="true"
+            android:focusable="true"
+            app:progressTint="@color/teal_700"
+            app:secondaryProgressTint="@color/teal_200"
+            app:progressBackgroundTint="@color/teal_50"
+            />
 
         <!-- Botón enviar -->
         <Button

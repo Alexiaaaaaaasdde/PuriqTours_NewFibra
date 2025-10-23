@@ -6,7 +6,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.widget.RatingBar;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ValoracionActivity extends AppCompatActivity {
@@ -15,9 +16,25 @@ public class ValoracionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valoracion);
 
-        // Botón enviar valoración (dentro del formulario)
+        // Referencias a los RatingBars
+        RatingBar ratingTour = findViewById(R.id.ratingExpectativasTour);
+        RatingBar ratingServicios = findViewById(R.id.ratingServiciosTour);
+        RatingBar ratingGuia = findViewById(R.id.ratingGuia);
+
+        // Botón enviar valoración
         Button btnEnviar = findViewById(R.id.btnEnviarValoracion);
         btnEnviar.setOnClickListener(v -> {
+            // 🔹 Capturar las valoraciones
+            float estrellasTour = ratingTour.getRating();
+            float estrellasServicios = ratingServicios.getRating();
+            float estrellasGuia = ratingGuia.getRating();
+
+            // 🔹 Mostrar en un Toast (solo para prueba visual)
+            Toast.makeText(this,
+                    "Tour: " + estrellasTour + "★ | Servicios: " + estrellasServicios + "★ | Guía: " + estrellasGuia + "★",
+                    Toast.LENGTH_LONG).show();
+
+            // 🔹 Mostrar popup de confirmación
             mostrarPopupConfirmacion();
         });
     }
