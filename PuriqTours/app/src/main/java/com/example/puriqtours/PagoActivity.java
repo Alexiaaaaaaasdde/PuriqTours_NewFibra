@@ -12,6 +12,11 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import android.app.PendingIntent;
+import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -39,7 +44,7 @@ public class PagoActivity extends AppCompatActivity {
         if (viajeros != null) tvViajerosPago.setText("Viajeros: " + viajeros);
         if (precio != null) tvPrecioPago.setText("Total: " + precio);
         if (hora != null) tvHoraPago.setText("Hora: " + hora);
-// 🔹 Configurar navegación inferior
+        // 🔹 Configurar navegación inferior
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.setSelectedItemId(R.id.nav_tours); // seleccionamos por defecto "Tours"
 
@@ -84,10 +89,8 @@ public class PagoActivity extends AppCompatActivity {
             btnConfirmar.setEnabled(false);
             btnConfirmar.setAlpha(0.5f);
             btnConfirmar.setOnClickListener(_view -> {
-                // Cierra el dialogo de tarjeta
                 dialogTarjeta.dismiss();
 
-                // Abre el popup de reserva registrada
                 Dialog dialogReserva = new Dialog(PagoActivity.this);
                 dialogReserva.setContentView(R.layout.dialog_reserva_registrada);
                 dialogReserva.getWindow().setLayout(
@@ -98,23 +101,51 @@ public class PagoActivity extends AppCompatActivity {
                         new ColorDrawable(android.graphics.Color.TRANSPARENT)
                 );
 
-                // Botón cerrar del popup
                 Button btnClose = dialogReserva.findViewById(R.id.btnCloseReserva);
-                btnClose.setOnClickListener(view -> dialogReserva.dismiss());
                 btnClose.setOnClickListener(view -> {
                     dialogReserva.dismiss();
 
-                    // 👉 Redirigir a la lista de tours (MainActivity o la que uses)
+                    // 👉 Redirigir a la lista de tours
                     Intent intent = new Intent(PagoActivity.this, ToursActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
-                    // Opcional: cerrar PagoActivity para que no regrese con "back"
                     finish();
                 });
 
+                // 🔔 Mostrar notificación de reserva registrada
+                Intent notifIntent = new Intent(PagoActivity.this, HistorialActivity.class);
+                notifIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        PagoActivity.this, 0, notifIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(PagoActivity.this, "puriqtours_channel")
+                        .setSmallIcon(R.drawable.ic_check_circle)
+                        .setContentTitle("Reserva registrada")
+                        .setContentText("Tu reserva fue registrada con éxito. Revisa tu historial 🏞️")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent);
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(PagoActivity.this);
+
+                // 🔹 Verificar permiso en Android 13+ (API 33)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                            != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                        // Si no está permitido, pedirlo
+                        requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+                        return; // salir para no lanzar notificación sin permiso
+                    }
+                }
+
+                // ✅ Mostrar notificación
+                notificationManager.notify(1001, builder.build());
                 dialogReserva.show();
             });
+
 
             // 🔹 Método para validar todos los campos
             Runnable validarCampos = () -> {
@@ -150,8 +181,6 @@ public class PagoActivity extends AppCompatActivity {
             etPostal.addTextChangedListener(watcher);
 
             validarCampos.run(); // ✅ valida al inicio
-
-
 
             dialogTarjeta.show();
         });
