@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@android:color/white">
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detalles del tour -->"
+            android:textStyle="bold"
+            android:textColor="@color/teal_700"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/box_bg"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hora de inicio del tour:"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="#2B746C"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8:00 AM"
+                android:textSize="14sp"
+                android:textColor="#2B746C"/>
+        </LinearLayout>
+        <!-- Costo -->
+
+
+        <!-- Idiomas -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/box_bg"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2B746C"
+            android:text="Idiomas ofrecidos:"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2B746C"
+            android:text="Español - Inglés"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+    </LinearLayout>
+        <!-- Fecha -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/box_bg"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2B746C"
+            android:text="Fecha del tour:"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2B746C"
+            android:text="Marzo 15, 2025"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+    </LinearLayout>
+        <!-- Servicios extra -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/box_bg"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2B746C"
+            android:text="Servicios extra:"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2B746C"
+            android:text="- Desayuno: Desayuno típico de la ciudad (30 soles por persona)"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pancito" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2B746C"
+            android:text="- Equipo de canotaje (full chow)"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/equipo" />
+
+
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/box_bg"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp">
+
+            <!-- Título -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ruta:"
+                android:textStyle="bold"
+                android:textColor="#2B746C"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Imagen del mapa -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ruta"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Ubicación 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_location"
+                    android:layout_marginEnd="6dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ubicación 1"
+                    android:textColor="#2B746C"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_caminata"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Caminata"
+                    android:textColor="#2B746C"/>
+            </LinearLayout>
+
+            <!-- Ubicación 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_location"
+                    android:layout_marginEnd="6dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ubicación 2"
+                    android:textColor="#2B746C"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_canotaje"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Canotaje"
+                    android:textColor="#2B746C"/>
+            </LinearLayout>
+
+            <!-- Ubicación 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_location"
+                    android:layout_marginEnd="6dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ubicación 3"
+                    android:textColor="#2B746C"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_almuerzo"
+                    android:layout_marginEnd="4dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Almuerzo"
+                    android:textColor="#2B746C"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!-- Contenedor de Servicios Extra -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/box_bg"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Servicios extra"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#2B746C"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@android:color/white">
+
+                <!-- Servicio: Desayuno -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Desayuno\ns/ 10"
+                        android:textColor="#2B746C"/>
+
+                    <ImageButton
+                        android:id="@+id/btnMenosDesayuno"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/rounded_button_bg"
+                        android:src="@drawable/ic_remove"
+                        android:scaleType="centerInside"
+                        android:layout_marginEnd="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvCantidadDesayuno"
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:textColor="#000"/>
+
+                    <ImageButton
+                        android:id="@+id/btnMasDesayuno"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/rounded_button_bg"
+                        android:src="@drawable/ic_add"
+                        android:scaleType="centerInside"
+                        android:layout_marginStart="4dp"/>
+                </LinearLayout>
+
+                <!-- Servicio: Canotaje -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Canotaje\ns/ 30"
+                        android:textColor="#2B746C"/>
+
+                    <ImageButton
+                        android:id="@+id/btnMenosCanotaje"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/rounded_button_bg"
+                        android:src="@drawable/ic_remove"
+                        android:scaleType="centerInside"
+                        android:layout_marginEnd="4dp"/>
+
+                    <TextView
+                        android:id="@+id/tvCantidadCanotaje"
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:textColor="#000"/>
+
+                    <ImageButton
+                        android:id="@+id/btnMasCanotaje"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/rounded_button_bg"
+                        android:src="@drawable/ic_add"
+                        android:scaleType="centerInside"
+                        android:layout_marginStart="4dp"/>
+                </LinearLayout>
+
+                <!-- Contenedor de botones finales -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="12dp">
+
+                    <Button
+                        android:id="@+id/btnAgregarExtras"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        android:backgroundTint="@color/teal_700"
+                        android:text="Agregar al Tour"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/btnSalir"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:backgroundTint="@color/teal_700"
+                        android:text="Salir"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>

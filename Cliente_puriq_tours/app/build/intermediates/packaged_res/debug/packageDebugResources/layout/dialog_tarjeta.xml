@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <!-- 🔹 Contenedor principal con bordes verdes -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/box_bg"
+        android:padding="20dp">
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detalles del pago"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#2B746C"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Nombre del titular -->
+        <EditText
+            android:id="@+id/etNombreTitular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del titular de la tarjeta"
+            android:inputType="textPersonName"
+            android:background="@drawable/box_bg"
+            android:padding="10dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Número de tarjeta -->
+        <EditText
+            android:id="@+id/etNumeroTarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="N.º de la tarjeta de crédito"
+            android:inputType="number"
+            android:maxLength="16"
+            android:background="@drawable/box_bg"             android:padding="10dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Fecha (MM/AA) y CVV -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <EditText
+                android:id="@+id/etMes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="MM"
+                android:inputType="number"
+                android:maxLength="2"
+                android:background="@drawable/box_bg"                 android:padding="10dp"
+                android:layout_marginEnd="6dp"/>
+
+            <EditText
+                android:id="@+id/etAno"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="AA"
+                android:inputType="number"
+                android:maxLength="2"
+                android:background="@drawable/box_bg"                 android:padding="10dp"
+                android:layout_marginEnd="6dp"/>
+
+            <EditText
+                android:id="@+id/etCvv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="CVV"
+                android:inputType="numberPassword"
+                android:maxLength="3"
+                android:background="@drawable/box_bg"                 android:padding="10dp"/>
+        </LinearLayout>
+
+        <!-- País -->
+        <EditText
+            android:id="@+id/etPais"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="País"
+            android:inputType="text"
+            android:background="@drawable/box_bg"             android:padding="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Código Postal -->
+        <EditText
+            android:id="@+id/etPostal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Código Postal"
+            android:inputType="number"
+            android:background="@drawable/box_bg"             android:padding="10dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Botón Confirmar -->
+        <Button
+            android:id="@+id/btnConfirmarPago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reservar ahora"
+            android:backgroundTint="#009688"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>
