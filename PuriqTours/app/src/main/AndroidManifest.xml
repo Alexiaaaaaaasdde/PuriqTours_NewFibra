@@ -96,15 +96,15 @@
             android:name=".ValoracionActivity"
             android:exported="false" />
         <activity android:name=".ReportsActivity" android:exported="false"/>
-        <activity android:name=".ProfileActivity" android:exported="false"/>
-        <activity android:name=".ToursActivity" android:exported="false"/>
+        <activity android:name=".ProfileAdminActivity" android:exported="false"/>
+        <activity android:name=".ToursAdminActivity" android:exported="false"/>
         <activity android:name=".CreateTourActivity" android:exported="false"/>
         <activity android:name=".TourDetailActivity" android:exported="false"/>
         <activity android:name=".EditTourActivity" android:exported="false"/>
         <activity android:name=".GuidesActivity" android:exported="false"/>
         <activity android:name=".GuideDetailActivity" android:exported="false"/>
         <activity android:name=".ChatListActivity" android:exported="false"/>
-        <activity android:name=".ChatActivity" android:exported="false"/>
+        <activity android:name=".ChatAdminActivity" android:exported="false"/>
     </application>
 
 </manifest>

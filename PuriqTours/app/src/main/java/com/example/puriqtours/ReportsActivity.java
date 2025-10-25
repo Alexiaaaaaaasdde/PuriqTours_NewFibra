@@ -32,7 +32,7 @@ public class ReportsActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_dashboard) {
-                    startActivity(new Intent(this, MainActivity.class));
+                    startActivity(new Intent(this, MainAdminActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (id == R.id.nav_reports) {
@@ -42,7 +42,7 @@ public class ReportsActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileActivity.class));
+                    startActivity(new Intent(this, ProfileAdminActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

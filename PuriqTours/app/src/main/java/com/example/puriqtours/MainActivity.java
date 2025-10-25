@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Admin → PrincipalActivity
         btnAdmin.setOnClickListener(v -> {
-            //Intent intent = new Intent(MainActivity.this, PrincipalActivity.class);
-            //startActivity(intent);
+            Intent intent = new Intent(MainActivity.this, MainAdminActivity.class);
+            startActivity(intent);
         });
 
         // Superadmin → pendiente

@@ -3,26 +3,26 @@ plugins {
 }
 
 android {
-    namespace = "com.example.puriqtours"
-    compileSdk = 36
+    namespace "com.example.puriqtours"
+    compileSdk 36
 
     defaultConfig {
-        applicationId = "com.example.puriqtours"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        applicationId "com.example.puriqtours"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
-        viewBinding = false
+        viewBinding false
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -30,8 +30,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
@@ -39,6 +39,7 @@ dependencies {
 
     implementation(libs.appcompat.v170)
     implementation(libs.material.v1120)
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation(libs.activity)
     implementation(libs.constraintlayout.v214)
     implementation(libs.recyclerview)

@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_profile_activity);
+        setContentView(R.layout.activity_profile_admin);
 
         // ✅ Ajuste automático con los bordes del sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
