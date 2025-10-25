@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -95,6 +95,16 @@
         <activity
             android:name=".ValoracionActivity"
             android:exported="false" />
+        <activity android:name=".ReportsActivity" android:exported="false"/>
+        <activity android:name=".ProfileActivity" android:exported="false"/>
+        <activity android:name=".ToursActivity" android:exported="false"/>
+        <activity android:name=".CreateTourActivity" android:exported="false"/>
+        <activity android:name=".TourDetailActivity" android:exported="false"/>
+        <activity android:name=".EditTourActivity" android:exported="false"/>
+        <activity android:name=".GuidesActivity" android:exported="false"/>
+        <activity android:name=".GuideDetailActivity" android:exported="false"/>
+        <activity android:name=".ChatListActivity" android:exported="false"/>
+        <activity android:name=".ChatActivity" android:exported="false"/>
     </application>
 
 </manifest>

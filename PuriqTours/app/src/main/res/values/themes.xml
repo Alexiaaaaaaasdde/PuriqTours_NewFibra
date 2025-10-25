@@ -59,5 +59,4 @@
         <!-- true = iconos oscuros (negros) para que se vean sobre el blanco -->
         <item name="android:windowLightStatusBar">true</item>
     </style>
-
 </resources>

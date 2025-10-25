@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetalleTourActivity">
+
+    <!-- 🔹 Toolbar superior -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#009688"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:title="Puriq Tours"
+        app:titleCentered="true"
+        app:navigationIcon="@drawable/ic_menu"
+        app:menu="@menu/top_app_bar_menu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Icono perfil -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/imagen_perfil"
+            app:shapeAppearanceOverlay="@style/RoundedImage"
+            app:strokeColor="@android:color/white"
+            app:strokeWidth="2dp"/>
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- 🔹 Contenido scrollable -->
+    <ScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 🔹 Título -->
+            <TextView
+                android:id="@+id/tvTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Ciudadela de Kuélap"
+                android:textColor="#2B746C"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <!-- 🔹 Rating -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:progressTint="@color/teal_700"
+                    android:rating="5"
+                    android:stepSize="0.5" />
+
+                <TextView
+                    android:id="@+id/tvOpiniones"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="(27 opiniones)"
+                    android:textColor="#2B746C"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvRecomendacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Recomendada por el 92% de los viajeros"
+                    android:textColor="#E53935"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- 🔹 Imagen -->
+            <ImageView
+                android:id="@+id/imgTour"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/kuelap" />
+
+            <!-- 🔹 Precio -->
+            <TextView
+                android:id="@+id/tvPreciokuelap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Desde S/ 165.02 por adulto"
+                android:textColor="#2B746C"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvSeleccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Seleccionar fechas y viajeros"
+                android:textColor="#2B746C"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- 🔹 Selección de fecha -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/box_bg"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/btnCalendario"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_calendar"
+                    app:tint="@color/teal_200" />
+
+
+                <TextView
+                    android:id="@+id/tvFecha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="#2B746C"
+                    android:text="Martes, 15 de Marzo de 2025"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 🔹 Selección de viajeros -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/box_bg"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_persons"
+                    app:tint="@color/teal_200" />
+
+                <TextView
+                    android:id="@+id/tvViajeros"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="#2B746C"
+                    android:text="2 adultos"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 🔹 Nota -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Reservar con anticipación. Esto se reserva con 9 días de anticipación en promedio."
+                android:textColor="#2B746C"
+                android:textSize="14sp" />
+
+            <!-- 🔹 Botón -->
+            <Button
+                android:id="@+id/btnDisponibilidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#009688"
+                android:text="Consultar disponibilidad"
+                android:textColor="@android:color/white" />
+
+            <!-- 🔹 Pregunta -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:textColor="#2B746C"
+                android:text="¿Tienes alguna pregunta sobre la reservación?"
+                android:textStyle="bold" />
+
+            <!-- 🔹 Contacto -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <!-- Teléfono -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_phone"
+                    app:tint="@color/teal_700"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:textColor="#2B746C"
+                    android:text="+51 909898909"
+                    android:textSize="16sp" />
+
+                <!-- Espaciado -->
+                <Space
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content" />
+
+                <!-- Chat -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_chat"
+                    app:tint="@color/teal_700"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:textColor="#2B746C"
+                    android:text="Chatear ahora"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 🔹 Opiniones de viajeros -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Por qué los viajeros prefieren este lugar"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#2B746C" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center">
+
+                <!-- Opinión 1 -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gonzalo C"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="#000" />
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:progressTint="@color/teal_700"
+                            android:rating="5"
+                            android:stepSize="0.5" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Escrito el 2 Julio del 2004"
+                            android:textSize="12sp"
+                            android:textColor="#666"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fue una gran experiencia poder visitar este sitio arqueológico, la experiencia fue muy profesional y estuvo divertido en todo momento."
+                            android:textSize="14sp"
+                            android:textColor="#333" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Opinión 2 -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Foxi L"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="#000" />
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:progressTint="@color/teal_700"
+                            android:rating="5"
+                            android:stepSize="0.5" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Escrito el 10 Agosto del 2010"
+                            android:textSize="12sp"
+                            android:textColor="#666"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Muy recomendado, el lugar es increíble y el servicio excelente, me gustaria volver a ir y poder disfrutar mas desas experiecnai asdadasdasdas."
+                            android:textSize="14sp"
+                            android:textColor="#333" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 🔹 Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:background="@android:color/white"
+        app:itemBackground="@android:color/transparent"
+        app:itemIconSize="70dp"
+        app:itemIconTint="@color/teal_700"
+        app:itemTextColor="@color/teal_700"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Tus colores personalizados -->
+    <color name="teal_700">#009688</color> <!-- Verde turquesa -->
+    <color name="teal_500">#009688</color>
+    <color name="teal_200">#009688</color>
+</resources>
