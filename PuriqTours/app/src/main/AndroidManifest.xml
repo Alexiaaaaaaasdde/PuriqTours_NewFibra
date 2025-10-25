@@ -4,6 +4,10 @@
     tools:ignore="CoarseFineLocation">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,76 +18,83 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.PuriqTours">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.PuriqTours.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SetupProfileActivity"
             android:exported="false" />
-
         <activity
             android:name=".SetPasswordActivity"
             android:exported="false"
             android:parentActivityName=".RegisterActivity" />
-
-        <activity android:name=".onboarding.InterestsOnboardingActivity"
-            android:exported="false"/>
-
+        <activity
+            android:name=".onboarding.InterestsOnboardingActivity"
+            android:exported="false" />
         <activity android:name=".onboarding.RegionsActivity" />
-
         <activity android:name=".onboarding.ActivitiesActivity" />
-
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".TempPasswordActivity" />
         <activity android:name=".ResetPasswordActivity" />
-
-        <activity android:name=".ProfileActivity"
+        <activity
+            android:name=".ProfileActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.PuriqTours"/>
-
+            android:theme="@style/Theme.PuriqTours" />
         <activity
-                android:name=".MainGuiaActivity"
-                android:exported="true"/>
+            android:name=".MainGuiaActivity"
+            android:exported="true" />
         <activity
-                android:name=".MapaTourActivity"
-                android:exported="false" />
+            android:name=".MapaTourActivity"
+            android:exported="false" />
         <activity
-                android:name=".IniciarTourActivity"
-                android:exported="true"
-                android:label="Iniciar Tour"
-                android:theme="@style/Theme.PuriqTours" />
-        <!-- 🔹 Navegación principal -->
-        <activity android:name=".ToursActivity" android:exported="false" />
-        <activity android:name=".HistorialActivity" android:exported="false" />
-        <!-- 🔹 Pantalla de login/entrada -->
+            android:name=".IniciarTourActivity"
+            android:exported="true"
+            android:label="Iniciar Tour"
+            android:theme="@style/Theme.PuriqTours" /> <!-- 🔹 Navegación principal -->
+        <activity
+            android:name=".ToursActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HistorialActivity"
+            android:exported="false" /> <!-- 🔹 Pantalla de login/entrada -->
         <!-- 🔹 Flujo de tours -->
-        <activity android:name=".DetalleTourActivity" android:exported="false" />
-        <activity android:name=".PagoActivity" android:exported="false" />
-        <!-- 🔹 Estados de tours -->
-        <activity android:name=".ReservadoActivity" android:exported="false" />
-        <activity android:name=".EnProcesoActivity" android:exported="false" />
-        <activity android:name=".FinalizadoActivity" android:exported="false" />
-        <activity android:name=".ChatActivity"/>
-
-        <!-- 🔹 Valoración -->
-        <activity android:name=".ValoracionActivity" android:exported="false" />
-
-
+        <activity
+            android:name=".DetalleTourActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PagoActivity"
+            android:exported="false" /> <!-- 🔹 Estados de tours -->
+        <activity
+            android:name=".ReservadoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EnProcesoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FinalizadoActivity"
+            android:exported="false" />
+        <activity android:name=".ChatActivity" /> <!-- 🔹 Valoración -->
+        <activity
+            android:name=".ValoracionActivity"
+            android:exported="false" />
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 </manifest>

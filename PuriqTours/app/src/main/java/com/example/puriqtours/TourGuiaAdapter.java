@@ -16,14 +16,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.puriqtours.entity.TourGuia;
+
 import java.util.List;
 
-public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder> {
+public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.TourViewHolder> {
 
     private FragmentManager fragmentManager;
-    private List<Tour> tours;
+    private List<TourGuia> tours;
 
-    public TourAdapter(List<Tour> tours, FragmentManager fragmentManager) {
+    public TourGuiaAdapter(List<TourGuia> tours, FragmentManager fragmentManager) {
         this.tours = tours;
         this.fragmentManager = fragmentManager;
     }
@@ -31,14 +33,14 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
     @NonNull
     @Override
     public TourViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View vista = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tour, parent, false);
+        View vista = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tour_guia, parent, false);
         return new TourViewHolder(vista);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull TourViewHolder holder, int position) {
-        Tour tour = tours.get(position);
+        TourGuia tour = tours.get(position);
 
         holder.tvTitulo.setText(tour.getTitulo());
         holder.tvDescripcionCorta.setText(tour.getDescripcion());

@@ -12,11 +12,11 @@ import com.example.puriqtours.entity.Tour;
 
 import java.util.List;
 
-public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder> {
+public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.TourViewHolder> {
 
     private List<Tour> tours;
 
-    public TourAdapter(List<Tour> tours) {
+    public TourClienteAdapter(List<Tour> tours) {
         this.tours = tours;
     }
 

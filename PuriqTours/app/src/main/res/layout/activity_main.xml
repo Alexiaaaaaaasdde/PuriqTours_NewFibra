@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/btnCliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cliente"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnGuia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guía"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Administrador"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnSuperadmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Superadmin"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp" />
+
+</LinearLayout>

@@ -27,9 +27,6 @@
     <color name="lightgreen">#A5EDD9</color>
     <color name="lightgray">#EFE8F2</color>
     <color name="darkgreen">#2B746C</color>
-    <color name="teal_200">#80CBC4</color>
-    <color name="teal_500">#009688</color>
-    <color name="teal_700">#00796B</color>
     <color name="red">#9B0505</color>
     <!-- éxito para el check del modal -->
     <color name="md_theme_success">@color/teal_button</color>

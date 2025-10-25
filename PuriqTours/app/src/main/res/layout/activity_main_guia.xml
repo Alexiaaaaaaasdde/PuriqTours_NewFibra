@@ -54,7 +54,7 @@
             app:itemIconTint="@color/bottom_nav_colors"
             app:itemTextColor="@color/bottom_nav_colors"
             app:rippleColor="@color/lightgreen"
-            app:menu="@menu/bottom_nav_menu" />
+            app:menu="@menu/bottom_nav_menu_guia" />
     </LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"

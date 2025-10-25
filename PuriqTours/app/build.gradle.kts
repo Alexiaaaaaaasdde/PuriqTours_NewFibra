@@ -37,21 +37,20 @@ android {
 
 dependencies {
 
-    implementation(libs.appcompat)
-    implementation(libs.material)
+    implementation(libs.appcompat.v170)
+    implementation(libs.material.v1120)
     implementation(libs.activity)
-    implementation(libs.constraintlayout)
+    implementation(libs.constraintlayout.v214)
     implementation(libs.recyclerview)
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.maps)
+    implementation(libs.core.splashscreen)
+    implementation(libs.viewpager2)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    implementation("org.osmdroid:osmdroid-android:6.1.18")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("com.google.android.material:material:1.12.0")
+
+
 }
