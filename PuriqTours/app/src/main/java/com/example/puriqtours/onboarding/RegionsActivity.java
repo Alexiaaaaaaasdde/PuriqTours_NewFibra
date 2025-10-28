@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.login.LocalAuth;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -53,7 +54,7 @@ public class RegionsActivity extends AppCompatActivity {
             if (chipOtherTown.isChecked() && !isEmpty(etOtherTown)) sel.add(etOtherTown.getText().toString().trim());
 
             // ✅ Guardar selección de regiones en LocalAuth
-            com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(this);
+            LocalAuth localAuth = new LocalAuth(this);
             String regions = TextUtils.join(", ", sel);
 
             // Guardamos las regiones/intereses junto con los datos existentes

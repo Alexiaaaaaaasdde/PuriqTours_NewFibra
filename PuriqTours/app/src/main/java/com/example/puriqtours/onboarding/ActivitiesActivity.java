@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.R;
-import com.google.android.material.chip.Chip;
+import com.example.puriqtours.login.LocalAuth;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class ActivitiesActivity extends AppCompatActivity {
             }
 
             // ✅ Guardar selección de actividades en LocalAuth
-            com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(this);
+            LocalAuth localAuth = new LocalAuth(this);
             String activities = android.text.TextUtils.join(", ", sel);
 
             // Guardamos con todos los datos anteriores + nuevas actividades
@@ -68,7 +68,7 @@ public class ActivitiesActivity extends AppCompatActivity {
             // ✅ Ir al perfil final
             startActivity(new android.content.Intent(
                     com.example.puriqtours.onboarding.ActivitiesActivity.this,
-                    com.example.puriqtours.ProfileActivity.class
+                    com.example.puriqtours.cliente.ProfileActivity.class
             ));
             finish();
         });

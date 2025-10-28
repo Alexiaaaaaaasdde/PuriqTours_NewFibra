@@ -13,26 +13,26 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
-import com.example.puriqtours.GuideDetailActivity;
-import com.example.puriqtours.model.Guide;
+import com.example.puriqtours.admin.GuideDetailActivity;
+import com.example.puriqtours.entity.GuideAdmin;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder> implements Filterable {
 
     private Context context;
-    private List<Guide> guideList;
-    private List<Guide> guideListFiltered;
+    private List<GuideAdmin> guideAdminList;
+    private List<GuideAdmin> guideAdminListFiltered;
     private OnGuideClickListener onGuideClickListener;
 
     public interface OnGuideClickListener {
-        void onGuideClick(Guide guide, int position);
+        void onGuideClick(GuideAdmin guideAdmin, int position);
     }
 
-    public GuideAdapter(Context context, List<Guide> guideList) {
+    public GuideAdapter(Context context, List<GuideAdmin> guideAdminList) {
         this.context = context;
-        this.guideList = guideList;
-        this.guideListFiltered = new ArrayList<>(guideList);
+        this.guideAdminList = guideAdminList;
+        this.guideAdminListFiltered = new ArrayList<>(guideAdminList);
     }
 
     public void setOnGuideClickListener(OnGuideClickListener listener) {
@@ -48,19 +48,19 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GuideViewHolder holder, int position) {
-        Guide guide = guideListFiltered.get(position);
+        GuideAdmin guideAdmin = guideAdminListFiltered.get(position);
         
-        holder.guideName.setText(guide.getName());
-        holder.guideLocation.setText(guide.getLocation());
+        holder.guideName.setText(guideAdmin.getName());
+        holder.guideLocation.setText(guideAdmin.getLocation());
         
-        if (guide.getImageResource() != 0) {
-            holder.guideImage.setImageResource(guide.getImageResource());
+        if (guideAdmin.getImageResource() != 0) {
+            holder.guideImage.setImageResource(guideAdmin.getImageResource());
         } else {
             holder.guideImage.setImageResource(R.drawable.avatar);
         }
 
         // Configurar rating (estrellas)
-        int rating = guide.getRating();
+        int rating = guideAdmin.getRating();
         holder.star1.setTextColor(rating >= 1 ? context.getResources().getColor(R.color.yellow) : context.getResources().getColor(R.color.gray_light));
         holder.star2.setTextColor(rating >= 2 ? context.getResources().getColor(R.color.yellow) : context.getResources().getColor(R.color.gray_light));
         holder.star3.setTextColor(rating >= 3 ? context.getResources().getColor(R.color.yellow) : context.getResources().getColor(R.color.gray_light));
@@ -68,7 +68,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         holder.star5.setTextColor(rating >= 5 ? context.getResources().getColor(R.color.yellow) : context.getResources().getColor(R.color.gray_light));
 
         // Estado de disponibilidad
-        if (guide.isAvailable()) {
+        if (guideAdmin.isAvailable()) {
             holder.availabilityDot.setBackgroundResource(R.drawable.circle_green);
             holder.availabilityText.setText("Disponible para un tour");
             holder.availabilityText.setTextColor(context.getResources().getColor(R.color.teal_700));
@@ -80,14 +80,14 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
         holder.cardView.setOnClickListener(v -> {
             if (onGuideClickListener != null) {
-                onGuideClickListener.onGuideClick(guide, position);
+                onGuideClickListener.onGuideClick(guideAdmin, position);
             } else {
                 Intent intent = new Intent(context, GuideDetailActivity.class);
-                intent.putExtra("guide_id", guide.getId());
-                intent.putExtra("guide_name", guide.getName());
-                intent.putExtra("guide_location", guide.getLocation());
-                intent.putExtra("guide_rating", guide.getRating());
-                intent.putExtra("guide_available", guide.isAvailable());
+                intent.putExtra("guide_id", guideAdmin.getId());
+                intent.putExtra("guide_name", guideAdmin.getName());
+                intent.putExtra("guide_location", guideAdmin.getLocation());
+                intent.putExtra("guide_rating", guideAdmin.getRating());
+                intent.putExtra("guide_available", guideAdmin.isAvailable());
                 context.startActivity(intent);
             }
         });
@@ -95,7 +95,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public int getItemCount() {
-        return guideListFiltered.size();
+        return guideAdminListFiltered.size();
     }
 
     @Override
@@ -106,27 +106,27 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 
                 if (filterPattern.isEmpty()) {
-                    guideListFiltered = new ArrayList<>(guideList);
+                    guideAdminListFiltered = new ArrayList<>(guideAdminList);
                 } else {
-                    List<Guide> filteredList = new ArrayList<>();
-                    for (Guide guide : guideList) {
-                        if (guide.getLocation().toLowerCase().contains(filterPattern) ||
-                            guide.getName().toLowerCase().contains(filterPattern)) {
-                            filteredList.add(guide);
+                    List<GuideAdmin> filteredList = new ArrayList<>();
+                    for (GuideAdmin guideAdmin : guideAdminList) {
+                        if (guideAdmin.getLocation().toLowerCase().contains(filterPattern) ||
+                            guideAdmin.getName().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(guideAdmin);
                         }
                     }
-                    guideListFiltered = filteredList;
+                    guideAdminListFiltered = filteredList;
                 }
                 
                 FilterResults results = new FilterResults();
-                results.values = guideListFiltered;
-                results.count = guideListFiltered.size();
+                results.values = guideAdminListFiltered;
+                results.count = guideAdminListFiltered.size();
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                guideListFiltered = (List<Guide>) results.values;
+                guideAdminListFiltered = (List<GuideAdmin>) results.values;
                 notifyDataSetChanged();
             }
         };
@@ -135,22 +135,22 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     // Método para filtrar por departamento específico
     public void filterByDepartment(String department) {
         if (department == null || department.isEmpty() || department.equals("todos")) {
-            guideListFiltered = new ArrayList<>(guideList);
+            guideAdminListFiltered = new ArrayList<>(guideAdminList);
         } else {
-            List<Guide> filteredList = new ArrayList<>();
-            for (Guide guide : guideList) {
-                if (guide.getLocation().toLowerCase().contains(department.toLowerCase())) {
-                    filteredList.add(guide);
+            List<GuideAdmin> filteredList = new ArrayList<>();
+            for (GuideAdmin guideAdmin : guideAdminList) {
+                if (guideAdmin.getLocation().toLowerCase().contains(department.toLowerCase())) {
+                    filteredList.add(guideAdmin);
                 }
             }
-            guideListFiltered = filteredList;
+            guideAdminListFiltered = filteredList;
         }
         notifyDataSetChanged();
     }
 
-    public void updateGuides(List<Guide> newGuideList) {
-        this.guideList = newGuideList;
-        this.guideListFiltered = new ArrayList<>(newGuideList);
+    public void updateGuides(List<GuideAdmin> newGuideAdminList) {
+        this.guideAdminList = newGuideAdminList;
+        this.guideAdminListFiltered = new ArrayList<>(newGuideAdminList);
         notifyDataSetChanged();
     }
 

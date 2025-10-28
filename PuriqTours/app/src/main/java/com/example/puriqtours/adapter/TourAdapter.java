@@ -13,26 +13,26 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
-import com.example.puriqtours.TourDetailActivity;
-import com.example.puriqtours.model.Tour;
+import com.example.puriqtours.admin.TourDetailActivity;
+import com.example.puriqtours.entity.TourAdmin;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder> implements Filterable {
 
     private Context context;
-    private List<Tour> tourList;
-    private List<Tour> tourListFiltered;
+    private List<TourAdmin> tourAdminList;
+    private List<TourAdmin> tourAdminListFiltered;
     private OnTourClickListener onTourClickListener;
 
     public interface OnTourClickListener {
-        void onTourClick(Tour tour, int position);
+        void onTourClick(TourAdmin tourAdmin, int position);
     }
 
-    public TourAdapter(Context context, List<Tour> tourList) {
+    public TourAdapter(Context context, List<TourAdmin> tourAdminList) {
         this.context = context;
-        this.tourList = tourList;
-        this.tourListFiltered = new ArrayList<>(tourList);
+        this.tourAdminList = tourAdminList;
+        this.tourAdminListFiltered = new ArrayList<>(tourAdminList);
     }
 
     public void setOnTourClickListener(OnTourClickListener listener) {
@@ -42,28 +42,28 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
     @NonNull
     @Override
     public TourViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_tour, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_tour_admin, parent, false);
         return new TourViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TourViewHolder holder, int position) {
-        Tour tour = tourListFiltered.get(position);
-        
-        holder.tourTitle.setText(tour.getName());
-        holder.tourDescription.setText(tour.getDescription());
-        holder.tourLocation.setText(tour.getLocation());
-        holder.tourPrice.setText("S/ " + tour.getPrice());
-        holder.tourDuration.setText(tour.getDurationText());
-        
-        if (tour.getImageResource() != 0) {
-            holder.tourImage.setImageResource(tour.getImageResource());
+        TourAdmin tourAdmin = tourAdminListFiltered.get(position);
+
+        holder.tourTitle.setText(tourAdmin.getName());
+        holder.tourDescription.setText(tourAdmin.getDescription());
+        holder.tourLocation.setText(tourAdmin.getLocation());
+        holder.tourPrice.setText("S/ " + tourAdmin.getPrice());
+        holder.tourDuration.setText(tourAdmin.getDurationText());
+
+        if (tourAdmin.getImageResource() != 0) {
+            holder.tourImage.setImageResource(tourAdmin.getImageResource());
         } else {
             holder.tourImage.setImageResource(R.drawable.kuelap);
         }
 
-        holder.tourStatus.setText(tour.getStatus());
-        if (tour.getGuideAssigned() != null && !tour.getGuideAssigned().isEmpty()) {
+        holder.tourStatus.setText(tourAdmin.getStatus());
+        if (tourAdmin.getGuideAssigned() != null && !tourAdmin.getGuideAssigned().isEmpty()) {
             holder.tourStatus.setTextColor(context.getResources().getColor(R.color.teal_700));
         } else {
             holder.tourStatus.setTextColor(context.getResources().getColor(R.color.red));
@@ -71,15 +71,15 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
 
         holder.cardView.setOnClickListener(v -> {
             if (onTourClickListener != null) {
-                onTourClickListener.onTourClick(tour, position);
+                onTourClickListener.onTourClick(tourAdmin, position);
             } else {
                 Intent intent = new Intent(context, TourDetailActivity.class);
-                intent.putExtra("tour_id", tour.getId());
-                intent.putExtra("tour_name", tour.getName());
-                intent.putExtra("tour_description", tour.getDescription());
-                intent.putExtra("tour_location", tour.getLocation());
-                intent.putExtra("tour_price", tour.getPrice());
-                intent.putExtra("tour_duration", tour.getDuration());
+                intent.putExtra("tour_id", tourAdmin.getId());
+                intent.putExtra("tour_name", tourAdmin.getName());
+                intent.putExtra("tour_description", tourAdmin.getDescription());
+                intent.putExtra("tour_location", tourAdmin.getLocation());
+                intent.putExtra("tour_price", tourAdmin.getPrice());
+                intent.putExtra("tour_duration", tourAdmin.getDuration());
                 context.startActivity(intent);
             }
         });
@@ -87,7 +87,7 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
 
     @Override
     public int getItemCount() {
-        return tourListFiltered.size();
+        return tourAdminListFiltered.size();
     }
 
     @Override
@@ -96,29 +96,29 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                
+
                 if (filterPattern.isEmpty()) {
-                    tourListFiltered = new ArrayList<>(tourList);
+                    tourAdminListFiltered = new ArrayList<>(tourAdminList);
                 } else {
-                    List<Tour> filteredList = new ArrayList<>();
-                    for (Tour tour : tourList) {
-                        if (tour.getLocation().toLowerCase().contains(filterPattern) ||
-                            tour.getName().toLowerCase().contains(filterPattern)) {
-                            filteredList.add(tour);
+                    List<TourAdmin> filteredList = new ArrayList<>();
+                    for (TourAdmin tourAdmin : tourAdminList) {
+                        if (tourAdmin.getLocation().toLowerCase().contains(filterPattern) ||
+                            tourAdmin.getName().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(tourAdmin);
                         }
                     }
-                    tourListFiltered = filteredList;
+                    tourAdminListFiltered = filteredList;
                 }
-                
+
                 FilterResults results = new FilterResults();
-                results.values = tourListFiltered;
-                results.count = tourListFiltered.size();
+                results.values = tourAdminListFiltered;
+                results.count = tourAdminListFiltered.size();
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                tourListFiltered = (List<Tour>) results.values;
+                tourAdminListFiltered = (List<TourAdmin>) results.values;
                 notifyDataSetChanged();
             }
         };
@@ -127,22 +127,22 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
     // Método para filtrar por departamento específico
     public void filterByDepartment(String department) {
         if (department == null || department.isEmpty() || department.equals("todos")) {
-            tourListFiltered = new ArrayList<>(tourList);
+            tourAdminListFiltered = new ArrayList<>(tourAdminList);
         } else {
-            List<Tour> filteredList = new ArrayList<>();
-            for (Tour tour : tourList) {
-                if (tour.getLocation().toLowerCase().contains(department.toLowerCase())) {
-                    filteredList.add(tour);
+            List<TourAdmin> filteredList = new ArrayList<>();
+            for (TourAdmin tourAdmin : tourAdminList) {
+                if (tourAdmin.getLocation().toLowerCase().contains(department.toLowerCase())) {
+                    filteredList.add(tourAdmin);
                 }
             }
-            tourListFiltered = filteredList;
+            tourAdminListFiltered = filteredList;
         }
         notifyDataSetChanged();
     }
 
-    public void updateTours(List<Tour> newTourList) {
-        this.tourList = newTourList;
-        this.tourListFiltered = new ArrayList<>(newTourList);
+    public void updateTours(List<TourAdmin> newTourAdminList) {
+        this.tourAdminList = newTourAdminList;
+        this.tourAdminListFiltered = new ArrayList<>(newTourAdminList);
         notifyDataSetChanged();
     }
 

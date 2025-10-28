@@ -2,10 +2,13 @@ package com.example.puriqtours;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.puriqtours.admin.MainAdminActivity;
+import com.example.puriqtours.guia.MainGuiaActivity;
+import com.example.puriqtours.login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 

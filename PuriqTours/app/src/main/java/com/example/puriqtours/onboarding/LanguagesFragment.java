@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.login.LocalAuth;
 
 public class LanguagesFragment extends Fragment {
 
@@ -66,7 +67,7 @@ public class LanguagesFragment extends Fragment {
             try {
                 // ✅ Guardar idioma seleccionado en LocalAuth
                 String language = mapSelectionToCode();
-                com.example.puriqtours.LocalAuth localAuth = new com.example.puriqtours.LocalAuth(requireContext());
+                LocalAuth localAuth = new LocalAuth(requireContext());
 
                 localAuth.saveUser(
                         localAuth.getName(),

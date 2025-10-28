@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.puriqtours.cliente.HistorialActivity;
+import com.example.puriqtours.cliente.ProfileActivity;
+import com.example.puriqtours.cliente.ToursActivity;
+import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
