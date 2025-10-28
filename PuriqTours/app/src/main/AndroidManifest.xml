@@ -97,6 +97,7 @@
             android:exported="false" />
         <activity android:name=".ReportsActivity" android:exported="false"/>
         <activity android:name=".ProfileAdminActivity" android:exported="false"/>
+        <activity android:name=".MainAdminActivity" android:exported="false"/>
         <activity android:name=".ToursAdminActivity" android:exported="false"/>
         <activity android:name=".CreateTourActivity" android:exported="false"/>
         <activity android:name=".TourDetailActivity" android:exported="false"/>

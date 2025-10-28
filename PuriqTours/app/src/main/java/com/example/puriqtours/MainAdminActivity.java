@@ -111,7 +111,7 @@ public class MainAdminActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileActivity.class));
+                    startActivity(new Intent(this, ProfileAdminActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

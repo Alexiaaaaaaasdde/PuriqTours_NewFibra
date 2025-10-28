@@ -186,23 +186,23 @@ public class StorageHelper {
     
     // ==================== CHAT MESSAGES ====================
     
-    public void saveChatMessages(String chatId, List<ChatActivity.ChatMessage> messages) {
+    public void saveChatMessages(String chatId, List<ChatAdminActivity.ChatMessage> messages) {
         String messagesJson = gson.toJson(messages);
         editor.putString(CHAT_MESSAGES_KEY + chatId, messagesJson);
         editor.apply();
     }
     
-    public List<ChatActivity.ChatMessage> loadChatMessages(String chatId) {
+    public List<ChatAdminActivity.ChatMessage> loadChatMessages(String chatId) {
         String messagesJson = sharedPreferences.getString(CHAT_MESSAGES_KEY + chatId, null);
         if (messagesJson != null) {
-            Type listType = new TypeToken<List<ChatActivity.ChatMessage>>(){}.getType();
+            Type listType = new TypeToken<List<ChatAdminActivity.ChatMessage>>(){}.getType();
             return gson.fromJson(messagesJson, listType);
         }
         return createDefaultMessages(chatId); // Crear mensajes por defecto para este chat
     }
     
-    public void addChatMessage(String chatId, ChatActivity.ChatMessage message) {
-        List<ChatActivity.ChatMessage> messages = loadChatMessages(chatId);
+    public void addChatMessage(String chatId, ChatAdminActivity.ChatMessage message) {
+        List<ChatAdminActivity.ChatMessage> messages = loadChatMessages(chatId);
         messages.add(message);
         saveChatMessages(chatId, messages);
     }
@@ -212,30 +212,30 @@ public class StorageHelper {
         editor.apply();
     }
     
-    private List<ChatActivity.ChatMessage> createDefaultMessages(String chatId) {
-        List<ChatActivity.ChatMessage> defaultMessages = new ArrayList<>();
+    private List<ChatAdminActivity.ChatMessage> createDefaultMessages(String chatId) {
+        List<ChatAdminActivity.ChatMessage> defaultMessages = new ArrayList<>();
         
         // Crear algunos mensajes por defecto basados en el ID del chat
         switch (chatId) {
             case "1": // María García
-                defaultMessages.add(new ChatActivity.ChatMessage("Hola, buenos días", false, "10:25 AM"));
-                defaultMessages.add(new ChatActivity.ChatMessage("¿Tienen disponibilidad para el tour a Machu Picchu este fin de semana?", false, "10:26 AM"));
-                defaultMessages.add(new ChatActivity.ChatMessage("Buenos días María, sí tenemos disponibilidad", true, "10:28 AM"));
-                defaultMessages.add(new ChatActivity.ChatMessage("¿Para cuántas personas sería?", true, "10:28 AM"));
-                defaultMessages.add(new ChatActivity.ChatMessage("Serían 4 personas adultas", false, "10:30 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Hola, buenos días", false, "10:25 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("¿Tienen disponibilidad para el tour a Machu Picchu este fin de semana?", false, "10:26 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Buenos días María, sí tenemos disponibilidad", true, "10:28 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("¿Para cuántas personas sería?", true, "10:28 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Serían 4 personas adultas", false, "10:30 AM"));
                 break;
             case "2": // Carlos López
-                defaultMessages.add(new ChatActivity.ChatMessage("Hola, me interesa el City Tour por Lima", false, "9:10 AM"));
-                defaultMessages.add(new ChatActivity.ChatMessage("Perfecto Carlos, te envío la información", true, "9:12 AM"));
-                defaultMessages.add(new ChatActivity.ChatMessage("El tour incluye transporte y guía", true, "9:13 AM"));
-                defaultMessages.add(new ChatActivity.ChatMessage("Gracias por la información", false, "9:15 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Hola, me interesa el City Tour por Lima", false, "9:10 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Perfecto Carlos, te envío la información", true, "9:12 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("El tour incluye transporte y guía", true, "9:13 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Gracias por la información", false, "9:15 AM"));
                 break;
             case "3": // Ana Martínez
-                defaultMessages.add(new ChatActivity.ChatMessage("Consulta sobre el Valle Sagrado", false, "Yesterday"));
-                defaultMessages.add(new ChatActivity.ChatMessage("¿El tour incluye almuerzo?", false, "Yesterday"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Consulta sobre el Valle Sagrado", false, "Yesterday"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("¿El tour incluye almuerzo?", false, "Yesterday"));
                 break;
             default:
-                defaultMessages.add(new ChatActivity.ChatMessage("¡Hola! ¿En qué puedo ayudarte?", true, "Ahora"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("¡Hola! ¿En qué puedo ayudarte?", true, "Ahora"));
                 break;
         }
         
