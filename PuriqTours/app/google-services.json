@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "32221246907",
+    "project_id": "newfibra-ebdad",
+    "storage_bucket": "newfibra-ebdad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32221246907:android:d70fd1e78d05221bdd009e",
+        "android_client_info": {
+          "package_name": "com.example.puriqtours"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGGjbsJ-b2WgEmSUnL9Niu_IV4JSy_z58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
