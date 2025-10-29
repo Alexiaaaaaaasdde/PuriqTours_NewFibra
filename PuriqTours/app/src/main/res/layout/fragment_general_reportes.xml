@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <!-- Cards de resumen -->
+    <include layout="@layout/include_reportes_cards" />
+    <!-- Distribución de usuarios -->
+    <TextView
+        android:id="@+id/tvDistribucionUsuarios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distribución de usuarios  →"
+        android:textColor="#26A69A"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieChartUsuarios"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="#FFFFFF"/>
+    <!-- Reporte de venta por servicio -->
+    <TextView
+        android:id="@+id/tvReporteVenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reporte de venta por servicio  →"
+        android:textColor="#26A69A"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChartVentas"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="#FFFFFF"/>
+</LinearLayout>

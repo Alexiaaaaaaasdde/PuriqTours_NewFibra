@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
+    <color name="teal_50">#E0F7FA</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="teal_dark">#0B6B6B</color>
@@ -17,6 +20,7 @@
     <color name="md_theme_onSurface">@color/teal_dark</color>
     <color name="md_theme_outline">@color/teal_700</color>
 
+    <color name="teal_700">#00796B</color>
     <color name="teal_500">#009688</color>
     <color name="teal_200">#009688</color>
     <color name="teal_50">#E0F2F1</color>

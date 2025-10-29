@@ -59,4 +59,13 @@
         <!-- true = iconos oscuros (negros) para que se vean sobre el blanco -->
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <!-- Estilo específico para el toolbar verde -->
+    <style name="Widget.PuriqTours.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">#26A69A</item>
+        <item name="android:theme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
+        <item name="titleTextColor">@android:color/white</item>
+    </style>
+    <style name="MyToolbarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
 </resources>
