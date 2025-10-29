@@ -9,14 +9,17 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        // (solo si algún *plugin* viene de jitpack; normalmente no hace falta)
+        // maven { url 'https://jitpack.io' }
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://jitpack.io")
+        maven { url 'https://jitpack.io' }
     }
 }
 

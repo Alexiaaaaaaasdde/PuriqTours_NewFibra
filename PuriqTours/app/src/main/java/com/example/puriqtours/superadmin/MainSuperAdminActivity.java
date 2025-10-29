@@ -17,7 +17,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainSuperAdminActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnUsuarios).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, com.example.puriqtours.superadmin.UsuariosActivity.class);
+                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.UsuariosActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnReportes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, com.example.puriqtours.superadmin.ReportesActivity.class);
+                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.ReportesActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnLogs).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, com.example.puriqtours.superadmin.LogsActivity.class);
+                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.LogsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }

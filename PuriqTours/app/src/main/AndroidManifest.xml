@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PuriqTours">
         <activity
-            android:name=".superadmin.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -112,6 +112,7 @@
         <activity android:name=".superadmin.UsuariosActivity" />
         <activity android:name=".superadmin.LogsActivity" />
         <activity android:name=".superadmin.ReportesActivity" />
+        <activity android:name=".superadmin.MainSuperAdminActivity" android:exported="true" />
     </application>
 
 </manifest>

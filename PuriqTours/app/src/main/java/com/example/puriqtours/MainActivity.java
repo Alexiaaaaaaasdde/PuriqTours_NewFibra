@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.puriqtours.admin.MainAdminActivity;
 import com.example.puriqtours.guia.MainGuiaActivity;
 import com.example.puriqtours.login.LoginActivity;
+import com.example.puriqtours.superadmin.MainSuperAdminActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,9 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Superadmin → pendiente
         btnSuperadmin.setOnClickListener(v -> {
-            // Aquí puedes agregar el intent cuando tengas la actividad lista
-            // Por ahora, puedes mostrar un mensaje temporal
-            // Toast.makeText(this, "Funcionalidad pendiente", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, MainSuperAdminActivity.class);
+            startActivity(intent);
         });
     }
 }

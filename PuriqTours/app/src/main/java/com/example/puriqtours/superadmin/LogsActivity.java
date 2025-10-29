@@ -101,7 +101,7 @@ public class LogsActivity extends AppCompatActivity {
         // BottomBar navegación universal: listeners seguros
         View vBtnPrincipal = findViewById(R.id.btnPrincipal);
         if (vBtnPrincipal != null) vBtnPrincipal.setOnClickListener(v -> {
-            Intent intent = new Intent(LogsActivity.this, MainActivity.class);
+            Intent intent = new Intent(LogsActivity.this, MainSuperAdminActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         });
