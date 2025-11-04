@@ -72,7 +72,7 @@
                         android:id="@+id/searchBar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Buscar chats por cliente o tour"
+                        android:hint="Buscar chats por cliente o tourLegacy"
                         android:inputType="text"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>

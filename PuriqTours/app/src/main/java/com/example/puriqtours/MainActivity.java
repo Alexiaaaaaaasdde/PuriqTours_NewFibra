@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.puriqtours.admin.MainAdminActivity;
 import com.example.puriqtours.guia.MainGuiaActivity;
 import com.example.puriqtours.login.LoginActivity;
+import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.superadmin.MainSuperAdminActivity;
+import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
 
         // Referencias a los botones
@@ -26,15 +29,15 @@ public class MainActivity extends AppCompatActivity {
         btnAdmin = findViewById(R.id.btnAdmin);
         btnSuperadmin = findViewById(R.id.btnSuperadmin);
 
-        // Cliente → LoginActivity
+        // Cliente → LoginLegacyActivity
         btnCliente.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginLegacyActivity.class);
             startActivity(intent);
         });
 
         // Guía → MainGuiaActivity
         btnGuia.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, MainGuiaActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         });
 

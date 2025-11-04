@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="Escanee este código QR para iniciar el tour"
+        android:text="Escanee este código QR para iniciar el tourLegacy"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="@color/teal_700"
         android:textSize="16sp"

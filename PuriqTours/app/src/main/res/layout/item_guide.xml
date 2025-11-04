@@ -126,7 +126,7 @@
                     android:id="@+id/availabilityText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Disponible para un tour"
+                    android:text="Disponible para un tourLegacy"
                     android:textSize="12sp"
                     android:textColor="@color/teal_700" />
 

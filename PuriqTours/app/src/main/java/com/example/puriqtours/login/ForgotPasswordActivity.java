@@ -33,8 +33,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnBackForgot.setOnClickListener(v -> {
             finish(); // 👈 vuelve a la pantalla anterior automáticamente
 
-            // 👉 Si quieres que siempre regrese al LoginActivity, usa esto en lugar de finish():
-            // Intent i = new Intent(this, LoginActivity.class);
+            // 👉 Si quieres que siempre regrese al LoginLegacyActivity, usa esto en lugar de finish():
+            // Intent i = new Intent(this, LoginLegacyActivity.class);
             // startActivity(i);
             // finish();
         });

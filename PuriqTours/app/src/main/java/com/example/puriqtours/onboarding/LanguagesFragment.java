@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.puriqtours.R;
-import com.example.puriqtours.login.LocalAuth;
+import com.example.puriqtours.entity.LocalAuth;
 
 public class LanguagesFragment extends Fragment {
 

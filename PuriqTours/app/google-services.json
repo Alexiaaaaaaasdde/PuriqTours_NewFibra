@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "32221246907",
-    "project_id": "newfibra-ebdad",
-    "storage_bucket": "newfibra-ebdad.firebasestorage.app"
+    "project_number": "68499209549",
+    "project_id": "proyecto-iot-puriq",
+    "storage_bucket": "proyecto-iot-puriq.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:32221246907:android:d70fd1e78d05221bdd009e",
+        "mobilesdk_app_id": "1:68499209549:android:26a912e2804bb42c914b04",
         "android_client_info": {
           "package_name": "com.example.puriqtours"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCGGjbsJ-b2WgEmSUnL9Niu_IV4JSy_z58"
+          "current_key": "AIzaSyDCaHMU3V-OwsshvhxHtLmJj3lnLICesnQ"
         }
       ],
       "services": {

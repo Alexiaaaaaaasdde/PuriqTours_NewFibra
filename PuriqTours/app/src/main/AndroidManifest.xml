@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="CoarseFineLocation">
+    tools:ignore="CoarseFineLocation" >
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Permiso para notificaciones en Android 13+ -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <!-- Permiso para notificaciones en Android 13+ -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -21,19 +18,11 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PuriqTours">
+        android:theme="@style/Theme.PuriqTours" >
+        <activity android:name=".login.SetPasswordActivity" android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".login.LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.PuriqTours.Starting">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,17 +30,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".cliente.SetupProfileActivity"
-            android:exported="false" />
+            android:name=".login.LoginLegacyActivity"
+            android:exported="true"
+            android:theme="@style/Theme.PuriqTours.Starting" >
+        </activity>
         <activity
-            android:name=".login.SetPasswordActivity"
+            android:name=".login.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.PuriqTours.Starting" >
+        </activity>
+        <activity android:name=".login.SetupProfileLegacyActivity" android:exported="false" />
+        <activity android:name=".login.SetupProfileActivity" android:exported="false" />
+        <activity
+            android:name=".login.SetPasswordLegacyActivity"
             android:exported="false"
-            android:parentActivityName=".login.RegisterActivity" />
-        <activity
-            android:name=".onboarding.InterestsOnboardingActivity"
-            android:exported="false" />
+            android:parentActivityName=".login.RegisterLegacyActivity" />
+        <activity android:name=".onboarding.InterestsOnboardingActivity" android:exported="false" />
         <activity android:name=".onboarding.RegionsActivity" />
         <activity android:name=".onboarding.ActivitiesActivity" />
+        <activity android:name=".login.RegisterLegacyActivity" />
         <activity android:name=".login.RegisterActivity" />
         <activity android:name=".login.ForgotPasswordActivity" />
         <activity android:name=".login.TempPasswordActivity" />
@@ -61,54 +58,40 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PuriqTours" />
-        <activity
-            android:name=".guia.MainGuiaActivity"
-            android:exported="true" />
-        <activity
-            android:name=".guia.MapaTourActivity"
-            android:exported="false" />
+        <activity android:name=".guia.MainGuiaActivity" android:exported="true" />
+        <activity android:name=".guia.MapaTourActivity" android:exported="false" />
         <activity
             android:name=".guia.IniciarTourActivity"
             android:exported="true"
             android:label="Iniciar Tour"
             android:theme="@style/Theme.PuriqTours" /> <!-- 🔹 Navegación principal -->
-        <activity
-            android:name=".cliente.ToursActivity"
-            android:exported="false" />
-        <activity
-            android:name=".cliente.HistorialActivity"
-            android:exported="false" /> <!-- 🔹 Pantalla de login/entrada -->
-        <!-- 🔹 Flujo de tours -->
-        <activity
-            android:name=".cliente.DetalleTourActivity"
-            android:exported="false" />
-        <activity
-            android:name=".cliente.PagoActivity"
-            android:exported="false" /> <!-- 🔹 Estados de tours -->
-        <activity
-            android:name=".cliente.ReservadoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".cliente.EnProcesoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".cliente.FinalizadoActivity"
-            android:exported="false" />
+
+
+        <activity android:name=".cliente.ToursActivity" android:exported="false" />
+        <activity android:name=".cliente.HistorialActivity" android:exported="false" /> <!-- 🔹 Pantalla de login/entrada -->
+        <!-- 🔹 Flujo de tour -->
+        <activity android:name=".cliente.DetalleTourActivity" android:exported="false" />
+        <activity android:name=".cliente.PagoActivity" android:exported="false" /> <!-- 🔹 Estados de tour -->
+        <activity android:name=".cliente.ReservadoActivity" android:exported="false" />
+        <activity android:name=".cliente.EnProcesoActivity" android:exported="false" />
+        <activity android:name=".cliente.FinalizadoActivity" android:exported="false" />
         <activity android:name=".cliente.ChatActivity" /> <!-- 🔹 Valoración -->
-        <activity
-            android:name=".cliente.ValoracionActivity"
-            android:exported="false" />
-        <activity android:name=".admin.ReportsActivity" android:exported="false"/>
-        <activity android:name=".admin.ProfileAdminActivity" android:exported="false"/>
-        <activity android:name=".admin.MainAdminActivity" android:exported="false"/>
-        <activity android:name=".admin.ToursAdminActivity" android:exported="false"/>
-        <activity android:name=".admin.CreateTourActivity" android:exported="false"/>
-        <activity android:name=".admin.TourDetailActivity" android:exported="false"/>
-        <activity android:name=".admin.EditTourActivity" android:exported="false"/>
-        <activity android:name=".admin.GuidesActivity" android:exported="false"/>
-        <activity android:name=".admin.GuideDetailActivity" android:exported="false"/>
-        <activity android:name=".admin.ChatListActivity" android:exported="false"/>
-        <activity android:name=".admin.ChatAdminActivity" android:exported="false"/>
+        <activity android:name=".cliente.ValoracionActivity" android:exported="false" />
+
+
+        <activity android:name=".admin.ReportsActivity" android:exported="false" />
+        <activity android:name=".admin.ProfileAdminActivity" android:exported="false" />
+        <activity android:name=".admin.MainAdminActivity" android:exported="false" />
+        <activity android:name=".admin.ToursAdminActivity" android:exported="false" />
+        <activity android:name=".admin.CreateTourActivity" android:exported="false" />
+        <activity android:name=".admin.TourDetailActivity" android:exported="false" />
+        <activity android:name=".admin.EditTourActivity" android:exported="false" />
+        <activity android:name=".admin.GuidesActivity" android:exported="false" />
+        <activity android:name=".admin.GuideDetailActivity" android:exported="false" />
+        <activity android:name=".admin.ChatListActivity" android:exported="false" />
+        <activity android:name=".admin.ChatAdminActivity" android:exported="false" />
+
+
         <activity android:name=".superadmin.UsuariosActivity" />
         <activity android:name=".superadmin.LogsActivity" />
         <activity android:name=".superadmin.ReportesActivity" />

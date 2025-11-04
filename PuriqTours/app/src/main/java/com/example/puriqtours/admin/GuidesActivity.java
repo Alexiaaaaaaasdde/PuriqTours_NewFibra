@@ -95,7 +95,7 @@ public class GuidesActivity extends AppCompatActivity {
                 // Simular propuesta de tour a guía seleccionado
                 if (!guideAdminList.isEmpty()) {
                     GuideAdmin randomGuideAdmin = guideAdminList.get((int) (Math.random() * guideAdminList.size()));
-                    notificationHelper.notifyTourProposedToGuide("Tour Machu Picchu", randomGuideAdmin.getName(), "Cusco");
+                    notificationHelper.notifyTourProposedToGuide("TourLegacy Machu Picchu", randomGuideAdmin.getName(), "Cusco");
                     Toast.makeText(this, "Simulando propuesta de tour a " + randomGuideAdmin.getName(), Toast.LENGTH_SHORT).show();
                 }
             });

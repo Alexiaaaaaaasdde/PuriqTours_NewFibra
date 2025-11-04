@@ -45,7 +45,7 @@
 
             <TextView
                 android:id="@+id/tourDescription"
-                android:text="Descripción del lugar donde se va realizar el tour"
+                android:text="Descripción del lugar donde se va realizar el tourLegacy"
                 android:textSize="14sp"
                 android:textColor="#666"
                 android:layout_width="wrap_content"

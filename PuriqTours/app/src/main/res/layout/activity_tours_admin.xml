@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/teal_700"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:title="Mis lista de tours"
+            app:title="Mis lista de tourLegacies"
             app:titleCentered="false"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_logout"
@@ -73,7 +73,7 @@
                         android:id="@+id/searchBar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Buscar tours"
+                        android:hint="Buscar tourLegacies"
                         android:textColor="@android:color/black"
                         android:textColorHint="@color/gray_medium"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -89,7 +89,7 @@
                     android:layout_gravity="end"
                     android:layout_marginBottom="16dp"/>
 
-                <!-- Lista de tours con RecyclerView -->
+                <!-- Lista de tourLegacies con RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewTours"
                     android:layout_width="match_parent"
@@ -119,7 +119,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 🔹 FloatingActionButton para crear nuevo tour -->
+    <!-- 🔹 FloatingActionButton para crear nuevo tourLegacy -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabCrearTour"
         android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="88dp"
-        android:contentDescription="Crear nuevo tour"
+        android:contentDescription="Crear nuevo tourLegacy"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/teal_700"
         app:elevation="12dp"

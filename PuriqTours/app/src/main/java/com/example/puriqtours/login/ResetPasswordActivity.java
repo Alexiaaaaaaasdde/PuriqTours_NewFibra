@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.LocalAuth;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 
@@ -68,7 +69,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     .setTitle("Éxito")
                     .setMessage("Tu contraseña ha sido restablecida correctamente 🎉")
                     .setPositiveButton("Ir al login", (dialog, which) -> {
-                        Intent i = new Intent(this, LoginActivity.class);
+                        Intent i = new Intent(this, LoginLegacyActivity.class);
                         startActivity(i);
                         finish();
                     })

@@ -64,7 +64,7 @@
                 android:id="@+id/searchBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Buscar tours"
+                android:hint="Buscar tourLegacies"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:background="@drawable/search_background"
                 android:padding="8dp"
@@ -83,13 +83,13 @@
                 android:layout_gravity="end"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Lista de tours (ejemplo con LinearLayout, ideal luego un RecyclerView) -->
+            <!-- Lista de tourLegacies (ejemplo con LinearLayout, ideal luego un RecyclerView) -->
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- Card de Tour -->
+                <!-- Card de TourLegacy -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardKuelap"
                     android:layout_width="match_parent"
@@ -133,7 +133,7 @@
                                 android:layout_height="wrap_content"/>
 
                             <TextView
-                                android:text="Se requiere guía para un tour..."
+                                android:text="Se requiere guía para un tourLegacy..."
                                 android:textSize="13sp"
                                 android:textColor="#444"
                                 android:layout_width="wrap_content"
@@ -210,7 +210,7 @@
                                 android:layout_height="wrap_content"/>
 
                             <TextView
-                                android:text="Se requiere guía para un tour..."
+                                android:text="Se requiere guía para un tourLegacy..."
                                 android:textSize="13sp"
                                 android:textColor="#444"
                                 android:layout_width="wrap_content"
@@ -287,7 +287,7 @@
                                 android:layout_height="wrap_content"/>
 
                             <TextView
-                                android:text="Se requiere guía para un tour..."
+                                android:text="Se requiere guía para un tourLegacy..."
                                 android:textSize="13sp"
                                 android:textColor="#444"
                                 android:layout_width="wrap_content"
@@ -364,7 +364,7 @@
                                 android:layout_height="wrap_content"/>
 
                             <TextView
-                                android:text="Se requiere guía para un tour..."
+                                android:text="Se requiere guía para un tourLegacy..."
                                 android:textSize="13sp"
                                 android:textColor="#444"
                                 android:layout_width="wrap_content"
@@ -404,7 +404,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- Card de Tour -->
+                <!-- Card de TourLegacy -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardCusco4"
                     android:layout_width="match_parent"
@@ -421,7 +421,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- Card de Tour -->
+                <!-- Card de TourLegacy -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -437,7 +437,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- Card de Tour -->
+                <!-- Card de TourLegacy -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

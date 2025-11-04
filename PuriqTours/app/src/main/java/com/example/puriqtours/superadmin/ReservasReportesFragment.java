@@ -70,7 +70,7 @@ public class ReservasReportesFragment extends Fragment {
         barDataSet.setColor(android.graphics.Color.parseColor("#26A69A"));
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
-        final String[] empresas = {"Tour 1", "Tour 2", "Tour 3", "Tour 4", "Tour 5", "Otros"};
+        final String[] empresas = {"TourLegacy 1", "TourLegacy 2", "TourLegacy 3", "TourLegacy 4", "TourLegacy 5", "Otros"};
         barChart.getXAxis().setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {

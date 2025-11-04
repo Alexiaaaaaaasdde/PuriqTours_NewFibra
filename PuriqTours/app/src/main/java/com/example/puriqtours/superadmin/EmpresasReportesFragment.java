@@ -32,7 +32,7 @@ public class EmpresasReportesFragment extends Fragment {
         barDataSet.setColor(android.graphics.Color.parseColor("#26A69A"));
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
-        final String[] empresas = {"Silk Road", "Oxapampa Tour", "InkaTravel", "Otros"};
+        final String[] empresas = {"Silk Road", "Oxapampa TourLegacy", "InkaTravel", "Otros"};
         barChart.getXAxis().setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {

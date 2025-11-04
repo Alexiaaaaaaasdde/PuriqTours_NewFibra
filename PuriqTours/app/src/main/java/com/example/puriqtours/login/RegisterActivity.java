@@ -3,161 +3,81 @@ package com.example.puriqtours.login;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Patterns;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.puriqtours.R;
-
-
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.puriqtours.R;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private ScrollView scroll;
     private EditText etName, etLastName, etEmail, etBirthDate, etPhone, etAddress, etDocumentNumber;
     private Spinner spnDocumentType;
     private Button btnRegister;
+    private ImageButton btnBack;
+
+    private HashMap<String, String> userData = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        ImageButton back = findViewById(R.id.btnBackRegister);
-        if (back != null) back.setOnClickListener(v -> finish());
-
-        // refs
-        scroll           = findViewById(R.id.scroll);
-        etName           = findViewById(R.id.etName);
-        etLastName       = findViewById(R.id.etLastName);
-        etEmail          = findViewById(R.id.etEmail);
-        etBirthDate      = findViewById(R.id.etBirthDate);
-        etPhone          = findViewById(R.id.etPhone);
-        etAddress        = findViewById(R.id.etAddress);
-        spnDocumentType  = findViewById(R.id.spnDocumentType);
+        etName = findViewById(R.id.etName);
+        etLastName = findViewById(R.id.etLastName);
+        etEmail = findViewById(R.id.etEmail);
+        etBirthDate = findViewById(R.id.etBirthDate);
+        etPhone = findViewById(R.id.etPhone);
+        etAddress = findViewById(R.id.etAddress);
         etDocumentNumber = findViewById(R.id.etDocumentNumber);
-        btnRegister      = findViewById(R.id.btnRegister);
+        spnDocumentType = findViewById(R.id.spnDocumentType);
+        btnRegister = findViewById(R.id.btnRegister);
+        btnBack = findViewById(R.id.btnBackRegister);
 
-        // fecha
-        etBirthDate.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance();
-            DatePickerDialog dp = new DatePickerDialog(
-                    this,
-                    (view, y, m, d) -> etBirthDate.setText(d + "/" + (m + 1) + "/" + y),
-                    c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
-            );
-            dp.show();
-        });
-
-        // spinner
-        String[] docTypes = {"Selecciona tipo de documento", "DNI", "Carnet de extranjería", "Pasaporte"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, docTypes
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Spinner tipo de documento
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                new String[]{"DNI", "Pasaporte", "Carnet Extranjería"});
         spnDocumentType.setAdapter(adapter);
 
-        // onClick
+        // Fecha
+        etBirthDate.setOnClickListener(v -> showDatePicker());
+        btnBack.setOnClickListener(v -> finish());
+
+        // Continuar
         btnRegister.setOnClickListener(v -> {
-            if (!validateForm()) return;
+            if (validateInputs()) {
+                userData.put("name", etName.getText().toString().trim());
+                userData.put("last_name", etLastName.getText().toString().trim());
+                userData.put("email", etEmail.getText().toString().trim());
+                userData.put("birthdate", etBirthDate.getText().toString().trim());
+                userData.put("phone", etPhone.getText().toString().trim());
+                userData.put("address", etAddress.getText().toString().trim());
+                userData.put("doc_type", spnDocumentType.getSelectedItem().toString());
+                userData.put("document", etDocumentNumber.getText().toString().trim());
+                userData.put("rol", "Cliente");
+                userData.put("language", "es");
 
-            // ✅ Guardar datos básicos del usuario (sin contraseña aún)
-            LocalAuth localAuth = new LocalAuth(this);
-            localAuth.saveUser(
-                    etName.getText().toString(),                     // nombre
-                    etLastName.getText().toString(),                 // apellido
-                    etEmail.getText().toString(),                    // correo
-                    "",                                              // contraseña todavía no
-                    etBirthDate.getText().toString(),                // fecha de nacimiento
-                    etDocumentNumber.getText().toString(),           // documento
-                    etPhone.getText().toString(),                    // teléfono
-                    etAddress.getText().toString(),                  // dirección
-                    spnDocumentType.getSelectedItem().toString(),    // tipo de documento
-                    "",                                              // idioma (se completará luego)
-                    "",                                              // actividades (se completará luego)
-                    ""                                               // fotoUri (se completará luego)
-            );
-
-            // Ir a crear contraseña
-            Intent i = new Intent(RegisterActivity.this, SetPasswordActivity.class);
-            startActivity(i);
-            finish();
+                Intent intent = new Intent(this, SetPasswordActivity.class);
+                intent.putExtra("userData", userData);
+                startActivity(intent);
+            }
         });
     }
 
-    private boolean validateForm() {
-        clearErrors();
-        boolean ok = true;
-        View firstError = null;
-
-        if (isEmpty(etName)) {
-            setError(etName, "Ingresa tu nombre"); ok = false; firstError = firstError == null ? etName : firstError;
+    private boolean validateInputs() {
+        if (etName.getText().toString().isEmpty() || etEmail.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Completa al menos nombre y correo", Toast.LENGTH_SHORT).show();
+            return false;
         }
-
-        if (isEmpty(etLastName)) {
-            setError(etLastName, "Ingresa tus apellidos"); ok = false; firstError = firstError == null ? etLastName : firstError;
-        }
-
-        String email = safeText(etEmail);
-        if (TextUtils.isEmpty(email)) {
-            setError(etEmail, "Ingresa tu correo"); ok = false; firstError = firstError == null ? etEmail : firstError;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            setError(etEmail, "Correo inválido"); ok = false; firstError = firstError == null ? etEmail : firstError;
-        }
-
-        if (spnDocumentType.getSelectedItemPosition() == 0) {
-            Toast.makeText(this, "Por favor selecciona un tipo de documento", Toast.LENGTH_SHORT).show();
-            View v = spnDocumentType.getSelectedView();
-            if (v instanceof TextView) ((TextView) v).setError("");
-            ok = false; if (firstError == null) firstError = spnDocumentType;
-        }
-
-        String docNum = safeText(etDocumentNumber);
-        if (TextUtils.isEmpty(docNum)) {
-            setError(etDocumentNumber, "Ingresa tu número de documento"); ok = false; firstError = firstError == null ? etDocumentNumber : firstError;
-        } else if (spnDocumentType.getSelectedItemPosition() == 1 && !docNum.matches("\\d{8}")) {
-            setError(etDocumentNumber, "El DNI debe tener 8 dígitos"); ok = false; firstError = firstError == null ? etDocumentNumber : firstError;
-        }
-
-        if (!ok && firstError != null && scroll != null) {
-            final View target = firstError;
-            target.requestFocus();
-            final int y = Math.max(0, target.getTop() - dpToPx(24));
-            scroll.post(() -> scroll.smoothScrollTo(0, y));
-        }
-        return ok;
+        return true;
     }
 
-    private String safeText(EditText et) {
-        return et == null || et.getText() == null ? "" : et.getText().toString().trim();
-    }
-
-    private boolean isEmpty(EditText et) {
-        return et == null || TextUtils.isEmpty(safeText(et));
-    }
-
-    private void setError(EditText et, String msg) {
-        if (et != null) et.setError(msg);
-    }
-
-    private void clearErrors() {
-        EditText[] ets = {etName, etLastName, etEmail, etDocumentNumber};
-        for (EditText et : ets) if (et != null) et.setError(null);
-    }
-
-    private int dpToPx(int dp) {
-        float d = getResources().getDisplayMetrics().density;
-        return Math.round(dp * d);
+    private void showDatePicker() {
+        final Calendar c = Calendar.getInstance();
+        DatePickerDialog datePicker = new DatePickerDialog(this, (view, y, m, d) ->
+                etBirthDate.setText(d + "/" + (m + 1) + "/" + y),
+                c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+        datePicker.show();
     }
 }

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/teal_700"
-        app:title="Detalles del tour"
+        app:title="Detalles del tourLegacy"
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="@color/white" />
@@ -41,11 +41,11 @@
                 android:textColor="@color/teal_700"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Hora de inicio del tour -->
+            <!-- Hora de inicio del tourLegacy -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hora de inicio del tour:"
+                android:text="Hora de inicio del tourLegacy:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -60,11 +60,11 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Duración del tour -->
+            <!-- Duración del tourLegacy -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Duración del tour:"
+                android:text="Duración del tourLegacy:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -117,11 +117,11 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Fecha del tour -->
+            <!-- Fecha del tourLegacy -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha del tour:"
+                android:text="Fecha del tourLegacy:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -228,7 +228,7 @@
                     android:id="@+id/tvDescripcionServicio2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Descripción: Equipo de canotaje necesario para el tour"
+                    android:text="Descripción: Equipo de canotaje necesario para el tourLegacy"
                     android:textSize="14sp"
                     android:textColor="@color/gray"
                     android:layout_marginBottom="12dp" />
@@ -497,7 +497,7 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="Editar tour"
+            android:text="Editar tourLegacy"
             android:textSize="16sp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/teal_700"

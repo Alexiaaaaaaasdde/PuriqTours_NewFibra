@@ -1,4 +1,4 @@
-package com.example.puriqtours.login;
+package com.example.puriqtours.entity;
 
 import android.content.Context;
 import android.content.SharedPreferences;

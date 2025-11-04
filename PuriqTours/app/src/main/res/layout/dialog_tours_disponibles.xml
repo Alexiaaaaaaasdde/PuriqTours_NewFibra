@@ -18,7 +18,7 @@
         android:gravity="center"
         android:layout_marginBottom="16dp" />
 
-    <!-- ScrollView para la lista de tours -->
+    <!-- ScrollView para la lista de tourLegacies -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="400dp"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Tour número 2 -->
+            <!-- TourLegacy número 2 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardTour2"
                 android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                     android:padding="12dp"
                     android:gravity="center_vertical">
 
-                    <!-- Icono del tour -->
+                    <!-- Icono del tourLegacy -->
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -57,7 +57,7 @@
                         android:background="@drawable/rounded_corners"
                         android:layout_marginEnd="12dp" />
 
-                    <!-- Información del tour -->
+                    <!-- Información del tourLegacy -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Tour número 5 -->
+            <!-- TourLegacy número 5 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardTour5"
                 android:layout_width="match_parent"
@@ -128,7 +128,7 @@
                     android:padding="12dp"
                     android:gravity="center_vertical">
 
-                    <!-- Icono del tour -->
+                    <!-- Icono del tourLegacy -->
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -137,7 +137,7 @@
                         android:background="@drawable/rounded_corners"
                         android:layout_marginEnd="12dp" />
 
-                    <!-- Información del tour -->
+                    <!-- Información del tourLegacy -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -189,7 +189,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Tour número 6 -->
+            <!-- TourLegacy número 6 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardTour6"
                 android:layout_width="match_parent"
@@ -208,7 +208,7 @@
                     android:padding="12dp"
                     android:gravity="center_vertical">
 
-                    <!-- Icono del tour -->
+                    <!-- Icono del tourLegacy -->
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -217,7 +217,7 @@
                         android:background="@drawable/rounded_corners"
                         android:layout_marginEnd="12dp" />
 
-                    <!-- Información del tour -->
+                    <!-- Información del tourLegacy -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -269,7 +269,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Tour número 10 -->
+            <!-- TourLegacy número 10 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardTour10"
                 android:layout_width="match_parent"
@@ -288,7 +288,7 @@
                     android:padding="12dp"
                     android:gravity="center_vertical">
 
-                    <!-- Icono del tour -->
+                    <!-- Icono del tourLegacy -->
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -297,7 +297,7 @@
                         android:background="@drawable/rounded_corners"
                         android:layout_marginEnd="12dp" />
 
-                    <!-- Información del tour -->
+                    <!-- Información del tourLegacy -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -349,7 +349,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Tour número 5 (duplicado) -->
+            <!-- TourLegacy número 5 (duplicado) -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardTour5Duplicate"
                 android:layout_width="match_parent"
@@ -368,7 +368,7 @@
                     android:padding="12dp"
                     android:gravity="center_vertical">
 
-                    <!-- Icono del tour -->
+                    <!-- Icono del tourLegacy -->
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -377,7 +377,7 @@
                         android:background="@drawable/rounded_corners"
                         android:layout_marginEnd="12dp" />
 
-                    <!-- Información del tour -->
+                    <!-- Información del tourLegacy -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

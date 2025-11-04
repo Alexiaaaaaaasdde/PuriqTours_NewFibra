@@ -1,5 +1,6 @@
 package com.example.puriqtours.guia;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.helper.UserSessionManager;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
 
     private EditText etNombre, etApellido, etFechaNacimiento, etNumeroDocumento,
             etNumeroTelefonico, etTipoDocumento, etDireccion, etCorreo;
+    private ShapeableImageView profileImage;
     private Button btnUpdate, btnSave;
 
     @Nullable
@@ -29,6 +35,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Referencias a las vistas
+        profileImage = view.findViewById(R.id.profileImage);
         etNombre = view.findViewById(R.id.etNombre);
         etApellido = view.findViewById(R.id.etApellido);
         etFechaNacimiento = view.findViewById(R.id.etFechaNacimiento);
@@ -40,6 +47,10 @@ public class ProfileFragment extends Fragment {
 
         btnUpdate = view.findViewById(R.id.btnUpdate);
         btnSave = view.findViewById(R.id.btnSave);
+
+        Context context = requireContext();
+
+        cargarDatosUsuario(context);
 
         // Lógica de botones
         btnUpdate.setOnClickListener(v -> {
@@ -68,5 +79,30 @@ public class ProfileFragment extends Fragment {
         etTipoDocumento.setEnabled(habilitar);
         etDireccion.setEnabled(habilitar);
         etCorreo.setEnabled(habilitar);
+    }
+
+    private void cargarDatosUsuario(Context context) {
+        UserSessionManager userSessionManager = new UserSessionManager(context);
+        Usuario user;
+        user = userSessionManager.getUser();
+        etNombre.setText(user.getName());
+        etApellido.setText(user.getLast_name());
+        etFechaNacimiento.setText(user.getBirthdate());
+        etTipoDocumento.setText(user.getDoc_type());
+        etNumeroDocumento.setText(user.getDocument());
+        etNumeroTelefonico.setText(user.getPhone());
+        etDireccion.setText(user.getAddress());
+        etCorreo.setText(user.getEmail());
+        String imageUrl = user.getProfile_image();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.imagen_perfil) // imagen temporal
+                    .error(R.drawable.imagen_perfil) // si falla la carga
+                    .into(profileImage);
+        }
+
+        habilitarCampos(false);
+        btnSave.setVisibility(View.GONE);
     }
 }

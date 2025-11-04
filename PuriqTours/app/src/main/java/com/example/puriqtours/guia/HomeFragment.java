@@ -35,8 +35,8 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         lista = new ArrayList<>();
-        lista.add(new Solicitud("Tour 1", "Esta es la descripción completa de la solicitud 1", R.drawable.machupicchu, "Lima", "18/09/2025", LocalTime.of(18, 0), LocalTime.of(19, 0), "TOURLIMA"));
-        lista.add(new Solicitud("Tour 2", "Texto laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaargo de descripción de la solicitud 2", R.drawable.machupicchu, "Cusco", "26/09/2025", LocalTime.of(7, 0), LocalTime.of(17, 0), "TOURCUSCO"));
+        lista.add(new Solicitud("TourLegacy 1", "Esta es la descripción completa de la solicitud 1", R.drawable.machupicchu, "Lima", "18/09/2025", LocalTime.of(18, 0), LocalTime.of(19, 0), "TOURLIMA"));
+        lista.add(new Solicitud("TourLegacy 2", "Texto laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaargo de descripción de la solicitud 2", R.drawable.machupicchu, "Cusco", "26/09/2025", LocalTime.of(7, 0), LocalTime.of(17, 0), "TOURCUSCO"));
 
         SolicitudAdapter adapter = new SolicitudAdapter(lista, getParentFragmentManager());
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

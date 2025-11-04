@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.R;
-import com.example.puriqtours.login.LocalAuth;
+import com.example.puriqtours.entity.LocalAuth;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;

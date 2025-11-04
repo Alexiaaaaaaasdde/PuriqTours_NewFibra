@@ -5,39 +5,32 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.puriqtours.R;
+import com.example.puriqtours.entity.LocalAuth;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.example.puriqtours.R;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-public class SetPasswordActivity extends AppCompatActivity {
+public class SetPasswordLegacyActivity extends AppCompatActivity {
 
     private TextInputLayout tilPassword, tilConfirm;
-    private EditText etPassword, etConfirm;
+    private TextInputEditText etPassword, etConfirm;
     private ProgressBar pbStrength;
     private TextView tvStrength;
     private Button btnContinue;
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-
-    private HashMap<String, Object> userData;
+    private String prefillUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_password);
-
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        setContentView(R.layout.activity_set_password_legacy);
 
         tilPassword = findViewById(R.id.tilPassword);
         tilConfirm  = findViewById(R.id.tilConfirm);
@@ -50,13 +43,7 @@ public class SetPasswordActivity extends AppCompatActivity {
         ImageButton back = findViewById(R.id.btnBack);
         back.setOnClickListener(v -> finish());
 
-        Serializable extra = getIntent().getSerializableExtra("userData");
-        if (extra instanceof HashMap) {
-            //noinspection unchecked
-            userData = (HashMap<String, Object>) extra;
-        } else {
-            userData = new HashMap<>();
-        }
+        prefillUsername = getIntent().getStringExtra("prefill_username");
 
         // Listener para actualizar nivel de seguridad
         TextWatcher watcher = new TextWatcher() {
@@ -68,57 +55,40 @@ public class SetPasswordActivity extends AppCompatActivity {
         etConfirm.addTextChangedListener(watcher);
         updateUI();
 
+        // Botón continuar
         btnContinue.setOnClickListener(v -> {
-            Log.d("DEBUG_FLOW", "Botón CONTINUAR presionado");
             if (!validate()) return;
-            String pass = etPassword.getText().toString().trim();
-            String confirm = etConfirm.getText().toString().trim();
-            Log.d("DEBUG_FLOW", "Validado");
-            if (pass.isEmpty() || confirm.isEmpty()) {
-                Toast.makeText(this, "Completa ambos campos", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (!pass.equals(confirm)) {
-                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
-            String email = userData.get("email").toString();
-            if (userData == null || userData.get("email") == null) {
-                Toast.makeText(this, "Datos de registro incompletos", Toast.LENGTH_LONG).show();
-                return;
-            }
-            Log.d("DEBUG_FLOW", "Intentando crear usuario con " + userData.get("email"));
-            mAuth.createUserWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener(this, task -> {
-                        Log.d("DEBUG_FLOW", "createUserWithEmailAndPassword completado. Success=" + task.isSuccessful());
-                        if (task.isSuccessful()) {
-                            String uid = mAuth.getCurrentUser().getUid();
-                            saveUserToFirestore(uid);
-                        } else {
-                            Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("DEBUG_FLOW", "Fallo grave en Firebase: ", e);
-                        Toast.makeText(this, "Fallo Firebase: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    });
+            // ✅ Guardar la contraseña real en almacenamiento local (SharedPreferences)
+            // Guarda la contraseña real
+            LocalAuth localAuth = new LocalAuth(this);
+            // Guardamos la contraseña en los datos existentes
+            localAuth.saveUser(
+                    localAuth.getName(),
+                    localAuth.getLastname(),
+                    localAuth.getEmail(),
+                    etPassword.getText().toString(),   // ahora sí la contraseña real
+                    localAuth.getBirthdate(),
+                    localAuth.getDocument(),
+                    localAuth.getPhone(),
+                    localAuth.getAddress(),
+                    localAuth.getDocType(),
+                    localAuth.getLanguage(),              // o "" si aún no eligió idioma
+                    localAuth.getActivities(),            // o "" si aún no eligió actividades
+                    localAuth.getPhotoUri()
+            );
 
+
+            Toast.makeText(this, "Contraseña guardada correctamente", Toast.LENGTH_SHORT).show();
+
+            // Continuar al siguiente paso (SetupProfile)
+            Intent i = new Intent(this, SetupProfileLegacyActivity.class);
+            if (!TextUtils.isEmpty(prefillUsername)) {
+                i.putExtra("prefill_username", prefillUsername);
+            }
+            startActivity(i);
+            finish();
         });
-    }
-
-    private void saveUserToFirestore(String uid) {
-        userData.put("activities", new ArrayList<String>());
-        db.collection("users").document(uid)
-                .set(userData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Datos guardados correctamente", Toast.LENGTH_SHORT).show();
-                    Log.d("Firestore", "Documento creado correctamente");
-                    Intent intent = new Intent(this, SetupProfileActivity.class);
-                    startActivity(intent);
-                    finish();
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error al guardar datos: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
     private void updateUI() {

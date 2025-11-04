@@ -21,9 +21,9 @@
             android:textColor="@color/teal_700"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Sección valoración del tour -->
+        <!-- Sección valoración del tourLegacy -->
         <TextView
-            android:text="Valoración del tour:"
+            android:text="Valoración del tourLegacy:"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:text="¿El tour cumplió con tus expectativas?"
+            android:text="¿El tourLegacy cumplió con tus expectativas?"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -49,7 +49,7 @@
             android:focusable="true" />
 
         <TextView
-            android:text="¿El tour cumplió ofreciendo todos sus servicios?"
+            android:text="¿El tourLegacy cumplió ofreciendo todos sus servicios?"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"/>

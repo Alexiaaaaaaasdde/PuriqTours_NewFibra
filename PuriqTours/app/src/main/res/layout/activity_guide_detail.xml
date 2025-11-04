@@ -359,7 +359,7 @@
 
     </ScrollView>
 
-    <!-- Botón Asignar a un tour fijo en la parte inferior -->
+    <!-- Botón Asignar a un tourLegacy fijo en la parte inferior -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -371,7 +371,7 @@
             android:id="@+id/btnAsignarTour"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Asignar a un tour"
+            android:text="Asignar a un tourLegacy"
             android:textSize="16sp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/teal_700"

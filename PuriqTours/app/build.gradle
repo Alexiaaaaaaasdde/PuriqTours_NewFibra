@@ -42,12 +42,23 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.core.splashscreen)
     implementation(libs.viewpager2)
+    implementation libs.picasso
+
+    implementation(libs.play.services.base)
+    implementation(libs.play.services.basement)
+    implementation(libs.play.services.tasks)
+    implementation libs.firebase.storage
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation(platform(libs.firebase.bom))
+    implementation libs.firebase.firestore
+    implementation libs.firebase.auth
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

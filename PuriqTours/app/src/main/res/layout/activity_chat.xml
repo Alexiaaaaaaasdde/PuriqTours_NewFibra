@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:text="¿Puedo reprogramar mi tour o cambiar la fecha?"
+                android:text="¿Puedo reprogramar mi tourLegacy o cambiar la fecha?"
                 android:textColor="@android:color/black"/>
         </com.google.android.material.card.MaterialCardView>
 
@@ -113,7 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:text="¿Cómo envío una queja o sugerencia sobre el tour?"
+                android:text="¿Cómo envío una queja o sugerencia sobre el tourLegacy?"
                 android:textColor="@android:color/black"/>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

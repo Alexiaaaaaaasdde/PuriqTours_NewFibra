@@ -51,7 +51,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/imagen_perfil"
+                android:src="@drawable/profile_image_dummy"
                 app:shapeAppearanceOverlay="@style/RoundedImage"
                 app:strokeColor="#2B746C"
                 app:strokeWidth="2dp" />

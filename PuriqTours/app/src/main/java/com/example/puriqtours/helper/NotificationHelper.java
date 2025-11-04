@@ -77,7 +77,7 @@ public class NotificationHelper {
         
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_TOURS)
             .setSmallIcon(R.drawable.ic_tour)
-            .setContentTitle("✅ Tour creado exitosamente")
+            .setContentTitle("✅ TourLegacy creado exitosamente")
             .setContentText(tourName + " • " + destination)
             .setStyle(new NotificationCompat.BigTextStyle()
                 .bigText("El tour '" + tourName + "' con destino a " + destination + " ha sido creado exitosamente y está disponible para reservas."))
@@ -102,8 +102,8 @@ public class NotificationHelper {
         
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_GUIDES)
             .setSmallIcon(R.drawable.ic_guide)
-            .setContentTitle("📋 Tour propuesto a guía")
-            .setContentText("Tour: " + tourName + " • Guía: " + guideName)
+            .setContentTitle("📋 TourLegacy propuesto a guía")
+            .setContentText("TourLegacy: " + tourName + " • Guía: " + guideName)
             .setStyle(new NotificationCompat.BigTextStyle()
                 .bigText("Se ha propuesto el tour '" + tourName + "' en " + destination + " al guía " + guideName + ". Esperando respuesta."))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -200,11 +200,11 @@ public class NotificationHelper {
     // Simulación para demostrar todas las notificaciones
     public void simulateAllNotifications() {
         // Simular creación de tour
-        notifyTourCreated("Tour Machu Picchu Premium", "Cusco");
+        notifyTourCreated("TourLegacy Machu Picchu Premium", "Cusco");
         
         // Simular propuesta a guía (con delay para que no aparezcan todas juntas)
         new android.os.Handler().postDelayed(() -> {
-            notifyTourProposedToGuide("Tour Valle Sagrado", "Carlos Mendoza", "Cusco");
+            notifyTourProposedToGuide("TourLegacy Valle Sagrado", "Carlos Mendoza", "Cusco");
         }, 2000);
         
         // Simular mensaje de chat (con delay)

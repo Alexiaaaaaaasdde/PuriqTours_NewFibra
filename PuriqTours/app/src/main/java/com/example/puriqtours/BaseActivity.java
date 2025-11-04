@@ -11,7 +11,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.puriqtours.cliente.HistorialActivity;
 import com.example.puriqtours.cliente.ProfileActivity;
 import com.example.puriqtours.cliente.ToursActivity;
-import com.example.puriqtours.login.LoginActivity;
+import com.example.puriqtours.login.LoginLegacyActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 } else if (id == R.id.nav_historial) {
                     startActivity(new Intent(this, HistorialActivity.class));
                 } else if (id == R.id.nav_logout) {
-                    startActivity(new Intent(this, LoginActivity.class));
+                    startActivity(new Intent(this, LoginLegacyActivity.class));
                     finish();
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);

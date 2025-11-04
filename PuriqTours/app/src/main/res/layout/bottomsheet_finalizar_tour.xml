@@ -22,7 +22,7 @@
         android:id="@+id/tvIndicacionFinalizar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Escanee el código QR para finalizar su tour"
+        android:text="Escanee el código QR para finalizar su tourLegacy"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="@color/teal_700"
         android:gravity="center"

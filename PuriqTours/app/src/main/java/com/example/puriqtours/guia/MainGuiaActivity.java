@@ -7,7 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.puriqtours.login.LoginActivity;
+import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -49,7 +49,7 @@ public class MainGuiaActivity extends AppCompatActivity {
                 fragment = new HomeFragment();
                 title = "Historial";
             } else if (id == R.id.nav_logout) {
-                startActivity(new Intent(this, LoginActivity.class));
+                startActivity(new Intent(this, LoginLegacyActivity.class));
                 finish();
                 return true;
             }

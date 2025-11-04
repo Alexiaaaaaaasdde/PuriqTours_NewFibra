@@ -77,7 +77,7 @@ public class ChatAdminActivity extends AppCompatActivity {
             tvClientName.setText("Chat con " + clientName);
         }
         if (tvTourName != null && tourName != null) {
-            tvTourName.setText("Tour: " + tourName);
+            tvTourName.setText("TourLegacy: " + tourName);
         }
     }
 

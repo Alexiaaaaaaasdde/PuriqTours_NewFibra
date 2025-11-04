@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.entity.HistorialTour;
-import com.example.puriqtours.login.LoginActivity;
+import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.example.puriqtours.adapter.HistorialAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -71,7 +71,7 @@ public class HistorialActivity extends AppCompatActivity {
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
             } else if (id == R.id.nav_logout) {
-                Intent intent = new Intent(this, LoginActivity.class);
+                Intent intent = new Intent(this, LoginLegacyActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -85,9 +85,9 @@ public class HistorialActivity extends AppCompatActivity {
 
         // 🔹 Datos estáticos
         listaTours = new ArrayList<>();
-        listaTours.add(new HistorialTour("Tour número 1", "Kuelap", "Reservado", "3h", 4, "165", R.drawable.kuelap));
-        listaTours.add(new HistorialTour("Tour número 2", "Lima", "En proceso", "3h", 4, "120", R.drawable.kuelap));
-        listaTours.add(new HistorialTour("Tour número 3", "Cusco", "Finalizado", "3h", 4, "120", R.drawable.kuelap));
+        listaTours.add(new HistorialTour("TourLegacy número 1", "Kuelap", "Reservado", "3h", 4, "165", R.drawable.kuelap));
+        listaTours.add(new HistorialTour("TourLegacy número 2", "Lima", "En proceso", "3h", 4, "120", R.drawable.kuelap));
+        listaTours.add(new HistorialTour("TourLegacy número 3", "Cusco", "Finalizado", "3h", 4, "120", R.drawable.kuelap));
 
         // ⚠️ IMPORTANTE: pasar context en el adapter
         adapter = new HistorialAdapter(listaTours, this);

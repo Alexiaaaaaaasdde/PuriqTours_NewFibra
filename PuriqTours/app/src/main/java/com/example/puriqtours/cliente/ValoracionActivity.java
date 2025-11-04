@@ -33,7 +33,7 @@ public class ValoracionActivity extends AppCompatActivity {
 
             // 🔹 Mostrar en un Toast (solo para prueba visual)
             Toast.makeText(this,
-                    "Tour: " + estrellasTour + "★ | Servicios: " + estrellasServicios + "★ | Guía: " + estrellasGuia + "★",
+                    "TourLegacy: " + estrellasTour + "★ | Servicios: " + estrellasServicios + "★ | Guía: " + estrellasGuia + "★",
                     Toast.LENGTH_LONG).show();
 
             // 🔹 Mostrar popup de confirmación

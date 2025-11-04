@@ -74,7 +74,7 @@
 
             </LinearLayout>
 
-            <!-- Card del tour -->
+            <!-- Card del tourLegacy -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -190,7 +190,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:textColor="#2B746C"
-                    android:text="Cancelación gratuita antes de las 09:00 del 16 de Marzo (hora local del tour)"
+                    android:text="Cancelación gratuita antes de las 09:00 del 16 de Marzo (hora local del tourLegacy)"
                     android:textSize="13sp"/>
             </LinearLayout>
 

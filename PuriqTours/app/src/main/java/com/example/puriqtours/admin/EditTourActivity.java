@@ -231,7 +231,7 @@ public class EditTourActivity extends AppCompatActivity {
         }
 
         // Simular guardado exitoso
-        Toast.makeText(this, "Tour actualizado exitosamente", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "TourLegacy actualizado exitosamente", Toast.LENGTH_SHORT).show();
         
         // Volver a la actividad anterior
         Intent resultIntent = new Intent();

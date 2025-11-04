@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/teal_700"
-        app:title="Crear nuevo tour"
+        app:title="Crear nuevo tourLegacy"
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="@color/white" />
@@ -40,11 +40,11 @@
                 android:textColor="@color/teal_700"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Hora de inicio del tour -->
+            <!-- Hora de inicio del tourLegacy -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hora de inicio del tour:"
+                android:text="Hora de inicio del tourLegacy:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -62,11 +62,11 @@
                 android:drawablePadding="8dp"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Duración del tour -->
+            <!-- Duración del tourLegacy -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Duración del tour:"
+                android:text="Duración del tourLegacy:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -75,7 +75,7 @@
                 android:id="@+id/etDuracion"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Ingrese la duración del tour"
+                android:hint="Ingrese la duración del tourLegacy"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
                 android:inputType="text"
@@ -119,11 +119,11 @@
                 android:inputType="text"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Fecha del tour -->
+            <!-- Fecha del tourLegacy -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha del tour:"
+                android:text="Fecha del tourLegacy:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -132,7 +132,7 @@
                 android:id="@+id/etFechaTour"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Seleccione la fecha del tour"
+                android:hint="Seleccione la fecha del tourLegacy"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
                 android:focusable="false"
@@ -228,7 +228,7 @@
                 android:orientation="vertical"
                 android:layout_marginBottom="24dp" />
 
-            <!-- Botón Crear Tour -->
+            <!-- Botón Crear TourLegacy -->
             <Button
                 android:id="@+id/btnCrearTour"
                 android:layout_width="match_parent"

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.puriqtours.login.LoginActivity;
+import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -76,7 +76,7 @@ public class DetalleTourActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_tours) {
-                startActivity(new Intent(this, LoginActivity.class));
+                startActivity(new Intent(this, LoginLegacyActivity.class));
                 overridePendingTransition(0,0);
                 return true;
 

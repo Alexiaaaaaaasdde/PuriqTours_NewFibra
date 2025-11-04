@@ -149,7 +149,7 @@ public class TourDetailActivity extends AppCompatActivity {
         
         if (requestCode == 300 && resultCode == RESULT_OK) {
             if (data != null && data.getBooleanExtra("tour_updated", false)) {
-                Toast.makeText(this, "Tour actualizado correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "TourLegacy actualizado correctamente", Toast.LENGTH_SHORT).show();
                 
                 // Recargar los datos del tour
                 loadTourData();

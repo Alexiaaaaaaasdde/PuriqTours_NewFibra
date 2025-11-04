@@ -35,8 +35,8 @@ public class ToursFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         lista = new ArrayList<>();
-        lista.add(new TourGuia("Tour 1", "Esta es la descripción completa de la solicitud 1", R.drawable.machupicchu, "Lima", "18/09/2025", LocalTime.of(18,0), LocalTime.of(19,0)));
-        lista.add(new TourGuia("Tour 2", "Texto laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaargo de descripción de la solicitud 2", R.drawable.machupicchu, "Cusco", "26/09/2025", LocalTime.of(7,0), LocalTime.of(17,0)));
+        lista.add(new TourGuia("TourLegacy 1", "Esta es la descripción completa de la solicitud 1", R.drawable.machupicchu, "Lima", "18/09/2025", LocalTime.of(18,0), LocalTime.of(19,0)));
+        lista.add(new TourGuia("TourLegacy 2", "Texto laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaargo de descripción de la solicitud 2", R.drawable.machupicchu, "Cusco", "26/09/2025", LocalTime.of(7,0), LocalTime.of(17,0)));
 
         TourGuiaAdapter adapter = new TourGuiaAdapter(lista, getParentFragmentManager());
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

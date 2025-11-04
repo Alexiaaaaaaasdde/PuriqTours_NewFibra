@@ -231,7 +231,7 @@ public class ToursAdminActivity extends AppCompatActivity {
         
         if (requestCode == 100 && resultCode == RESULT_OK) {
             if (data != null && data.getBooleanExtra("tour_created", false)) {
-                Toast.makeText(this, "¡Tour creado exitosamente!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "¡TourLegacy creado exitosamente!", Toast.LENGTH_LONG).show();
                 
                 // Obtener datos del tour creado
                 String tourName = data.getStringExtra("tour_name");
@@ -247,7 +247,7 @@ public class ToursAdminActivity extends AppCompatActivity {
             }
         } else if (requestCode == 200 && resultCode == RESULT_OK) {
             if (data != null && data.getBooleanExtra("tour_updated", false)) {
-                Toast.makeText(this, "¡Tour actualizado exitosamente!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "¡TourLegacy actualizado exitosamente!", Toast.LENGTH_LONG).show();
                 // Recargar la lista de tours
                 refreshToursList();
             }
@@ -262,7 +262,7 @@ public class ToursAdminActivity extends AppCompatActivity {
             // Log para debug
             System.out.println("DEBUG: Tours cargados: " + tourAdminList.size());
             for (TourAdmin tourAdmin : tourAdminList) {
-                System.out.println("DEBUG: Tour - " + tourAdmin.getName() + " | " + tourAdmin.getLocation());
+                System.out.println("DEBUG: TourLegacy - " + tourAdmin.getName() + " | " + tourAdmin.getLocation());
             }
         }
     }

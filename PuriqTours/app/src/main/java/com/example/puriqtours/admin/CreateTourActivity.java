@@ -310,7 +310,7 @@ public class CreateTourActivity extends AppCompatActivity {
             // Generar nuevo ID único
             int newId = (int) System.currentTimeMillis();
             
-            // Crear objeto Tour
+            // Crear objeto TourLegacy
             TourAdmin nuevoTourAdmin = new TourAdmin(
                 newId,
                 nombreTour,
@@ -326,7 +326,7 @@ public class CreateTourActivity extends AppCompatActivity {
             // Guardar en storage local
             storageHelper.addTour(nuevoTourAdmin);
             
-            Toast.makeText(this, "¡Tour creado exitosamente!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "¡TourLegacy creado exitosamente!", Toast.LENGTH_SHORT).show();
             
             // Retornar a ToursActivity con datos del tour creado
             Intent resultIntent = new Intent();
@@ -343,9 +343,9 @@ public class CreateTourActivity extends AppCompatActivity {
             View firstLocation = layoutUbicaciones.getChildAt(0);
             EditText etNombre = firstLocation.findViewById(R.id.etNombreUbicacion);
             String nombre = etNombre.getText().toString().trim();
-            return nombre.isEmpty() ? "Tour personalizado" : "Tour " + nombre;
+            return nombre.isEmpty() ? "TourLegacy personalizado" : "TourLegacy " + nombre;
         }
-        return "Tour personalizado";
+        return "TourLegacy personalizado";
     }
     
     private String getDestinationSummary() {
@@ -393,7 +393,7 @@ public class CreateTourActivity extends AppCompatActivity {
         }
         
         if (descripcion.length() == 0) {
-            descripcion.append("Tour personalizado con actividades únicas");
+            descripcion.append("TourLegacy personalizado con actividades únicas");
         }
         
         return descripcion.toString();

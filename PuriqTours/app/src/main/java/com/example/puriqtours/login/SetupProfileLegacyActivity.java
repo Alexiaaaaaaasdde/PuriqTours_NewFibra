@@ -1,4 +1,4 @@
-package com.example.puriqtours.cliente;
+package com.example.puriqtours.login;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,10 +15,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.puriqtours.login.LocalAuth;
+import com.example.puriqtours.entity.LocalAuth;
 import com.example.puriqtours.R;
 
-public class SetupProfileActivity extends AppCompatActivity {
+public class SetupProfileLegacyActivity extends AppCompatActivity {
 
     private ImageView imgProfile;
     private EditText etUsername;
@@ -36,7 +36,7 @@ public class SetupProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setup_profile);
+        setContentView(R.layout.activity_setup_profile_legacy);
 
         imgProfile = findViewById(R.id.imgProfile);
         etUsername = findViewById(R.id.etUsername);

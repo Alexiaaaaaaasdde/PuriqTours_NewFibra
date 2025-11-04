@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.R;
-import com.example.puriqtours.entity.Tour;
+import com.example.puriqtours.entity.TourLegacy;
 
 import java.util.List;
 
 public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.TourViewHolder> {
 
-    private List<Tour> tours;
+    private List<TourLegacy> tourLegacies;
 
-    public TourClienteAdapter(List<Tour> tours) {
-        this.tours = tours;
+    public TourClienteAdapter(List<TourLegacy> tourLegacies) {
+        this.tourLegacies = tourLegacies;
     }
 
     @NonNull
@@ -30,14 +30,14 @@ public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TourViewHolder holder, int position) {
-        Tour tour = tours.get(position);
-        holder.tourTitle.setText(tour.getTitle());
-        holder.tourLocation.setText(tour.getLocation());
-        holder.tourStatus.setText(tour.getStatus());
+        TourLegacy tourLegacy = tourLegacies.get(position);
+        holder.tourTitle.setText(tourLegacy.getTitle());
+        holder.tourLocation.setText(tourLegacy.getLocation());
+        holder.tourStatus.setText(tourLegacy.getStatus());
 
         // Configurar las estrellas según la calificación
-        if (tour.getRating() > 0) {
-            holder.tourRating.setText("★★★★★".substring(0, tour.getRating()));
+        if (tourLegacy.getRating() > 0) {
+            holder.tourRating.setText("★★★★★".substring(0, tourLegacy.getRating()));
         } else {
             holder.tourRating.setText("Sin calificar");
         }
@@ -45,7 +45,7 @@ public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.
 
     @Override
     public int getItemCount() {
-        return tours.size();
+        return tourLegacies.size();
     }
 
     public static class TourViewHolder extends RecyclerView.ViewHolder {
