@@ -14,8 +14,7 @@ public class Tour implements Serializable {
     private String status;
     private String startTime;   // Guardar como String (HH:mm)
     private String endTime;     // Guardar como String (HH:mm)
-    private Usuario cliente;
-    private Usuario guia;
+    private Usuario admin;
     private Integer rating;
 
     // 🔹 Constructor vacío requerido por Firebase
@@ -24,7 +23,7 @@ public class Tour implements Serializable {
     // 🔹 Constructor opcional
     public Tour(String idTour, String title, String desc, String location, String date,
                 Float price, String status, String startTime, String endTime,
-                Usuario cliente, Usuario guia, Integer rating) {
+                Usuario admin, Integer rating) {
         this.idTour = idTour;
         this.title = title;
         this.desc = desc;
@@ -34,8 +33,7 @@ public class Tour implements Serializable {
         this.status = status;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.cliente = cliente;
-        this.guia = guia;
+        this.admin = admin;
         this.rating = rating;
     }
 
@@ -112,20 +110,12 @@ public class Tour implements Serializable {
         this.endTime = endTime;
     }
 
-    public Usuario getCliente() {
-        return cliente;
+    public Usuario getAdmin() {
+        return admin;
     }
 
-    public void setCliente(Usuario cliente) {
-        this.cliente = cliente;
-    }
-
-    public Usuario getGuia() {
-        return guia;
-    }
-
-    public void setGuia(Usuario guia) {
-        this.guia = guia;
+    public void setAdmin(Usuario admin) {
+        this.admin = admin;
     }
 
     public Integer getRating() {
