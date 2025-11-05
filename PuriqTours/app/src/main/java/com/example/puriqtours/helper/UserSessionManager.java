@@ -2,8 +2,11 @@ package com.example.puriqtours.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
 import com.example.puriqtours.entity.Usuario;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class UserSessionManager {
@@ -83,6 +86,12 @@ public class UserSessionManager {
         return user;
     }
 
+    public void debugPrintUser() {
+        Map<String, ?> allPrefs = prefs.getAll();
+        for (Map.Entry<String, ?> entry : allPrefs.entrySet()) {
+            Log.d("USER_PREFS_DEBUG", entry.getKey() + " = " + entry.getValue());
+        }
+    }
 
     // 🔹 Verificar si hay sesión activa
     public boolean isLoggedIn() {

@@ -8,6 +8,7 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
 
+import com.example.puriqtours.SplashActivity;
 import com.example.puriqtours.entity.Usuario;
 import com.example.puriqtours.helper.UserSessionManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -93,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         session.saveUser(user);
 
                         Toast.makeText(this, "Bienvenido, " + user.getUsername(), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, MainGuiaActivity.class));
+                        startActivity(new Intent(this, SplashActivity.class));
                         finish();
                     } else {
                         // Si no existe documento Firestore, forzar logout (inconsistencia)

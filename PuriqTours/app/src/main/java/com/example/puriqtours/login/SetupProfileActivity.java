@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.puriqtours.SplashActivity;
 import com.example.puriqtours.entity.Usuario;
 import com.example.puriqtours.guia.MainGuiaActivity;
 import com.example.puriqtours.helper.UserSessionManager;
@@ -161,7 +162,7 @@ public class SetupProfileActivity extends AppCompatActivity {
                                     session.saveUser(user);
 
                                     Toast.makeText(this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(this, MainGuiaActivity.class));
+                                    startActivity(new Intent(this, SplashActivity.class));
                                     finish();
                                 } else {
                                     Toast.makeText(this, "No se encontró el usuario", Toast.LENGTH_SHORT).show();

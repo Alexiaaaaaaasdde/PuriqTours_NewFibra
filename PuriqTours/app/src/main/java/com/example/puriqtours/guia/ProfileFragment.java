@@ -97,8 +97,8 @@ public class ProfileFragment extends Fragment {
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Picasso.get()
                     .load(imageUrl)
-                    .placeholder(R.drawable.imagen_perfil) // imagen temporal
-                    .error(R.drawable.imagen_perfil) // si falla la carga
+                    .placeholder(R.drawable.profile_image_dummy) // imagen temporal
+                    .error(R.drawable.profile_image_dummy) // si falla la carga
                     .into(profileImage);
         }
 
