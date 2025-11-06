@@ -56,6 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
                 userData.put("doc_type", spnDocumentType.getSelectedItem().toString());
                 userData.put("document", etDocumentNumber.getText().toString().trim());
                 userData.put("rol", "Cliente");
+                userData.put("status", "Activo");
                 userData.put("language", "es");
 
                 Intent intent = new Intent(this, SetPasswordActivity.class);

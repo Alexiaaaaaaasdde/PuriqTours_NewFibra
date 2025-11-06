@@ -20,6 +20,7 @@ public class Usuario implements Serializable {
     private String address;
     private String language;
     private String rol;
+    private String status;
     private String profile_image;
     private List<String> activities;
 
@@ -28,7 +29,7 @@ public class Usuario implements Serializable {
 
     // 🔹 Constructor completo
     public Usuario(String uid, String username, String name, String last_name, String email,
-                   String birthdate, String doc_type, String document, String phone,
+                   String birthdate, String doc_type, String document, String phone, String status,
                    String address, String language, String rol, String profile_image, List<String> activities) {
         this.uid = uid;
         this.username = username;
@@ -42,6 +43,7 @@ public class Usuario implements Serializable {
         this.address = address;
         this.language = language;
         this.rol = rol;
+        this.setStatus(status);
         this.profile_image = profile_image;
         this.activities = activities;
     }
@@ -83,6 +85,9 @@ public class Usuario implements Serializable {
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
 
+    public String getStatus() {return status;}
+    public void setStatus(String status) {this.status = status;}
+
     public String getProfile_image() { return profile_image; }
     public void setProfile_image(String profile_image) { this.profile_image = profile_image; }
 
@@ -103,6 +108,7 @@ public class Usuario implements Serializable {
         map.put("address", address);
         map.put("language", language);
         map.put("rol", rol);
+        map.put("status", getStatus());
         map.put("profile_image", profile_image);
         map.put("activities", activities);
         return map;
