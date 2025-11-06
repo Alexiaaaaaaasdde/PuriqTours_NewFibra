@@ -14,7 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.helper.StorageHelper;
+import com.example.puriqtours.helper.FirestoreHelper;
+import com.example.puriqtours.helper.TourConverter;
 import com.example.puriqtours.entity.TourAdmin;
 
 import androidx.appcompat.app.AlertDialog;
@@ -44,8 +47,9 @@ public class CreateTourActivity extends AppCompatActivity {
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
     
-    // Storage helper para guardar el tour
+    // Helpers
     private StorageHelper storageHelper;
+    private FirestoreHelper firestoreHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,7 @@ public class CreateTourActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         storageHelper = new StorageHelper(this);
+        firestoreHelper = new FirestoreHelper();
 
         // Configurar toolbar
         setupToolbar();
@@ -301,40 +306,83 @@ public class CreateTourActivity extends AppCompatActivity {
     private void createTour() {
         if (validateForm()) {
             // Recopilar datos del formulario
-            String nombreTour = getFirstLocationName(); // Usar primera ubicación como nombre
-            String destino = getDestinationSummary(); // Resumen de ubicaciones
-            String descripcion = getDescriptionSummary(); // Resumen de actividades
-            String fecha = etFechaTour.getText().toString() + " • " + etDuracion.getText().toString();
-            double precio = Double.parseDouble(etCosto.getText().toString());
+            String nombreTour = getFirstLocationName();
+            String destino = getDestinationSummary();
+            String descripcion = getDescriptionSummary();
+            String fecha = etFechaTour.getText().toString();
+            String horaInicio = etHoraInicio.getText().toString();
+            String duracion = etDuracion.getText().toString();
+            String idiomas = etIdiomas.getText().toString();
+            Float precio = Float.parseFloat(etCosto.getText().toString());
             
-            // Generar nuevo ID único
-            int newId = (int) System.currentTimeMillis();
+            // Crear objeto Tour para Firestore
+            Tour nuevoTour = new Tour();
+            nuevoTour.setTitle(nombreTour);
+            nuevoTour.setLocation(destino);
+            nuevoTour.setDesc(descripcion);
+            nuevoTour.setDate(fecha);
+            nuevoTour.setStartTime(horaInicio);
+            nuevoTour.setEndTime(duracion); // Guardar duración en horaFin
+            nuevoTour.setIdiomas(idiomas);
+            nuevoTour.setPrice(precio);
+            nuevoTour.setStatus("disponible");
             
-            // Crear objeto TourLegacy
-            TourAdmin nuevoTourAdmin = new TourAdmin(
-                newId,
-                nombreTour,
-                destino,
-                descripcion,
-                fecha,
-                android.R.drawable.ic_menu_gallery, // Imagen por defecto
-                precio,
-                1, // Duración en días por defecto
-                "" // Sin guía asignado inicialmente
-            );
+            // Recopilar servicios extras
+            List<Tour.ServicioExtra> serviciosExtras = new ArrayList<>();
+            for (int i = 0; i < layoutServiciosExtra.getChildCount(); i++) {
+                View servicioView = layoutServiciosExtra.getChildAt(i);
+                EditText etNombreServicio = servicioView.findViewById(R.id.etNombreServicio);
+                EditText etPrecioServicio = servicioView.findViewById(R.id.etPrecioServicio);
+                EditText etDescripcionServicio = servicioView.findViewById(R.id.etDescripcionServicio);
+                
+                if (etNombreServicio != null && etNombreServicio.getText().length() > 0) {
+                    Tour.ServicioExtra servicio = new Tour.ServicioExtra();
+                    servicio.setNombre(etNombreServicio.getText().toString());
+                    servicio.setPrecio(etPrecioServicio.getText().toString());
+                    servicio.setDescripcion(etDescripcionServicio.getText().toString());
+                    serviciosExtras.add(servicio);
+                }
+            }
+            nuevoTour.setServiciosExtras(serviciosExtras);
             
-            // Guardar en storage local
-            storageHelper.addTour(nuevoTourAdmin);
+            // Recopilar ubicaciones/ruta
+            List<Tour.Ubicacion> ruta = new ArrayList<>();
+            for (int i = 0; i < layoutUbicaciones.getChildCount(); i++) {
+                View ubicacionView = layoutUbicaciones.getChildAt(i);
+                EditText etNombreUbicacion = ubicacionView.findViewById(R.id.etNombreUbicacion);
+                EditText etActividadesUbicacion = ubicacionView.findViewById(R.id.etActividadesUbicacion);
+                
+                if (etNombreUbicacion != null && etNombreUbicacion.getText().length() > 0) {
+                    Tour.Ubicacion ubicacion = new Tour.Ubicacion();
+                    ubicacion.setNombre(etNombreUbicacion.getText().toString());
+                    ubicacion.setActividades(etActividadesUbicacion != null ? etActividadesUbicacion.getText().toString() : "");
+                    ruta.add(ubicacion);
+                }
+            }
+            nuevoTour.setRuta(ruta);
             
-            Toast.makeText(this, "¡TourLegacy creado exitosamente!", Toast.LENGTH_SHORT).show();
-            
-            // Retornar a ToursActivity con datos del tour creado
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("tour_created", true);
-            resultIntent.putExtra("tour_name", nombreTour);
-            resultIntent.putExtra("tour_destination", destino);
-            setResult(RESULT_OK, resultIntent);
-            finish();
+            // Guardar en Firestore
+            firestoreHelper.createTour(nuevoTour, (success, tourId) -> {
+                if (success && tourId != null) {
+                    Toast.makeText(this, "¡Tour creado exitosamente en Firestore!", Toast.LENGTH_SHORT).show();
+                    
+                    // También guardar en local como backup
+                    TourAdmin tourAdmin = TourConverter.tourToTourAdmin(nuevoTour);
+                    if (tourAdmin != null) {
+                        storageHelper.addTour(tourAdmin);
+                    }
+                    
+                    // Retornar a ToursActivity
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("tour_created", true);
+                    resultIntent.putExtra("tour_name", nombreTour);
+                    resultIntent.putExtra("tour_destination", destino);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Error al crear tour en Firestore", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
     
@@ -343,9 +391,9 @@ public class CreateTourActivity extends AppCompatActivity {
             View firstLocation = layoutUbicaciones.getChildAt(0);
             EditText etNombre = firstLocation.findViewById(R.id.etNombreUbicacion);
             String nombre = etNombre.getText().toString().trim();
-            return nombre.isEmpty() ? "TourLegacy personalizado" : "TourLegacy " + nombre;
+            return nombre.isEmpty() ? "Tour personalizado" : "Tour " + nombre;
         }
-        return "TourLegacy personalizado";
+        return "Tour personalizado";
     }
     
     private String getDestinationSummary() {
@@ -393,7 +441,7 @@ public class CreateTourActivity extends AppCompatActivity {
         }
         
         if (descripcion.length() == 0) {
-            descripcion.append("TourLegacy personalizado con actividades únicas");
+            descripcion.append("Tour personalizado con actividades únicas");
         }
         
         return descripcion.toString();

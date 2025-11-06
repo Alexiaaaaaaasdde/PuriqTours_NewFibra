@@ -58,7 +58,7 @@ public class StorageHelper {
     public void updateTour(TourAdmin updatedTourAdmin) {
         List<TourAdmin> tourAdmins = loadTours();
         for (int i = 0; i < tourAdmins.size(); i++) {
-            if (tourAdmins.get(i).getId() == updatedTourAdmin.getId()) {
+            if (tourAdmins.get(i).getId().equals(updatedTourAdmin.getId())) {
                 tourAdmins.set(i, updatedTourAdmin);
                 break;
             }
@@ -66,9 +66,9 @@ public class StorageHelper {
         saveTours(tourAdmins);
     }
     
-    public void deleteTour(int tourId) {
+    public void deleteTour(String tourId) {
         List<TourAdmin> tourAdmins = loadTours();
-        tourAdmins.removeIf(tourAdmin -> tourAdmin.getId() == tourId);
+        tourAdmins.removeIf(tourAdmin -> tourAdmin.getId().equals(tourId));
         saveTours(tourAdmins);
     }
     
@@ -76,9 +76,9 @@ public class StorageHelper {
         List<TourAdmin> defaultTourAdmins = new ArrayList<>();
         // Usar un ID de drawable genérico o 0 si no hay imagen específica
         int defaultImage = android.R.drawable.ic_menu_gallery; // Drawable del sistema
-        defaultTourAdmins.add(new TourAdmin(1, "TourLegacy Machu Picchu", "Cusco", "Explora la ciudadela inca más famosa del mundo", "Hoy • 3 h", defaultImage, 299.0, 1, "Juan Pérez"));
-        defaultTourAdmins.add(new TourAdmin(2, "TourLegacy Valle Sagrado", "Cusco", "Descubre los pueblos y sitios arqueológicos del Valle Sagrado", "Mañana • 3 h", defaultImage, 199.0, 1, ""));
-        defaultTourAdmins.add(new TourAdmin(3, "City TourLegacy Lima", "Lima", "Recorre el centro histórico de Lima", "23/08/2026 • 3 h", defaultImage, 89.0, 1, ""));
+        defaultTourAdmins.add(new TourAdmin("1", "Tour Machu Picchu", "Cusco", "Explora la ciudadela inca más famosa del mundo", "Hoy • 3 h", defaultImage, 299.0, 1, "Juan Pérez"));
+        defaultTourAdmins.add(new TourAdmin("2", "Tour Valle Sagrado", "Cusco", "Descubre los pueblos y sitios arqueológicos del Valle Sagrado", "Mañana • 3 h", defaultImage, 199.0, 1, ""));
+        defaultTourAdmins.add(new TourAdmin("3", "City Tour Lima", "Lima", "Recorre el centro histórico de Lima", "23/08/2026 • 3 h", defaultImage, 89.0, 1, ""));
         return defaultTourAdmins;
     }
     
@@ -178,9 +178,9 @@ public class StorageHelper {
     private List<ChatAdmin> createDefaultChats() {
         List<ChatAdmin> defaultChatAdmins = new ArrayList<>();
         defaultChatAdmins.add(new ChatAdmin(1, "María García",
-            "¿Tienen disponibilidad para Machu Picchu?", "10:30 AM", true, 2, "TourLegacy Machu Picchu"));
+            "¿Tienen disponibilidad para Machu Picchu?", "10:30 AM", true, 2, "Tour Machu Picchu"));
         defaultChatAdmins.add(new ChatAdmin(2, "Carlos López",
-            "Gracias por la información", "9:15 AM", false, 0, "City TourLegacy Lima"));
+            "Gracias por la información", "9:15 AM", false, 0, "City Tour Lima"));
         defaultChatAdmins.add(new ChatAdmin(3, "Ana Martínez",
             "¿El tour incluye almuerzo?", "Yesterday", true, 1, "Valle Sagrado"));
         return defaultChatAdmins;
@@ -227,7 +227,7 @@ public class StorageHelper {
                 defaultMessages.add(new ChatAdminActivity.ChatMessage("Serían 4 personas adultas", false, "10:30 AM"));
                 break;
             case "2": // Carlos López
-                defaultMessages.add(new ChatAdminActivity.ChatMessage("Hola, me interesa el City TourLegacy por Lima", false, "9:10 AM"));
+                defaultMessages.add(new ChatAdminActivity.ChatMessage("Hola, me interesa el City Tour por Lima", false, "9:10 AM"));
                 defaultMessages.add(new ChatAdminActivity.ChatMessage("Perfecto Carlos, te envío la información", true, "9:12 AM"));
                 defaultMessages.add(new ChatAdminActivity.ChatMessage("El tour incluye transporte y guía", true, "9:13 AM"));
                 defaultMessages.add(new ChatAdminActivity.ChatMessage("Gracias por la información", false, "9:15 AM"));

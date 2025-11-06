@@ -93,7 +93,7 @@
                 android:layout_marginBottom="32dp"
                 android:contentDescription="Logo empresa"/>
 
-            <!-- Últimos tourLegacies -->
+            <!-- Últimos tours -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                     android:layout_width="366dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Últimos tourLegacies"
+                    android:text="Últimos tours"
                     android:textColor="#009688"
                     android:textSize="16sp"
                     android:textStyle="normal" />
@@ -121,7 +121,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Card del tourLegacy -->
+            <!-- Card del tour -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardLatestTour"
                 android:layout_width="match_parent"
@@ -164,7 +164,7 @@
 
                         <TextView
                             android:id="@+id/tourDescription"
-                            android:text="Descripción del lugar donde se vaa realizar el tourLegacy"
+                            android:text="Descripción del lugar donde se va a realizar el tour"
                             android:textSize="12sp"
                             android:textColor="#666"
                             android:layout_width="wrap_content"

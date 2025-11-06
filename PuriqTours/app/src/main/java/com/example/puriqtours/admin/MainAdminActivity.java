@@ -4,28 +4,55 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.puriqtours.helper.NotificationHelper;
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.TourAdmin;
+import com.example.puriqtours.entity.GuideAdmin;
+import com.example.puriqtours.helper.FirestoreHelper;
+import com.example.puriqtours.helper.NotificationHelper;
+import com.example.puriqtours.helper.TourConverter;
+import com.example.puriqtours.helper.GuideConverter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainAdminActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainAdminActivity";
     private NotificationHelper notificationHelper;
+    private FirestoreHelper firestoreHelper;
+    
+    // Vistas de tour
+    private CardView cardLatestTour;
+    private TextView tourTitle;
+    private TextView tourDescription;
+    private ImageView tourImage;
+    
+    // Contenedor de guías
+    private LinearLayout guidesContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
+        
+        // Inicializar Firestore helper
+        firestoreHelper = new FirestoreHelper();
         
         // Inicializar sistema de notificaciones
         initializeNotificationSystem();
@@ -36,6 +63,9 @@ public class MainAdminActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Inicializar vistas
+        initViews();
+        
         // 🔹 Icono de notificaciones en toolbar (probar todas las notificaciones)
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
@@ -82,16 +112,187 @@ public class MainAdminActivity extends AppCompatActivity {
 
         // 🔹 BottomNavigation
         setupBottomNavigation();
+        
+        // 🔹 Cargar datos desde Firestore
+        loadLatestTour();
+        loadLatestGuides();
+    }
+    
+    private void initViews() {
+        // Vistas de tour
+        cardLatestTour = findViewById(R.id.cardLatestTour);
+        tourTitle = findViewById(R.id.tourTitle);
+        tourDescription = findViewById(R.id.tourDescription);
+        tourImage = findViewById(R.id.tourImage);
+        
+        // Contenedor de guías
+        guidesContainer = findViewById(R.id.guidesContainer);
+    }
+    
+    private void loadLatestTour() {
+        firestoreHelper.loadTours(tours -> {
+            if (tours != null && !tours.isEmpty()) {
+                // Obtener el último tour creado (el más reciente)
+                com.example.puriqtours.entity.Tour latestTour = tours.get(tours.size() - 1);
+                
+                // Convertir a TourAdmin para mostrar en UI
+                TourAdmin tourAdmin = TourConverter.tourToTourAdmin(latestTour);
+                
+                // Mostrar datos en la card
+                tourTitle.setText(tourAdmin.getName());
+                tourDescription.setText(tourAdmin.getDescription());
+                
+                // Configurar imagen (usar la imagen por defecto por ahora)
+                tourImage.setImageResource(R.drawable.kuelap);
+                
+                // Configurar click para ir a detalles
+                cardLatestTour.setOnClickListener(v -> {
+                    Intent intent = new Intent(MainAdminActivity.this, TourDetailActivity.class);
+                    intent.putExtra("tour_id", tourAdmin.getId());
+                    intent.putExtra("tour_name", tourAdmin.getName());
+                    startActivity(intent);
+                });
+                
+                Log.d(TAG, "Tour más reciente cargado: " + tourAdmin.getName());
+            } else {
+                Log.d(TAG, "No hay tours disponibles");
+                tourTitle.setText("No hay tours");
+                tourDescription.setText("Crea tu primer tour");
+                cardLatestTour.setOnClickListener(null);
+            }
+        });
+    }
+    
+    private void loadLatestGuides() {
+        firestoreHelper.loadGuides(usuarios -> {
+            if (usuarios != null && !usuarios.isEmpty()) {
+                // Convertir Usuarios a GuideAdmins
+                List<GuideAdmin> guideAdmins = GuideConverter.usuariosToGuideAdmins(usuarios);
+                
+                if (!guideAdmins.isEmpty()) {
+                    // Limpiar contenedor
+                    guidesContainer.removeAllViews();
+                    
+                    // Obtener las últimas 3 guías (o las que hayan disponibles)
+                    int guidesToShow = Math.min(3, guideAdmins.size());
+                    List<GuideAdmin> latestGuides = guideAdmins.subList(
+                        Math.max(0, guideAdmins.size() - guidesToShow), 
+                        guideAdmins.size()
+                    );
+                    
+                    // Crear vista para cada guía
+                    for (GuideAdmin guide : latestGuides) {
+                        addGuideView(guide);
+                    }
+                    
+                    Log.d(TAG, "Guías cargadas: " + latestGuides.size());
+                } else {
+                    Log.d(TAG, "No hay guías disponibles");
+                    // Mantener el layout por defecto si no hay guías
+                }
+            } else {
+                Log.d(TAG, "No hay guías disponibles");
+                // Mantener el layout por defecto si no hay guías
+            }
+        });
+    }
+    
+    private void addGuideView(GuideAdmin guide) {
+        // Crear layout vertical para cada guía
+        LinearLayout guideLayout = new LinearLayout(this);
+        guideLayout.setOrientation(LinearLayout.VERTICAL);
+        guideLayout.setGravity(android.view.Gravity.CENTER);
+        
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            1.0f
+        );
+        params.setMargins(8, 0, 8, 0);
+        guideLayout.setLayoutParams(params);
+        
+        // ImageView para la foto del guía
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+            (int) (60 * getResources().getDisplayMetrics().density),
+            (int) (60 * getResources().getDisplayMetrics().density)
+        );
+        imageParams.setMargins(0, 0, 0, 8);
+        imageView.setLayoutParams(imageParams);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setImageResource(R.drawable.imagen_perfil); // Imagen por defecto
+        
+        // TextView para el nombre
+        TextView nameText = new TextView(this);
+        nameText.setText(guide.getName());
+        nameText.setTextSize(12);
+        nameText.setTextColor(getResources().getColor(android.R.color.black, null));
+        nameText.setGravity(android.view.Gravity.CENTER);
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        textParams.setMargins(0, 0, 0, 4);
+        nameText.setLayoutParams(textParams);
+        
+        // View para el indicador de disponibilidad
+        View indicator = new View(this);
+        LinearLayout.LayoutParams indicatorParams = new LinearLayout.LayoutParams(
+            (int) (12 * getResources().getDisplayMetrics().density),
+            (int) (12 * getResources().getDisplayMetrics().density)
+        );
+        indicatorParams.setMargins(0, 4, 0, 0);
+        indicator.setLayoutParams(indicatorParams);
+        
+        // Color según disponibilidad
+        if (guide.isAvailable()) {
+            indicator.setBackgroundColor(getResources().getColor(R.color.teal_700, null));
+        } else {
+            indicator.setBackgroundColor(getResources().getColor(R.color.gray_medium, null));
+        }
+        
+        // Agregar vistas al layout
+        guideLayout.addView(imageView);
+        guideLayout.addView(nameText);
+        guideLayout.addView(indicator);
+        
+        // Agregar al contenedor principal
+        guidesContainer.addView(guideLayout);
     }
 
     private void setupToolbar() {
         com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(v -> {
-                // TODO: Implementar cerrar sesión
-                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
+                // Cerrar sesión
+                cerrarSesion();
             });
         }
+    }
+    
+    private void cerrarSesion() {
+        // Mostrar diálogo de confirmación
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> {
+                    // 1. Cerrar sesión de Firebase Authentication
+                    FirebaseAuth.getInstance().signOut();
+                    
+                    // 2. Limpiar datos de sesión en SharedPreferences
+                    android.content.SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    prefs.edit().clear().apply();
+                    
+                    // 3. Ir al login
+                    Intent intent = new Intent(MainAdminActivity.this, com.example.puriqtours.login.LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                    
+                    Toast.makeText(this, "Sesión cerrada exitosamente", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 
     private void setupBottomNavigation() {
@@ -120,6 +321,14 @@ public class MainAdminActivity extends AppCompatActivity {
                 return false;
             });
         }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Recargar datos cuando volvamos a esta actividad
+        loadLatestTour();
+        loadLatestGuides();
     }
     
     private void initializeNotificationSystem() {

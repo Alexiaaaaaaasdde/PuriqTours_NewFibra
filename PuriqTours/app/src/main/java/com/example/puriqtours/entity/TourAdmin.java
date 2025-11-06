@@ -1,7 +1,7 @@
 package com.example.puriqtours.entity;
 
 public class TourAdmin {
-    private int id;
+    private String id; // Cambiado de int a String para Firestore
     private String name;
     private String description;
     private String location;
@@ -14,7 +14,7 @@ public class TourAdmin {
 
     public TourAdmin() {}
 
-    public TourAdmin(int id, String name, String description, String location, double price, int duration) {
+    public TourAdmin(String id, String name, String description, String location, double price, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -24,7 +24,7 @@ public class TourAdmin {
         this.isAvailable = true;
     }
 
-    public TourAdmin(int id, String name, String location, String description, String date, int imageResource, double price, int duration, String guideAssigned) {
+    public TourAdmin(String id, String name, String location, String description, String date, int imageResource, double price, int duration, String guideAssigned) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -38,8 +38,8 @@ public class TourAdmin {
     }
 
     // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

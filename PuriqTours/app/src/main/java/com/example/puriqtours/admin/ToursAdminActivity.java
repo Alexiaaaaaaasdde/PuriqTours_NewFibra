@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.helper.NotificationHelper;
 import com.example.puriqtours.R;
 import com.example.puriqtours.helper.StorageHelper;
+import com.example.puriqtours.helper.FirestoreHelper;
+import com.example.puriqtours.helper.TourConverter;
 import com.example.puriqtours.adapter.TourAdapter;
 import com.example.puriqtours.cliente.ProfileActivity;
 import com.example.puriqtours.entity.TourAdmin;
@@ -40,6 +43,7 @@ public class ToursAdminActivity extends AppCompatActivity {
     private FloatingActionButton fabCrearTour;
     private TextInputEditText searchBar;
     private StorageHelper storageHelper;
+    private FirestoreHelper firestoreHelper;
     private NotificationHelper notificationHelper;
 
     @Override
@@ -81,10 +85,38 @@ public class ToursAdminActivity extends AppCompatActivity {
 
     private void createSampleData() {
         storageHelper = new StorageHelper(this);
+        firestoreHelper = new FirestoreHelper();
         notificationHelper = new NotificationHelper(this);
         
-        // Cargar tours desde SharedPreferences
-        tourAdminList = storageHelper.loadTours();
+        // Inicializar lista vacía
+        tourAdminList = new ArrayList<>();
+        
+        // Cargar tours desde Firestore
+        loadToursFromFirestore();
+    }
+    
+    private void loadToursFromFirestore() {
+        firestoreHelper.loadTours(tours -> {
+            if (tours != null && !tours.isEmpty()) {
+                // Convertir Tours de Firestore a TourAdmins para el adapter
+                tourAdminList = TourConverter.toursToTourAdmins(tours);
+                
+                if (tourAdapter != null) {
+                    tourAdapter.updateTours(tourAdminList);
+                }
+                
+                Log.d("ToursAdmin", "Tours cargados desde Firestore: " + tourAdminList.size());
+            } else {
+                // No hay tours en Firestore, mostrar lista vacía
+                tourAdminList.clear();
+                
+                if (tourAdapter != null) {
+                    tourAdapter.updateTours(tourAdminList);
+                }
+                
+                Log.d("ToursAdmin", "No hay tours en Firestore");
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -202,7 +234,7 @@ public class ToursAdminActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         if (bottomNavigation != null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_dashboard); // No hay item específico para tours
+            // No seleccionar ningún item por defecto en esta vista (no hay nav_tours)
             
             bottomNavigation.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
@@ -215,8 +247,12 @@ public class ToursAdminActivity extends AppCompatActivity {
                     startActivity(new Intent(this, ReportsActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
+                } else if (id == R.id.nav_chat) {
+                    startActivity(new Intent(this, ChatListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileActivity.class));
+                    startActivity(new Intent(this, ProfileAdminActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }
@@ -231,7 +267,7 @@ public class ToursAdminActivity extends AppCompatActivity {
         
         if (requestCode == 100 && resultCode == RESULT_OK) {
             if (data != null && data.getBooleanExtra("tour_created", false)) {
-                Toast.makeText(this, "¡TourLegacy creado exitosamente!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "¡Tour creado exitosamente!", Toast.LENGTH_LONG).show();
                 
                 // Obtener datos del tour creado
                 String tourName = data.getStringExtra("tour_name");
@@ -246,24 +282,20 @@ public class ToursAdminActivity extends AppCompatActivity {
                 refreshToursList();
             }
         } else if (requestCode == 200 && resultCode == RESULT_OK) {
-            if (data != null && data.getBooleanExtra("tour_updated", false)) {
-                Toast.makeText(this, "¡TourLegacy actualizado exitosamente!", Toast.LENGTH_LONG).show();
-                // Recargar la lista de tours
-                refreshToursList();
+            if (data != null) {
+                if (data.getBooleanExtra("tour_updated", false)) {
+                    Toast.makeText(this, "¡Tour actualizado exitosamente!", Toast.LENGTH_LONG).show();
+                    refreshToursList();
+                } else if (data.getBooleanExtra("tour_deleted", false)) {
+                    Toast.makeText(this, "¡Tour eliminado exitosamente!", Toast.LENGTH_LONG).show();
+                    refreshToursList();
+                }
             }
         }
     }
     
     private void refreshToursList() {
-        if (storageHelper != null && tourAdapter != null) {
-            tourAdminList = storageHelper.loadTours();
-            tourAdapter.updateTours(tourAdminList);
-            
-            // Log para debug
-            System.out.println("DEBUG: Tours cargados: " + tourAdminList.size());
-            for (TourAdmin tourAdmin : tourAdminList) {
-                System.out.println("DEBUG: TourLegacy - " + tourAdmin.getName() + " | " + tourAdmin.getLocation());
-            }
-        }
+        // Recargar tours desde Firestore
+        loadToursFromFirestore();
     }
 }

@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/teal_700"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:title="Mis lista de tourLegacies"
+            app:title="Mis lista de tours"
             app:titleCentered="false"
             app:titleTextColor="@color/white"
             app:navigationIcon="@drawable/ic_logout"
@@ -73,7 +73,7 @@
                         android:id="@+id/searchBar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Buscar tourLegacies"
+                        android:hint="Buscar tours"
                         android:textColor="@android:color/black"
                         android:textColorHint="@color/gray_medium"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -89,7 +89,7 @@
                     android:layout_gravity="end"
                     android:layout_marginBottom="16dp"/>
 
-                <!-- Lista de tourLegacies con RecyclerView -->
+                <!-- Lista de tours con RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewTours"
                     android:layout_width="match_parent"

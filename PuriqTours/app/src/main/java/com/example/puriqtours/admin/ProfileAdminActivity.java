@@ -15,18 +15,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.MainActivity;
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.helper.FirestoreHelper;
+import com.example.puriqtours.helper.UserSessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileAdminActivity extends AppCompatActivity {
 
-    private SharedPreferences sharedPreferences;
-    private static final String PREFS_NAME = "CompanyProfile";
-    private static final String KEY_PROFILE_COMPLETED = "profile_completed";
-    private static final String KEY_COMPANY_NAME = "company_name";
-    private static final String KEY_PHONE = "phone";
-    private static final String KEY_EMAIL = "email";
+    // Firebase helpers
+    private FirestoreHelper firestoreHelper;
+    private UserSessionManager sessionManager;
+    private String currentAdminUid;
+    private Usuario currentAdmin;
 
     // Views para formulario
     private ScrollView completeProfileView;
@@ -46,10 +49,23 @@ public class ProfileAdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_admin);
 
-        // Inicializar SharedPreferences
-        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        // Inicializar Firebase helpers
+        firestoreHelper = new FirestoreHelper();
+        sessionManager = new UserSessionManager(this);
+        
+        // Obtener UID del usuario actual
+        currentAdminUid = sessionManager.getUid();
 
         initViews();
+        
+        // Ocultar ambas vistas inicialmente para evitar el flash
+        if (completeProfileView != null) {
+            completeProfileView.setVisibility(View.GONE);
+        }
+        if (profileView != null) {
+            profileView.setVisibility(View.GONE);
+        }
+        
         setupBottomNavigation();
         checkProfileStatus();
     }
@@ -105,22 +121,65 @@ public class ProfileAdminActivity extends AppCompatActivity {
         com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(v -> {
-                // TODO: Implementar cerrar sesión
-                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
+                // Cerrar sesión
+                cerrarSesion();
             });
         }
     }
+    
+    private void cerrarSesion() {
+        // Mostrar diálogo de confirmación
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> {
+                    // 1. Cerrar sesión de Firebase Authentication
+                    FirebaseAuth.getInstance().signOut();
+                    
+                    // 2. Limpiar datos de sesión en SharedPreferences
+                    android.content.SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    prefs.edit().clear().apply();
+                    
+                    // 3. Ir al login
+                    Intent intent = new Intent(ProfileAdminActivity.this, com.example.puriqtours.login.LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                    
+                    Toast.makeText(this, "Sesión cerrada exitosamente", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
 
     private void checkProfileStatus() {
-        boolean profileCompleted = sharedPreferences.getBoolean(KEY_PROFILE_COMPLETED, false);
-        
-        if (profileCompleted) {
-            // Mostrar perfil completo
-            showCompletedProfile();
-        } else {
-            // Mostrar formulario para completar perfil
+        if (currentAdminUid == null || currentAdminUid.isEmpty()) {
+            Toast.makeText(this, "Error: Usuario no identificado", Toast.LENGTH_SHORT).show();
             showCompleteProfileForm();
+            return;
         }
+        
+        // Cargar perfil desde Firestore
+        firestoreHelper.loadAdminProfile(currentAdminUid, admin -> {
+            if (admin != null && admin.getRol() != null && admin.getRol().equals("Admin")) {
+                currentAdmin = admin;
+                // Verificar si el perfil tiene datos completos
+                if (isProfileComplete(admin)) {
+                    showCompletedProfile();
+                } else {
+                    showCompleteProfileForm();
+                }
+            } else {
+                Toast.makeText(this, "Error: No se pudo cargar el perfil", Toast.LENGTH_SHORT).show();
+                showCompleteProfileForm();
+            }
+        });
+    }
+    
+    private boolean isProfileComplete(Usuario admin) {
+        return admin.getName() != null && !admin.getName().isEmpty() &&
+               admin.getPhone() != null && !admin.getPhone().isEmpty() &&
+               admin.getEmail() != null && !admin.getEmail().isEmpty();
     }
 
     private void showCompleteProfileForm() {
@@ -135,14 +194,21 @@ public class ProfileAdminActivity extends AppCompatActivity {
     }
 
     private void loadProfileData() {
-        String companyName = sharedPreferences.getString(KEY_COMPANY_NAME, "Perú Aventura");
-        String phone = sharedPreferences.getString(KEY_PHONE, "987654321");
-        String email = sharedPreferences.getString(KEY_EMAIL, "email123@gmail.com");
+        if (currentAdmin == null) {
+            Toast.makeText(this, "Error al cargar perfil", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Cargar datos del usuario actual desde Firestore
+        String companyName = currentAdmin.getName() != null ? currentAdmin.getName() : "Sin nombre";
+        String phone = currentAdmin.getPhone() != null ? currentAdmin.getPhone() : "Sin teléfono";
+        String email = currentAdmin.getEmail() != null ? currentAdmin.getEmail() : "Sin correo";
+        String address = currentAdmin.getAddress() != null ? currentAdmin.getAddress() : "Sin dirección";
 
         tvCompanyName.setText(companyName);
         tvPhone.setText(phone);
         tvEmail.setText(email);
-        tvAddress.setText("Santander 165"); // Dirección fija actualizada
+        tvAddress.setText(address);
         
         // Resetear modo de edición
         exitEditMode();
@@ -171,28 +237,34 @@ public class ProfileAdminActivity extends AppCompatActivity {
         String companyName = etEditCompanyName.getText().toString().trim();
         String phone = etEditPhone.getText().toString().trim();
         String email = etEditEmail.getText().toString().trim();
+        String address = tvAddress.getText().toString(); // La dirección no se edita por ahora
 
         // Validaciones usando los campos de edición
         if (!validateInputs(companyName, phone, email, etEditCompanyName, etEditPhone, etEditEmail)) {
             return;
         }
 
-        // Guardar en SharedPreferences
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_COMPANY_NAME, companyName);
-        editor.putString(KEY_PHONE, phone);
-        editor.putString(KEY_EMAIL, email);
-        editor.apply();
+        // Guardar en Firestore
+        firestoreHelper.updateAdminProfile(currentAdminUid, companyName, phone, email, address, success -> {
+            if (success) {
+                // Actualizar objeto local
+                currentAdmin.setName(companyName);
+                currentAdmin.setPhone(phone);
+                currentAdmin.setEmail(email);
+                
+                // Actualizar vistas
+                tvCompanyName.setText(companyName);
+                tvPhone.setText(phone);
+                tvEmail.setText(email);
 
-        // Actualizar vistas
-        tvCompanyName.setText(companyName);
-        tvPhone.setText(phone);
-        tvEmail.setText(email);
-
-        Toast.makeText(this, "Perfil actualizado exitosamente", Toast.LENGTH_SHORT).show();
-        
-        // Salir del modo de edición
-        exitEditMode();
+                Toast.makeText(this, "Perfil actualizado exitosamente", Toast.LENGTH_SHORT).show();
+                
+                // Salir del modo de edición
+                exitEditMode();
+            } else {
+                Toast.makeText(this, "Error al actualizar perfil", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void saveProfile() {
@@ -205,18 +277,27 @@ public class ProfileAdminActivity extends AppCompatActivity {
             return;
         }
 
-        // Guardar en SharedPreferences
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(KEY_PROFILE_COMPLETED, true);
-        editor.putString(KEY_COMPANY_NAME, companyName);
-        editor.putString(KEY_PHONE, phone);
-        editor.putString(KEY_EMAIL, email);
-        editor.apply();
+        // Guardar en Firestore
+        String address = currentAdmin != null && currentAdmin.getAddress() != null ? 
+                         currentAdmin.getAddress() : "Sin dirección";
+        
+        firestoreHelper.updateAdminProfile(currentAdminUid, companyName, phone, email, address, success -> {
+            if (success) {
+                // Actualizar objeto local
+                if (currentAdmin != null) {
+                    currentAdmin.setName(companyName);
+                    currentAdmin.setPhone(phone);
+                    currentAdmin.setEmail(email);
+                }
+                
+                Toast.makeText(this, "Perfil guardado exitosamente", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(this, "Perfil guardado exitosamente", Toast.LENGTH_SHORT).show();
-
-        // Cambiar a vista de perfil completo
-        showCompletedProfile();
+                // Cambiar a vista de perfil completo
+                showCompletedProfile();
+            } else {
+                Toast.makeText(this, "Error al guardar perfil", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private boolean validateInputs(String companyName, String phone, String email) {
@@ -282,7 +363,7 @@ public class ProfileAdminActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_dashboard) {
-                    startActivity(new Intent(this, MainActivity.class));
+                    startActivity(new Intent(this, MainAdminActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (id == R.id.nav_reports) {

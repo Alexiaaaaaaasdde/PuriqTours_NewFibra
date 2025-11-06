@@ -2,6 +2,7 @@ package com.example.puriqtours.entity;
 
 import com.google.firebase.firestore.Exclude;
 import java.io.Serializable;
+import java.util.List;
 
 public class Tour implements Serializable {
 
@@ -16,6 +17,67 @@ public class Tour implements Serializable {
     private String endTime;     // Guardar como String (HH:mm)
     private Usuario admin;
     private Integer rating;
+    
+    // Campos adicionales para EditTourActivity
+    private String idiomas;
+    private List<ServicioExtra> serviciosExtras;
+    private List<Ubicacion> ruta;
+
+    // Clases internas para servicios extras y ubicaciones
+    public static class ServicioExtra implements Serializable {
+        private String nombre;
+        private String precio;
+        private String descripcion;
+
+        public ServicioExtra() {}
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getPrecio() {
+            return precio;
+        }
+
+        public void setPrecio(String precio) {
+            this.precio = precio;
+        }
+
+        public String getDescripcion() {
+            return descripcion;
+        }
+
+        public void setDescripcion(String descripcion) {
+            this.descripcion = descripcion;
+        }
+    }
+
+    public static class Ubicacion implements Serializable {
+        private String nombre;
+        private String actividades;
+
+        public Ubicacion() {}
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getActividades() {
+            return actividades;
+        }
+
+        public void setActividades(String actividades) {
+            this.actividades = actividades;
+        }
+    }
 
     // 🔹 Constructor vacío requerido por Firebase
     public Tour() {}
@@ -124,6 +186,30 @@ public class Tour implements Serializable {
 
     public void setRating(Integer rating) {
         this.rating = rating;
+    }
+
+    public String getIdiomas() {
+        return idiomas;
+    }
+
+    public void setIdiomas(String idiomas) {
+        this.idiomas = idiomas;
+    }
+
+    public List<ServicioExtra> getServiciosExtras() {
+        return serviciosExtras;
+    }
+
+    public void setServiciosExtras(List<ServicioExtra> serviciosExtras) {
+        this.serviciosExtras = serviciosExtras;
+    }
+
+    public List<Ubicacion> getRuta() {
+        return ruta;
+    }
+
+    public void setRuta(List<Ubicacion> ruta) {
+        this.ruta = ruta;
     }
 
     // 🔹 Excluir campos si no quieres que se guarden en Firebase

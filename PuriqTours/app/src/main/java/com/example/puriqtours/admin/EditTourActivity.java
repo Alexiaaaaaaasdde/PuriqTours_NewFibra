@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Tour;
+import com.example.puriqtours.helper.FirestoreHelper;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
@@ -26,11 +28,24 @@ public class EditTourActivity extends AppCompatActivity {
     private LinearLayout layoutServicios, layoutUbicaciones;
     private Button btnAgregarServicio, btnAgregarRuta, btnGuardarTour, btnCancelar;
     private Toolbar toolbar;
+    
+    private FirestoreHelper firestoreHelper;
+    private String tourId;
+    private Tour currentTour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_tour);
+
+        firestoreHelper = new FirestoreHelper();
+        tourId = getIntent().getStringExtra("tourId");
+        
+        if (tourId == null || tourId.isEmpty()) {
+            Toast.makeText(this, "Error: ID de tour no encontrado", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         initViews();
         setupToolbar();
@@ -64,21 +79,38 @@ public class EditTourActivity extends AppCompatActivity {
     }
 
     private void loadExistingData() {
-        // Cargar datos existentes del tour
-        etHoraInicio.setText("8:00 AM");
-        etDuracion.setText("6 horas");
-        etCosto.setText("30 soles");
-        etIdiomas.setText("Español - Inglés");
-        etFechaTour.setText("Abril 24, 2025");
+        // Cargar datos del tour desde Firestore
+        firestoreHelper.loadTourById(tourId, tour -> {
+            if (tour != null) {
+                currentTour = tour;
+                displayTourData(tour);
+            } else {
+                Toast.makeText(EditTourActivity.this, "Error al cargar el tour", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+    }
+    
+    private void displayTourData(Tour tour) {
+        etHoraInicio.setText(tour.getStartTime() != null ? tour.getStartTime() : "");
+        etDuracion.setText(tour.getEndTime() != null ? tour.getEndTime() : "");
+        etCosto.setText(tour.getPrice() != null ? String.valueOf(tour.getPrice()) : "");
+        etIdiomas.setText(tour.getIdiomas() != null ? tour.getIdiomas() : "");
+        etFechaTour.setText(tour.getDate() != null ? tour.getDate() : "");
 
-        // Agregar servicios existentes
-        addExistingServicio("Desayuno", "30 soles por persona", "Desayuno típico de la ciudad");
-        addExistingServicio("Equipo de canotaje", "Gratis", "Equipo de canotaje necesario para el tour");
+        // Agregar servicios existentes si los hay
+        if (tour.getServiciosExtras() != null && !tour.getServiciosExtras().isEmpty()) {
+            for (Tour.ServicioExtra servicio : tour.getServiciosExtras()) {
+                addExistingServicio(servicio.getNombre(), servicio.getPrecio(), servicio.getDescripcion());
+            }
+        }
 
-        // Agregar ubicaciones existentes
-        addExistingUbicacion("Ubicación 1", "Caminata");
-        addExistingUbicacion("Ubicación 2", "Almuerzo");
-        addExistingUbicacion("Ubicación 3", "Caminata");
+        // Agregar ubicaciones/ruta existente si las hay
+        if (tour.getRuta() != null && !tour.getRuta().isEmpty()) {
+            for (Tour.Ubicacion ubicacion : tour.getRuta()) {
+                addExistingUbicacion(ubicacion.getNombre(), ubicacion.getActividades());
+            }
+        }
     }
 
     private void addExistingServicio(String nombre, String precio, String descripcion) {
@@ -230,14 +262,76 @@ public class EditTourActivity extends AppCompatActivity {
             return;
         }
 
-        // Simular guardado exitoso
-        Toast.makeText(this, "TourLegacy actualizado exitosamente", Toast.LENGTH_SHORT).show();
+        // Actualizar datos del tour actual
+        currentTour.setStartTime(etHoraInicio.getText().toString().trim());
+        currentTour.setEndTime(etDuracion.getText().toString().trim());
         
-        // Volver a la actividad anterior
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("tour_updated", true);
-        setResult(RESULT_OK, resultIntent);
-        finish();
+        // Convertir costo a Float
+        String costoStr = etCosto.getText().toString().trim();
+        try {
+            Float costo = Float.parseFloat(costoStr);
+            currentTour.setPrice(costo);
+        } catch (NumberFormatException e) {
+            currentTour.setPrice(0.0f);
+        }
+        
+        currentTour.setIdiomas(etIdiomas.getText().toString().trim());
+        currentTour.setDate(etFechaTour.getText().toString().trim());
+        
+        // Recopilar servicios extras
+        java.util.List<Tour.ServicioExtra> servicios = new java.util.ArrayList<>();
+        for (int i = 0; i < layoutServicios.getChildCount(); i++) {
+            View servicioView = layoutServicios.getChildAt(i);
+            EditText etNombre = servicioView.findViewById(R.id.etNombreServicio);
+            EditText etPrecio = servicioView.findViewById(R.id.etPrecioServicio);
+            EditText etDescripcion = servicioView.findViewById(R.id.etDescripcionServicio);
+            
+            String nombre = etNombre.getText().toString().trim();
+            String precio = etPrecio.getText().toString().trim();
+            String descripcion = etDescripcion.getText().toString().trim();
+            
+            if (!nombre.isEmpty() && !precio.isEmpty() && !descripcion.isEmpty()) {
+                Tour.ServicioExtra servicio = new Tour.ServicioExtra();
+                servicio.setNombre(nombre);
+                servicio.setPrecio(precio);
+                servicio.setDescripcion(descripcion);
+                servicios.add(servicio);
+            }
+        }
+        currentTour.setServiciosExtras(servicios);
+        
+        // Recopilar ruta/ubicaciones
+        java.util.List<Tour.Ubicacion> ruta = new java.util.ArrayList<>();
+        for (int i = 0; i < layoutUbicaciones.getChildCount(); i++) {
+            View ubicacionView = layoutUbicaciones.getChildAt(i);
+            EditText etUbicacion = ubicacionView.findViewById(R.id.etNombreUbicacion);
+            EditText etActividades = ubicacionView.findViewById(R.id.etActividadesUbicacion);
+            
+            String nombreUbi = etUbicacion.getText().toString().trim();
+            String actividades = etActividades.getText().toString().trim();
+            
+            if (!nombreUbi.isEmpty() && !actividades.isEmpty()) {
+                Tour.Ubicacion ubicacion = new Tour.Ubicacion();
+                ubicacion.setNombre(nombreUbi);
+                ubicacion.setActividades(actividades);
+                ruta.add(ubicacion);
+            }
+        }
+        currentTour.setRuta(ruta);
+
+        // Guardar en Firestore
+        firestoreHelper.updateTour(tourId, currentTour, success -> {
+            if (success) {
+                Toast.makeText(EditTourActivity.this, "Tour actualizado exitosamente", Toast.LENGTH_SHORT).show();
+                
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("tour_updated", true);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            } else {
+                Toast.makeText(EditTourActivity.this, "Error al actualizar el tour", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

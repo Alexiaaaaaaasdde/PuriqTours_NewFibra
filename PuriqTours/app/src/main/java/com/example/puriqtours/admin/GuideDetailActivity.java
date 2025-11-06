@@ -150,35 +150,35 @@ public class GuideDetailActivity extends AppCompatActivity {
         // Click listeners para cada tour
         if (cardTour2 != null) {
             cardTour2.setOnClickListener(v -> {
-                showConfirmarPropuestaDialog(2, "TourLegacy número 2");
+                showConfirmarPropuestaDialog(2, "Tour número 2");
                 dialog.dismiss();
             });
         }
 
         if (cardTour5 != null) {
             cardTour5.setOnClickListener(v -> {
-                showConfirmarPropuestaDialog(5, "TourLegacy número 5");
+                showConfirmarPropuestaDialog(5, "Tour número 5");
                 dialog.dismiss();
             });
         }
 
         if (cardTour6 != null) {
             cardTour6.setOnClickListener(v -> {
-                showConfirmarPropuestaDialog(6, "TourLegacy número 6");
+                showConfirmarPropuestaDialog(6, "Tour número 6");
                 dialog.dismiss();
             });
         }
 
         if (cardTour10 != null) {
             cardTour10.setOnClickListener(v -> {
-                showConfirmarPropuestaDialog(10, "TourLegacy número 10");
+                showConfirmarPropuestaDialog(10, "Tour número 10");
                 dialog.dismiss();
             });
         }
 
         if (cardTour5Duplicate != null) {
             cardTour5Duplicate.setOnClickListener(v -> {
-                showConfirmarPropuestaDialog(5, "TourLegacy número 5 (Duplicado)");
+                showConfirmarPropuestaDialog(5, "Tour número 5 (Duplicado)");
                 dialog.dismiss();
             });
         }

@@ -12,18 +12,20 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/teal_700"
-        app:title="Detalles del tourLegacy"
+        app:title="Detalles del tour"
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="@color/white" />
 
     <!-- NestedScrollView principal -->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollViewContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,11 +43,11 @@
                 android:textColor="@color/teal_700"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Hora de inicio del tourLegacy -->
+            <!-- Hora de inicio del tour -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hora de inicio del tourLegacy:"
+                android:text="Hora de inicio del tour:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -60,11 +62,11 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Duración del tourLegacy -->
+            <!-- Duración del tour -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Duración del tourLegacy:"
+                android:text="Duración del tour:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -117,11 +119,11 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Fecha del tourLegacy -->
+            <!-- Fecha del tour -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha del tourLegacy:"
+                android:text="Fecha del tour:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -228,7 +230,7 @@
                     android:id="@+id/tvDescripcionServicio2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Descripción: Equipo de canotaje necesario para el tourLegacy"
+                    android:text="Descripción: Equipo de canotaje necesario para el tour"
                     android:textSize="14sp"
                     android:textColor="@color/gray"
                     android:layout_marginBottom="12dp" />
@@ -281,191 +283,13 @@
 
             </FrameLayout>
 
-            <!-- Ubicaciones -->
+            <!-- Contenedor dinámico de ubicaciones -->
             <LinearLayout
+                android:id="@+id/layoutUbicacionesContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🗺️ Ubicación 1"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/tvUbicacion1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Ubicación 1"
-                        android:textSize="12sp"
-                        android:textColor="@color/gray"
-                        android:background="@drawable/rounded_edittext"
-                        android:padding="8dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🚶 Actividades"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/tvActividades1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Caminata"
-                        android:textSize="12sp"
-                        android:textColor="@color/gray"
-                        android:background="@drawable/rounded_edittext"
-                        android:padding="8dp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Ubicación 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🗺️ Ubicación 2"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/tvUbicacion2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Ubicación 2"
-                        android:textSize="12sp"
-                        android:textColor="@color/gray"
-                        android:background="@drawable/rounded_edittext"
-                        android:padding="8dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🚶 Actividades"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/tvActividades2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Almuerzo"
-                        android:textSize="12sp"
-                        android:textColor="@color/gray"
-                        android:background="@drawable/rounded_edittext"
-                        android:padding="8dp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Ubicación 3 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🗺️ Ubicación 3"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/tvUbicacion3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Ubicación 3"
-                        android:textSize="12sp"
-                        android:textColor="@color/gray"
-                        android:background="@drawable/rounded_edittext"
-                        android:padding="8dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🚶 Actividades"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/tvActividades3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Caminata"
-                        android:textSize="12sp"
-                        android:textColor="@color/gray"
-                        android:background="@drawable/rounded_edittext"
-                        android:padding="8dp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+                android:orientation="vertical"
+                android:layout_marginBottom="32dp" />
 
         </LinearLayout>
 
@@ -490,19 +314,32 @@
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/gray_medium"
             android:textColor="@color/white"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btnEliminarTour"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="Eliminar"
+            android:textSize="16sp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:textColor="@color/white"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
 
         <Button
             android:id="@+id/btnEditarTour"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="Editar tourLegacy"
+            android:text="Editar tour"
             android:textSize="16sp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/teal_700"
             android:textColor="@color/white"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="4dp" />
 
     </LinearLayout>
 

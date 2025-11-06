@@ -56,9 +56,9 @@ public class ChatAdminAdapter extends RecyclerView.Adapter<ChatAdminAdapter.Chat
         holder.clientName.setText(chatAdmin.getClientName());
         holder.lastMessage.setText(chatAdmin.getLastMessage());
         holder.timeText.setText(chatAdmin.getTime());
-        holder.tourName.setText("TourLegacy: " + chatAdmin.getTourName());
+        holder.tourName.setText("Tour: " + chatAdmin.getTourName());
         
-        // Configurar estado de mensajes no leídos
+        // Configurar badge de mensajes no leídos
         if (chatAdmin.hasUnreadMessages()) {
             holder.unreadBadge.setVisibility(View.VISIBLE);
             holder.unreadCount.setText(String.valueOf(chatAdmin.getUnreadCount()));
