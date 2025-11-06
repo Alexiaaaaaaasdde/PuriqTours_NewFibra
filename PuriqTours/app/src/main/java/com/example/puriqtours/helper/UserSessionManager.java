@@ -24,6 +24,7 @@ public class UserSessionManager {
     private static final String KEY_ADDRESS = "address";
     private static final String KEY_LANGUAGE = "language";
     private static final String KEY_ROL = "rol";
+    private static final String KEY_STATUS = "status";
     private static final String KEY_PROFILE_IMAGE = "profile_image";
     private static final String KEY_ACTIVITIES = "activities";
 
@@ -51,6 +52,7 @@ public class UserSessionManager {
         editor.putString(KEY_ADDRESS, user.getAddress());
         editor.putString(KEY_LANGUAGE, user.getLanguage());
         editor.putString(KEY_ROL, user.getRol());
+        editor.putString(KEY_STATUS, user.getStatus());
         editor.putString(KEY_PROFILE_IMAGE, user.getProfile_image());
 
         if (user.getActivities() != null) {
@@ -75,6 +77,7 @@ public class UserSessionManager {
         user.setAddress(prefs.getString(KEY_ADDRESS, null));
         user.setLanguage(prefs.getString(KEY_LANGUAGE, "es"));
         user.setRol(prefs.getString(KEY_ROL,null));
+        user.setStatus(prefs.getString(KEY_STATUS, null));
         user.setProfile_image(prefs.getString(KEY_PROFILE_IMAGE,null));
 
         Set<String> actSet = prefs.getStringSet(KEY_ACTIVITIES, new HashSet<>());
