@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
+import com.squareup.picasso.Picasso;
 import java.util.List;
 public class GuiasHorizontalAdapter extends RecyclerView.Adapter<GuiasHorizontalAdapter.GuiaViewHolder> {
     private List<UsuarioGuia> guias;
@@ -15,6 +16,12 @@ public class GuiasHorizontalAdapter extends RecyclerView.Adapter<GuiasHorizontal
     public GuiasHorizontalAdapter(Context context, List<UsuarioGuia> guias) {
         this.context = context;
         this.guias = guias;
+    }
+
+    // Permite actualizar la lista de guías y refrescar el adapter
+    public void setGuias(List<UsuarioGuia> guias) {
+        this.guias = guias;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -28,7 +35,15 @@ public class GuiasHorizontalAdapter extends RecyclerView.Adapter<GuiasHorizontal
     public void onBindViewHolder(@NonNull GuiaViewHolder holder, int position) {
         UsuarioGuia guia = guias.get(position);
         holder.txtGuiaNombre.setText(guia.nombre);
-        holder.imgGuiaAvatar.setImageResource(R.drawable.avatar1);
+        if (guia.profileImageUrl != null && !guia.profileImageUrl.isEmpty()) {
+            Picasso.get()
+                    .load(guia.profileImageUrl)
+                    .placeholder(R.drawable.avatar1)
+                    .error(R.drawable.avatar1)
+                    .into(holder.imgGuiaAvatar);
+        } else {
+            holder.imgGuiaAvatar.setImageResource(R.drawable.avatar1);
+        }
     }
 
     @Override

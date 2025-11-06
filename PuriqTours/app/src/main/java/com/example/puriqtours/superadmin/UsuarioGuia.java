@@ -14,9 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 public class UsuarioGuia extends Usuario {
     public int valoracion;
+    public String profileImageUrl; // URL del avatar en Firebase Storage
     public UsuarioGuia(String nombre, String ciudad, int valoracion) {
         super(nombre, ciudad);
         this.valoracion = valoracion;
+    }
+
+    // Nuevo constructor que incluye la URL del profile image
+    public UsuarioGuia(String nombre, String ciudad, int valoracion, String profileImageUrl) {
+        super(nombre, ciudad);
+        this.valoracion = valoracion;
+        this.profileImageUrl = profileImageUrl;
     }
     @Override
     public int getTipo() { return 1; }
