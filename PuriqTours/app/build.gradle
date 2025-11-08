@@ -57,7 +57,7 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation libs.firebase.firestore
-    implementation libs.firebase.auth
+    implementation libs.google.firebase.auth
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
 
     testImplementation 'junit:junit:4.13.2'

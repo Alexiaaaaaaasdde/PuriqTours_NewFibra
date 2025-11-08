@@ -1,5 +1,6 @@
 package com.example.puriqtours.onboarding;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,17 +10,27 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.R;
-import com.example.puriqtours.entity.LocalAuth;
+import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.helper.UserSessionManager;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegionsActivity extends AppCompatActivity {
 
     private ChipGroup grpRegions, grpTowns;
     private Chip chipOtherRegion, chipOtherTown;
     private EditText etOtherRegion, etOtherTown;
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private UserSessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,58 +46,72 @@ public class RegionsActivity extends AppCompatActivity {
         etOtherRegion   = findViewById(R.id.etOtherRegion);
         etOtherTown     = findViewById(R.id.etOtherTown);
 
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        session = new UserSessionManager(this);
+
         // Mostrar/ocultar “Otro”
         chipOtherRegion.setOnCheckedChangeListener((b, checked) -> {
             etOtherRegion.setVisibility(checked ? View.VISIBLE : View.GONE);
             if (!checked) etOtherRegion.setText(null);
         });
+
         chipOtherTown.setOnCheckedChangeListener((b, checked) -> {
             etOtherTown.setVisibility(checked ? View.VISIBLE : View.GONE);
             if (!checked) etOtherTown.setText(null);
         });
 
         findViewById(R.id.btnRegionsContinue).setOnClickListener(v -> {
-            // recoge seleccionados (rápido)
             ArrayList<String> sel = new ArrayList<>();
             addChecked(grpRegions, sel);
             addChecked(grpTowns, sel);
-            if (chipOtherRegion.isChecked() && !isEmpty(etOtherRegion)) sel.add(etOtherRegion.getText().toString().trim());
-            if (chipOtherTown.isChecked() && !isEmpty(etOtherTown)) sel.add(etOtherTown.getText().toString().trim());
 
-            // ✅ Guardar selección de regiones en LocalAuth
-            LocalAuth localAuth = new LocalAuth(this);
+            if (chipOtherRegion.isChecked() && !isEmpty(etOtherRegion))
+                sel.add(etOtherRegion.getText().toString().trim());
+            if (chipOtherTown.isChecked() && !isEmpty(etOtherTown))
+                sel.add(etOtherTown.getText().toString().trim());
+
+            if (sel.isEmpty()) {
+                Toast.makeText(this, "Selecciona al menos una región o ciudad", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             String regions = TextUtils.join(", ", sel);
+            FirebaseUser user = mAuth.getCurrentUser();
 
-            // Guardamos las regiones/intereses junto con los datos existentes
-            localAuth.saveUser(
-                    localAuth.getName(),
-                    localAuth.getLastname(),
-                    localAuth.getEmail(),
-                    localAuth.getPassword(),
-                    localAuth.getBirthdate(),
-                    localAuth.getDocument(),
-                    localAuth.getPhone(),
-                    localAuth.getAddress(),
-                    localAuth.getDocType(),
-                    localAuth.getLanguage(),  // mantenemos el idioma guardado previamente
-                    regions,                  // ✅ nuevo campo: regiones/actividades seleccionadas
-                    localAuth.getPhotoUri()
-            );
+            if (user == null) {
+                Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // continuar con tu flujo normal
-            startActivity(new android.content.Intent(
-                    RegionsActivity.this,
-                    com.example.puriqtours.onboarding.ActivitiesActivity.class
-            ));
+            // 🔥 Guardar en Firestore
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("regions", sel); // lo guardamos como lista (más flexible que string)
 
-            // guarda simple en SharedPreferences (opcional)
-            getSharedPreferences("onboarding", MODE_PRIVATE)
-                    .edit().putString("regions_list", TextUtils.join(",", sel)).apply();
+            db.collection("users")
+                    .document(user.getUid())
+                    .update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        // ✅ Actualizar sesión local
+                        Usuario usuario = session.getUser();
+                        if (usuario != null) {
+                            usuario.setRegions(sel);
+                            session.saveUser(usuario);
+                        }
 
-            Toast.makeText(this, "Regiones guardadas (" + sel.size() + ")", Toast.LENGTH_SHORT).show();
-            finish();
+                        Toast.makeText(this, "Regiones guardadas correctamente", Toast.LENGTH_SHORT).show();
+
+                        // 👉 Ir a la siguiente actividad (ActivitiesActivity)
+                        startActivity(new Intent(
+                                RegionsActivity.this,
+                                com.example.puriqtours.onboarding.ActivitiesActivity.class
+                        ));
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Error al guardar regiones: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
         });
-
     }
 
     private void addChecked(ChipGroup group, ArrayList<String> out) {

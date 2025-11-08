@@ -12,13 +12,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.puriqtours.R;
-import com.example.puriqtours.entity.LocalAuth;
+import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.helper.UserSessionManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LanguagesFragment extends Fragment {
 
@@ -27,11 +35,14 @@ public class LanguagesFragment extends Fragment {
     private EditText etOther;
     private Button btnContinue;
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private UserSessionManager session;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // usa el layout que ya tienes con estos ids
         return inflater.inflate(R.layout.fragment_languages_simple, container, false);
     }
 
@@ -42,7 +53,10 @@ public class LanguagesFragment extends Fragment {
         etOther     = v.findViewById(R.id.etOtherLanguage);
         btnContinue = v.findViewById(R.id.btnLangContinue);
 
-        // mostrar/ocultar campo "Otro"
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        session = new UserSessionManager(requireContext());
+
         group.setOnCheckedChangeListener((g, checkedId) -> {
             boolean isOther = (checkedId == R.id.rbOther);
             etOther.setVisibility(isOther ? View.VISIBLE : View.GONE);
@@ -50,7 +64,6 @@ public class LanguagesFragment extends Fragment {
             updateButtonEnabled();
         });
 
-        // habilitar botón cuando “Otro” tiene texto
         etOther.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { updateButtonEnabled(); }
@@ -64,40 +77,38 @@ public class LanguagesFragment extends Fragment {
                 return;
             }
 
-            try {
-                // ✅ Guardar idioma seleccionado en LocalAuth
-                String language = mapSelectionToCode();
-                LocalAuth localAuth = new LocalAuth(requireContext());
-
-                localAuth.saveUser(
-                        localAuth.getName(),
-                        localAuth.getLastname(),
-                        localAuth.getEmail(),
-                        localAuth.getPassword(),
-                        localAuth.getBirthdate(),
-                        localAuth.getDocument(),
-                        localAuth.getPhone(),
-                        localAuth.getAddress(),
-                        localAuth.getDocType(),
-                        language,               // ✅ idioma
-                        localAuth.getActivities(),
-                        localAuth.getPhotoUri()
-                );
-
-                android.widget.Toast.makeText(requireContext(), "Idioma guardado correctamente", android.widget.Toast.LENGTH_SHORT).show();
-
-                // 👉 Ir a RegionsActivity
-                Intent i = new Intent(requireContext(), com.example.puriqtours.onboarding.RegionsActivity.class);
-                startActivity(i);
-
-            } catch (Throwable e) {
-                android.widget.Toast.makeText(
-                        requireContext(),
-                        "No se pudo abrir Regiones: " + e.getClass().getSimpleName() + " - " + e.getMessage(),
-                        android.widget.Toast.LENGTH_LONG
-                ).show();
-                android.util.Log.e("LanguagesFragment", "Error abriendo RegionsActivity", e);
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                Toast.makeText(requireContext(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            String language = mapSelectionToCode();
+            String uid = currentUser.getUid();
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("language", language);
+
+            db.collection("users")
+                    .document(uid)
+                    .update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        // ✅ Actualizar sesión local
+                        Usuario user = session.getUser();
+                        if (user != null) {
+                            user.setLanguage(language);
+                            session.saveUser(user);
+                        }
+
+                        Toast.makeText(requireContext(), "Idioma guardado correctamente", Toast.LENGTH_SHORT).show();
+
+                        // 👉 Ir a RegionsActivity
+                        Intent i = new Intent(requireContext(), com.example.puriqtours.onboarding.RegionsActivity.class);
+                        startActivity(i);
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(requireContext(), "Error al guardar idioma: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
         });
 
         updateButtonEnabled();

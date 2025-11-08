@@ -22,6 +22,7 @@ public class Usuario implements Serializable {
     private String rol;
     private String status;
     private String profile_image;
+    private List<String> regions;
     private List<String> activities;
 
     // 🔹 Constructor vacío (necesario para Firestore)
@@ -30,7 +31,7 @@ public class Usuario implements Serializable {
     // 🔹 Constructor completo
     public Usuario(String uid, String username, String name, String last_name, String email,
                    String birthdate, String doc_type, String document, String phone, String status,
-                   String address, String language, String rol, String profile_image, List<String> activities) {
+                   String address, String language, String rol, String profile_image,List<String> regions, List<String> activities) {
         this.uid = uid;
         this.username = username;
         this.name = name;
@@ -43,8 +44,9 @@ public class Usuario implements Serializable {
         this.address = address;
         this.language = language;
         this.rol = rol;
-        this.setStatus(status);
+        this.status = status;
         this.profile_image = profile_image;
+        this.regions = regions;
         this.activities = activities;
     }
 
@@ -91,6 +93,9 @@ public class Usuario implements Serializable {
     public String getProfile_image() { return profile_image; }
     public void setProfile_image(String profile_image) { this.profile_image = profile_image; }
 
+    public List<String> getRegions() { return regions; }
+    public void setRegions(List<String> regions) { this.regions = regions; }
+
     public List<String> getActivities() { return activities; }
     public void setActivities(List<String> activities) { this.activities = activities; }
 
@@ -110,6 +115,7 @@ public class Usuario implements Serializable {
         map.put("rol", rol);
         map.put("status", getStatus());
         map.put("profile_image", profile_image);
+        map.put("regions", regions);
         map.put("activities", activities);
         return map;
     }

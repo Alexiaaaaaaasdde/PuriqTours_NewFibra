@@ -48,7 +48,7 @@ public class SetPasswordActivity extends AppCompatActivity {
         btnContinue = findViewById(R.id.btnContinue);
 
         ImageButton back = findViewById(R.id.btnBack);
-        back.setOnClickListener(v -> finish());
+        back.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         Serializable extra = getIntent().getSerializableExtra("userData");
         if (extra instanceof HashMap) {

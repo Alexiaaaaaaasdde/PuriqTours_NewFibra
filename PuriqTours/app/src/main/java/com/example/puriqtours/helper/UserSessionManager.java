@@ -26,6 +26,7 @@ public class UserSessionManager {
     private static final String KEY_ROL = "rol";
     private static final String KEY_STATUS = "status";
     private static final String KEY_PROFILE_IMAGE = "profile_image";
+    private static final String KEY_REGIONS = "regions";
     private static final String KEY_ACTIVITIES = "activities";
 
     private SharedPreferences prefs;
@@ -55,6 +56,9 @@ public class UserSessionManager {
         editor.putString(KEY_STATUS, user.getStatus());
         editor.putString(KEY_PROFILE_IMAGE, user.getProfile_image());
 
+        if (user.getRegions() != null) {
+            editor.putStringSet(KEY_REGIONS, new HashSet<>(user.getRegions()));
+        }
         if (user.getActivities() != null) {
             editor.putStringSet(KEY_ACTIVITIES, new HashSet<>(user.getActivities()));
         }
@@ -80,6 +84,12 @@ public class UserSessionManager {
         user.setStatus(prefs.getString(KEY_STATUS, null));
         user.setProfile_image(prefs.getString(KEY_PROFILE_IMAGE,null));
 
+        Set<String> actReg = prefs.getStringSet(KEY_REGIONS, new HashSet<>());
+        if (actReg != null) {
+            user.setRegions(actReg.stream().collect(java.util.stream.Collectors.toList()));
+        } else {
+            user.setRegions(null);
+        }
         Set<String> actSet = prefs.getStringSet(KEY_ACTIVITIES, new HashSet<>());
         if (actSet != null) {
             user.setActivities(actSet.stream().collect(java.util.stream.Collectors.toList()));
