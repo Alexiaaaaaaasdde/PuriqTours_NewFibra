@@ -15,16 +15,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.puriqtours.guia.DetallesBottomSheet;
+import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Solicitud;
+import com.example.puriqtours.guia.DetallesBottomSheet;
 
 import java.util.List;
 
 public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.SolicitudViewHolder> {
 
-    private FragmentManager fragmentManager;
-    private List<Solicitud> solicitudes;
+    private final FragmentManager fragmentManager;
+    private final List<Solicitud> solicitudes;
 
     public SolicitudAdapter(List<Solicitud> solicitudes, FragmentManager fragmentManager) {
         this.solicitudes = solicitudes;
@@ -34,7 +35,8 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
     @NonNull
     @Override
     public SolicitudViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View vista = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_solicitud, parent, false);
+        View vista = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_solicitud, parent, false);
         return new SolicitudViewHolder(vista);
     }
 
@@ -43,15 +45,23 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
     public void onBindViewHolder(@NonNull SolicitudViewHolder holder, int position) {
         Solicitud solicitud = solicitudes.get(position);
 
+        // --- Asignar valores recuperados de Firestore ---
         holder.tvTitulo.setText(solicitud.getTitulo());
         holder.tvDescripcionCorta.setText(solicitud.getDescripcion());
-        holder.imgSolicitud.setImageResource(solicitud.getImagenResId());
         holder.tvDescripcionCompleta.setText(solicitud.getDescripcion());
         holder.tvCiudad.setText("Ciudad: " + solicitud.getCiudad());
         holder.tvFecha.setText("Fecha: " + solicitud.getFecha());
         holder.tvEmpresa.setText(solicitud.getEmpresa());
-        holder.tvRangoHora.setText("Hora: " + solicitud.getHoraInicio() + "-" + solicitud.getHoraFin());
+        holder.tvRangoHora.setText("Hora: " + solicitud.getHoraInicio() + " - " + solicitud.getHoraFin());
 
+        // 🔹 Cargar imagen desde Firebase Storage / URL
+        Glide.with(holder.itemView.getContext())
+                .load(solicitud.getImagenUrl()) // campo adaptado para Firestore
+                .placeholder(R.drawable.placeholder_img)
+                .error(R.drawable.placeholder_img)
+                .into(holder.imgSolicitud);
+
+        // 🔹 Control de expansión del item
         boolean expandido = solicitud.isExpandido();
         holder.layoutExpandible.setVisibility(expandido ? View.VISIBLE : View.GONE);
 
@@ -60,6 +70,7 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             notifyItemChanged(position);
         });
 
+        // 🔹 Mostrar detalles en BottomSheet
         holder.btnDetalles.setOnClickListener(v -> {
             DetallesBottomSheet bottomSheet = new DetallesBottomSheet();
             bottomSheet.show(fragmentManager, bottomSheet.getTag());
@@ -68,10 +79,9 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
         // 🔹 Acción botón Aceptar
         holder.btnAceptar.setOnClickListener(v -> {
             Dialog dialog = new Dialog(v.getContext());
-            dialog.setContentView(R.layout.dialog_aceptar); // Tu XML modificado
+            dialog.setContentView(R.layout.dialog_aceptar);
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-            // 🔹 Referencias a botones
             Button btnAceptar = dialog.findViewById(R.id.btnAceptar);
             Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
 
@@ -81,10 +91,8 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             });
 
             btnCancelar.setOnClickListener(view -> dialog.dismiss());
-
             dialog.show();
 
-            // 🔹 Ajustar ancho al máximo después de mostrarlo
             if (dialog.getWindow() != null) {
                 dialog.getWindow().setLayout(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -93,27 +101,23 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             }
         });
 
-
         // 🔹 Acción botón Rechazar
         holder.btnRechazar.setOnClickListener(v -> {
             Dialog dialog = new Dialog(v.getContext());
-            dialog.setContentView(R.layout.dialog_rechazar); // Tu XML modificado
+            dialog.setContentView(R.layout.dialog_rechazar);
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-            // 🔹 Referencias a botones
             Button btnAceptar = dialog.findViewById(R.id.btnRechazar);
             Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
 
             btnAceptar.setOnClickListener(view -> {
-                Toast.makeText(v.getContext(), "Solicitud Rechazada ❌", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Solicitud rechazada ❌", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             });
 
             btnCancelar.setOnClickListener(view -> dialog.dismiss());
-
             dialog.show();
 
-            // 🔹 Ajustar ancho al máximo después de mostrarlo
             if (dialog.getWindow() != null) {
                 dialog.getWindow().setLayout(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -125,12 +129,13 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
 
     @Override
     public int getItemCount() {
-        return solicitudes.size();
+        return solicitudes != null ? solicitudes.size() : 0;
     }
 
     public static class SolicitudViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSolicitud;
-        TextView tvTitulo, tvDescripcionCorta, tvDescripcionCompleta, tvCiudad, tvFecha, tvRangoHora, tvEmpresa;
+        TextView tvTitulo, tvDescripcionCorta, tvDescripcionCompleta,
+                tvCiudad, tvFecha, tvRangoHora, tvEmpresa;
         LinearLayout layoutExpandible;
         Button btnDetalles, btnAceptar, btnRechazar;
 

@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.core.splashscreen)
     implementation(libs.viewpager2)
     implementation libs.picasso
+    implementation libs.glide
 
     implementation(libs.play.services.base)
     implementation(libs.play.services.basement)
