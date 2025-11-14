@@ -102,11 +102,18 @@ public class ToursActivity extends BaseActivity {   // ✅ Ahora hereda de BaseA
         // 🔹 Click card Kuélap
         cardKuelap.setOnClickListener(v -> {
             Intent intent = new Intent(ToursActivity.this, DetalleTourActivity.class);
+
+            // 🔹 Datos del tour
             intent.putExtra("titulo", "Ciudadela de Kuélap");
             intent.putExtra("precio", "S/ 165.02");
             intent.putExtra("ubicacion", "Chachapoyas - Amazonas");
+
+            // 🔹 ID REAL del tour (para Firebase)
+            intent.putExtra("tourId", "tour_kuelap_001");
+
             startActivity(intent);
         });
+
 
         // 🔹 BottomNavigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);

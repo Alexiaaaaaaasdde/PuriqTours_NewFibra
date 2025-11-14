@@ -3,42 +3,59 @@ package com.example.puriqtours.cliente;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class DetalleTourActivity extends AppCompatActivity {
 
     private TextView tvTitulo, tvPrecio, tvFecha, tvViajeros;
     private ImageView imgTour, btnCalendario;
+    private Button btnReserva;
 
-    // 👉 Variables globales
+    // Variables globales
     private int desayuno = 0, canotaje = 0;
     private int adultos = 2, ninos = 0, bebes = 0;
     private int precioTotal = 0;
     private Dialog dialogDisponibilidad;
+
     private String fechaSeleccionadaGlobal = "Martes, 15 de Marzo de 2025";
+
+    private String tourId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_tour);
+
+        // Recuperar HORA REAL del Tour enviado por intent
+        tourId = getIntent().getStringExtra("tourId");
+
+        // Referencias
         ImageView btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> onBackPressed());
-        // Referencias
+
         tvTitulo = findViewById(R.id.tvTitulo);
         tvPrecio = findViewById(R.id.tvPreciokuelap);
         imgTour = findViewById(R.id.imgTour);
@@ -46,12 +63,16 @@ public class DetalleTourActivity extends AppCompatActivity {
         btnCalendario = findViewById(R.id.btnCalendario);
         tvViajeros = findViewById(R.id.tvViajeros);
         Button btnDisponibilidad = findViewById(R.id.btnDisponibilidad);
+        btnReserva = findViewById(R.id.btnReserva);
+
+        // Acción de reservar
+        btnReserva.setOnClickListener(v -> registrarReserva());
 
         // Abrir popups
         tvViajeros.setOnClickListener(v -> mostrarDialogoViajeros(tvViajeros, null));
         btnDisponibilidad.setOnClickListener(v -> mostrarDialogoDisponibilidad());
 
-        // Recuperar datos
+        // Recuperar datos del tour mostrado
         String titulo = getIntent().getStringExtra("titulo");
         String precio = getIntent().getStringExtra("precio");
 
@@ -64,6 +85,7 @@ public class DetalleTourActivity extends AppCompatActivity {
         btnCalendario.setOnClickListener(v -> mostrarDatePicker());
         tvFecha.setOnClickListener(v -> mostrarDatePicker());
 
+        // Bottom Nav
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_tours);
 
@@ -72,25 +94,21 @@ public class DetalleTourActivity extends AppCompatActivity {
 
             if (id == R.id.nav_perfil) {
                 startActivity(new Intent(this, ProfileActivity.class));
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
                 return true;
 
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, LoginLegacyActivity.class));
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
                 return true;
 
             } else if (id == R.id.nav_historial) {
                 startActivity(new Intent(this, HistorialActivity.class));
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
                 return true;
             }
-
             return false;
         });
-
-
-
     }
 
     private void mostrarDatePicker() {
@@ -135,7 +153,6 @@ public class DetalleTourActivity extends AppCompatActivity {
         if (tvPrecioDestino != null) tvPrecioDestino.setText("Total: S/. " + precioTotal);
     }
 
-    // 👉 ahora acepta referencias opcionales del popup
     private void mostrarDialogoViajeros(TextView tvResumenDestino, TextView tvPrecioDestino) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_viajeros);
@@ -299,5 +316,47 @@ public class DetalleTourActivity extends AppCompatActivity {
         });
 
         dialogExtras.show();
+    }
+
+    private void registrarReserva() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        String idCliente = mAuth.getCurrentUser().getUid();
+
+        Map<String, Object> reserva = new HashMap<>();
+        reserva.put("idCliente", idCliente);
+        reserva.put("idTour", tourId);
+        reserva.put("fechaReserva", new Date());
+        reserva.put("estado", "reservado");
+
+        reserva.put("qrInicio", idCliente + "_" + tourId + "_inicio");
+        reserva.put("qrFin", idCliente + "_" + tourId + "_fin");
+
+        db.collection("reservas")
+                .add(reserva)
+                .addOnSuccessListener(docRef -> mostrarDialogoReserva())
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+    }
+
+    private void mostrarDialogoReserva() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_reserva_registrada);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button btnCerrar = dialog.findViewById(R.id.btnCloseReserva);
+
+        btnCerrar.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent i = new Intent(DetalleTourActivity.this, ReservadoActivity.class);
+            i.putExtra("tourId", tourId);
+            startActivity(i);
+            finish();
+        });
+
+        dialog.show();
     }
 }

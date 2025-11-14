@@ -20,6 +20,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +32,18 @@ public class HistorialActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private RecyclerView recyclerHistorial;
     private HistorialAdapter adapter;
-    private List<HistorialTour> listaTours;
+    private List<HistorialTour> listaTours = new ArrayList<>();
+
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historial);
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         // 🔹 BottomNavigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
@@ -51,7 +59,7 @@ public class HistorialActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
                 return true;
             } else if (id == R.id.nav_historial) {
-                return true; // ya estamos aquí
+                return true;
             }
             return false;
         });
@@ -71,8 +79,7 @@ public class HistorialActivity extends AppCompatActivity {
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
             } else if (id == R.id.nav_logout) {
-                Intent intent = new Intent(this, LoginLegacyActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, LoginLegacyActivity.class));
                 finish();
             }
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -83,15 +90,11 @@ public class HistorialActivity extends AppCompatActivity {
         recyclerHistorial = findViewById(R.id.recyclerHistorial);
         recyclerHistorial.setLayoutManager(new LinearLayoutManager(this));
 
-        // 🔹 Datos estáticos
-        listaTours = new ArrayList<>();
-        listaTours.add(new HistorialTour("TourLegacy número 1", "Kuelap", "Reservado", "3h", 4, "165", R.drawable.kuelap));
-        listaTours.add(new HistorialTour("TourLegacy número 2", "Lima", "En proceso", "3h", 4, "120", R.drawable.kuelap));
-        listaTours.add(new HistorialTour("TourLegacy número 3", "Cusco", "Finalizado", "3h", 4, "120", R.drawable.kuelap));
-
-        // ⚠️ IMPORTANTE: pasar context en el adapter
         adapter = new HistorialAdapter(listaTours, this);
         recyclerHistorial.setAdapter(adapter);
+
+        // Cargar datos REALES de Firestore
+        cargarHistorialDesdeFirebase();
 
         // 🔹 Buscador
         EditText searchBar = findViewById(R.id.searchBar);
@@ -113,5 +116,46 @@ public class HistorialActivity extends AppCompatActivity {
         chipEnProceso.setOnClickListener(v -> adapter.filtrarEstado("En proceso"));
         chipFinalizado.setOnClickListener(v -> adapter.filtrarEstado("Finalizado"));
         chipReservado.setOnClickListener(v -> adapter.filtrarEstado("Reservado"));
+    }
+
+    private void cargarHistorialDesdeFirebase() {
+        String idCliente = mAuth.getCurrentUser().getUid();
+
+        db.collection("reservas")
+                .whereEqualTo("idCliente", idCliente)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+
+                    listaTours.clear();
+
+                    for (var doc : querySnapshot) {
+
+                        String estado = doc.getString("estado");
+                        String idTour = doc.getString("idTour");
+                        String precio = "165";  // puedes obtenerlo del documento si lo guardas
+                        String duracion = "3h"; // temporal
+                        int rating = 4; // temporal
+
+                        // Imagen temporal según tourId
+                        int imagen = R.drawable.kuelap;
+
+                        listaTours.add(
+                                new HistorialTour(
+                                        "Reserva de " + idTour,
+                                        idTour,
+                                        estado,
+                                        duracion,
+                                        rating,
+                                        precio,
+                                        imagen
+                                )
+                        );
+                    }
+
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e ->
+                        System.out.println("ERROR FIRESTORE: " + e.getMessage())
+                );
     }
 }
