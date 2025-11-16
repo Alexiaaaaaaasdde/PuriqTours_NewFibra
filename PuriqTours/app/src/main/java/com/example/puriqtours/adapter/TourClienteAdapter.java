@@ -14,13 +14,18 @@ import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Tour;
 
 import java.util.List;
-
 public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.TourViewHolder> {
 
     private List<Tour> tourList;
+    private OnTourClickListener listener;
 
-    public TourClienteAdapter(List<Tour> tourList) {
+    public interface OnTourClickListener {
+        void onTourClick(Tour tour);
+    }
+
+    public TourClienteAdapter(List<Tour> tourList, OnTourClickListener listener) {
         this.tourList = tourList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -35,39 +40,12 @@ public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.
     public void onBindViewHolder(@NonNull TourViewHolder holder, int position) {
         Tour tour = tourList.get(position);
 
-        // ✅ Manejar valores null con valores por defecto
-        holder.tourTitle.setText(tour.getTitle() != null ? tour.getTitle() : "Sin título");
-        holder.tourLocation.setText(tour.getLocation() != null ? tour.getLocation() : "Sin ubicación");
-        holder.tourStatus.setText(tour.getStatus() != null ? tour.getStatus() : "disponible");
-        holder.tourDesc.setText(tour.getDesc() != null ? tour.getDesc() : "Sin descripción");
-
-        // ⭐ Rating
-        if (tour.getRating() != null && tour.getRating() > 0) {
-            holder.tourRating.setText("★★★★★".substring(0, tour.getRating()));
-        } else {
-            holder.tourRating.setText("Sin calificar");
-        }
-
-        // ⭐ Imagen
-        if (tour.getImageUrl() != null && !tour.getImageUrl().isEmpty()) {
-            Glide.with(holder.itemView.getContext())
-                    .load(tour.getImageUrl())
-                    .placeholder(R.drawable.kuelap)
-                    .error(R.drawable.kuelap)  // ✅ Agregar imagen de error
-                    .into(holder.tourImage);
-        } else {
-            holder.tourImage.setImageResource(R.drawable.kuelap);
-        }
+        holder.bind(tour, listener);
     }
 
     @Override
     public int getItemCount() {
         return tourList.size();
-    }
-
-    public void updateList(List<Tour> newList) {
-        this.tourList = newList;
-        notifyDataSetChanged();
     }
 
     public static class TourViewHolder extends RecyclerView.ViewHolder {
@@ -84,6 +62,36 @@ public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.
             tourStatus  = itemView.findViewById(R.id.tvTourStatus);
             tourRating  = itemView.findViewById(R.id.tvTourRating);
             tourDesc    = itemView.findViewById(R.id.tvTourDesc);
+        }
+
+        public void bind(Tour tour, OnTourClickListener listener) {
+            // ✅ Manejar valores null
+            tourTitle.setText(tour.getTitle() != null ? tour.getTitle() : "Sin título");
+            tourLocation.setText(tour.getLocation() != null ? tour.getLocation() : "Sin ubicación");
+            tourStatus.setText(tour.getStatus() != null ? tour.getStatus() : "disponible");
+            tourDesc.setText(tour.getDesc() != null ? tour.getDesc() : "Sin descripción");
+
+            if (tour.getRating() != null && tour.getRating() > 0) {
+                tourRating.setText("★★★★★".substring(0, Math.min(tour.getRating(), 5)));
+            } else {
+                tourRating.setText("Sin calificar");
+            }
+
+            if (tour.getImageUrl() != null && !tour.getImageUrl().isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(tour.getImageUrl())
+                        .placeholder(R.drawable.kuelap)
+                        .error(R.drawable.kuelap)
+                        .into(tourImage);
+            } else {
+                tourImage.setImageResource(R.drawable.kuelap);
+            }
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onTourClick(tour);
+                }
+            });
         }
     }
 }

@@ -98,14 +98,7 @@
                     android:textColor="#2B746C"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tvRecomendacion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:text="Recomendada por el 92% de los viajeros"
-                    android:textColor="#E53935"
-                    android:textSize="14sp" />
+
             </LinearLayout>
 
             <!-- 🔹 Imagen -->
@@ -123,10 +116,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Desde S/ 165 por adulto"
+                android:text="--"
                 android:textColor="#2B746C"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+
+            <!-- 🔹 Descripción del tour -->
+            <TextView
+                android:id="@+id/tvDescripcionTour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Aquí va la descripción del tour"
+                android:textColor="#2B746C"
+                android:textSize="16sp" />
+
 
             <TextView
                 android:id="@+id/tvSeleccion"

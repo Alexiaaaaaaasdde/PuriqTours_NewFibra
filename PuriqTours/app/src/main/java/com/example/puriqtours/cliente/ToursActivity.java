@@ -59,7 +59,22 @@ public class ToursActivity extends BaseActivity {
         db = FirebaseFirestore.getInstance();
 
         // Configurar adapter
-        adapter = new TourClienteAdapter(listaFiltrada);
+        adapter = new TourClienteAdapter(listaFiltrada, tour -> {
+            Intent intent = new Intent(ToursActivity.this, DetalleTourActivity.class);
+
+            intent.putExtra("tourId", tour.getIdTour());
+            intent.putExtra("titulo", tour.getTitle() != null ? tour.getTitle() : "Sin título");
+
+            intent.putExtra("precio", String.valueOf(tour.getPrice() != null ? tour.getPrice() : 0));
+
+            intent.putExtra("desc", tour.getDesc() != null ? tour.getDesc() : "Sin descripción");
+            intent.putExtra("img", tour.getImageUrl() != null ? tour.getImageUrl() : "");
+            intent.putExtra("rating", tour.getRating() != null ? tour.getRating() : 0);
+            intent.putExtra("location", tour.getLocation() != null ? tour.getLocation() : "Sin ubicación");
+
+            startActivity(intent);
+        });
+
         recyclerTours.setLayoutManager(new LinearLayoutManager(this));
         recyclerTours.setAdapter(adapter);
 
