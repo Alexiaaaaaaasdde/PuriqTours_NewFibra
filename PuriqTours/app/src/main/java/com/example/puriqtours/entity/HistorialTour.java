@@ -12,12 +12,15 @@ public class HistorialTour implements Serializable {
     private String precio;
     private String viajeros;
 
-    private int imagenResId = 0;  // opcional
+    private int imagenResId;
+    private float rating;
 
     public HistorialTour() {}
 
     public HistorialTour(String idTour, String titulo, String fecha, String hora,
-                         String estado, String precio, String viajeros, int imagenResId) {
+                         String estado, String precio, String viajeros,
+                         int imagenResId, float rating) {
+
         this.idTour = idTour;
         this.titulo = titulo;
         this.fecha = fecha;
@@ -26,6 +29,7 @@ public class HistorialTour implements Serializable {
         this.precio = precio;
         this.viajeros = viajeros;
         this.imagenResId = imagenResId;
+        this.rating = rating;
     }
 
     public String getIdTour() { return idTour; }
@@ -35,5 +39,15 @@ public class HistorialTour implements Serializable {
     public String getEstado() { return estado; }
     public String getPrecio() { return precio; }
     public String getViajeros() { return viajeros; }
+
     public int getImagenResId() { return imagenResId; }
+    public float getRating() { return rating; }
+
+    public void setImagenResId(int imagenResId) {
+        this.imagenResId = imagenResId;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
 }

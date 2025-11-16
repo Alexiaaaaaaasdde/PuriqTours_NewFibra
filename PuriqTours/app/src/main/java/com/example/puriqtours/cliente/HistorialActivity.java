@@ -141,6 +141,8 @@ public class HistorialActivity extends AppCompatActivity {
                         // TEMPORAL imagen
                         int imagen = R.drawable.kuelap;
 
+                        float rating = 4.5f;
+
                         listaTours.add(
                                 new HistorialTour(
                                         idTour,
@@ -150,9 +152,12 @@ public class HistorialActivity extends AppCompatActivity {
                                         estado,
                                         precio,
                                         viajeros,
-                                        imagen
+                                        imagen,
+                                        rating
                                 )
                         );
+
+
                     }
 
                     adapter.notifyDataSetChanged();
