@@ -14,12 +14,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.puriqtours.R;
 import com.example.puriqtours.cliente.ChatActivity;
 import com.example.puriqtours.cliente.EnProcesoActivity;
 import com.example.puriqtours.cliente.FinalizadoActivity;
-import com.example.puriqtours.entity.HistorialTour;
-import com.example.puriqtours.R;
 import com.example.puriqtours.cliente.ReservadoActivity;
+import com.example.puriqtours.entity.HistorialTour;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
 public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.ViewHolder> {
 
     private List<HistorialTour> listaTours;
-    private List<HistorialTour> listaToursOriginal; // copia para filtros
+    private List<HistorialTour> listaToursOriginal;
     private Context context;
 
     public HistorialAdapter(List<HistorialTour> listaTours, Context context) {
@@ -48,57 +48,60 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HistorialTour tour = listaTours.get(position);
 
-        // 🔹 Pintar datos
+        // ---- MOSTRAR DATOS ----
         holder.tvTitulo.setText(tour.getTitulo());
-        holder.tvUbicacion.setText(tour.getUbicacion());
+        holder.tvUbicacion.setText(""); // ya no existe, se deja vacío
         holder.tvEstado.setText("Estado: " + tour.getEstado());
-        holder.tvDuracion.setText("Duración • " + tour.getDuracion());
-        holder.tvPrecio.setText("S/ " + tour.getPrecio());
+        holder.tvDuracion.setText(tour.getFecha() + " • " + tour.getHora());
+        holder.tvPrecio.setText(tour.getPrecio());
         holder.ratingBar.setRating(tour.getRating());
         holder.imgTour.setImageResource(tour.getImagenResId());
 
-        // 🔹 Opciones ocultas por defecto
+        // Ocultar opciones de inicio
         holder.layoutOpciones.setVisibility(View.GONE);
 
-        // 🔹 Expandir/colapsar opciones al tocar la card
+        // Expandir / Colapsar
         holder.itemView.setOnClickListener(v -> {
-            if (holder.layoutOpciones.getVisibility() == View.VISIBLE) {
+            if (holder.layoutOpciones.getVisibility() == View.VISIBLE)
                 holder.layoutOpciones.setVisibility(View.GONE);
-            } else {
+            else
                 holder.layoutOpciones.setVisibility(View.VISIBLE);
-            }
         });
 
-        // 🔹 Botón Detalles
+        // ---- BOTÓN DETALLES ----
         holder.btnDetalles.setOnClickListener(v -> {
             Intent intent = null;
 
-            if (tour.getEstado().equalsIgnoreCase("En proceso")) {
-                intent = new Intent(context, EnProcesoActivity.class);
-            } else if (tour.getEstado().equalsIgnoreCase("Reservado")) {
-                intent = new Intent(context, ReservadoActivity.class);
-            } else if (tour.getEstado().equalsIgnoreCase("Finalizado")) {
-                intent = new Intent(context, FinalizadoActivity.class);
+            switch (tour.getEstado().toLowerCase()) {
+                case "reservado":
+                    intent = new Intent(context, ReservadoActivity.class);
+                    break;
+                case "en proceso":
+                    intent = new Intent(context, EnProcesoActivity.class);
+                    break;
+                case "finalizado":
+                    intent = new Intent(context, FinalizadoActivity.class);
+                    break;
             }
 
             if (intent != null) {
                 intent.putExtra("titulo", tour.getTitulo());
-                intent.putExtra("ubicacion", tour.getUbicacion());
+                intent.putExtra("fecha", tour.getFecha());
+                intent.putExtra("hora", tour.getHora());
                 intent.putExtra("precio", tour.getPrecio());
-                intent.putExtra("duracion", tour.getDuracion());
                 intent.putExtra("estado", tour.getEstado());
-                intent.putExtra("rating", tour.getRating());
+                intent.putExtra("viajeros", tour.getViajeros());
                 intent.putExtra("imagen", tour.getImagenResId());
+                intent.putExtra("rating", tour.getRating());
 
                 context.startActivity(intent);
             }
         });
 
-
-        // 🔹 Botón Chat (solo si está reservado)
+        // ---- BOTÓN CHAT ----
         holder.btnChat.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("estado", tour.getEstado()); // 👈 pasamos el estado
+            intent.putExtra("estado", tour.getEstado());
             context.startActivity(intent);
         });
     }
@@ -108,43 +111,47 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         return listaTours.size();
     }
 
-    // 🔹 Filtrado por texto (SearchBar)
+    // ---- FILTRO TEXTO ----
     public void filtrar(String texto) {
-        List<HistorialTour> listaFiltrada = new ArrayList<>();
+        List<HistorialTour> filtrada = new ArrayList<>();
+
         if (texto.isEmpty()) {
-            listaFiltrada.addAll(listaToursOriginal);
+            filtrada.addAll(listaToursOriginal);
         } else {
-            for (HistorialTour tour : listaToursOriginal) {
-                if (tour.getTitulo().toLowerCase().contains(texto.toLowerCase()) ||
-                        tour.getUbicacion().toLowerCase().contains(texto.toLowerCase())) {
-                    listaFiltrada.add(tour);
+            for (HistorialTour t : listaToursOriginal) {
+                if (t.getTitulo().toLowerCase().contains(texto.toLowerCase())) {
+                    filtrada.add(t);
                 }
             }
         }
+
         listaTours.clear();
-        listaTours.addAll(listaFiltrada);
+        listaTours.addAll(filtrada);
         notifyDataSetChanged();
     }
 
-    // 🔹 Filtrado por estado (Chips)
+    // ---- FILTRO ESTADO ----
     public void filtrarEstado(String estado) {
-        List<HistorialTour> listaFiltrada = new ArrayList<>();
+        List<HistorialTour> filtrada = new ArrayList<>();
+
         if (estado.isEmpty()) {
-            listaFiltrada.addAll(listaToursOriginal);
+            filtrada.addAll(listaToursOriginal);
         } else {
-            for (HistorialTour tour : listaToursOriginal) {
-                if (tour.getEstado().equalsIgnoreCase(estado)) {
-                    listaFiltrada.add(tour);
+            for (HistorialTour t : listaToursOriginal) {
+                if (t.getEstado().equalsIgnoreCase(estado)) {
+                    filtrada.add(t);
                 }
             }
         }
+
         listaTours.clear();
-        listaTours.addAll(listaFiltrada);
+        listaTours.addAll(filtrada);
         notifyDataSetChanged();
     }
 
-    // 🔹 ViewHolder
+    // ---- VIEWHOLDER ----
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
         TextView tvTitulo, tvUbicacion, tvEstado, tvDuracion, tvPrecio;
         RatingBar ratingBar;
         ImageView imgTour;
@@ -153,6 +160,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvUbicacion = itemView.findViewById(R.id.tvUbicacion);
             tvEstado = itemView.findViewById(R.id.tvEstado);
@@ -165,5 +173,4 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
             btnDetalles = itemView.findViewById(R.id.btnDetalles);
         }
     }
-
 }

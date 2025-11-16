@@ -1,30 +1,39 @@
 package com.example.puriqtours.entity;
 
-public class HistorialTour {
-    private String titulo;
-    private String ubicacion;
-    private String estado;
-    private String duracion;
-    private int rating;
-    private String precio;
-    private int imagenResId;
+import java.io.Serializable;
 
-    public HistorialTour(String titulo, String ubicacion, String estado, String duracion, int rating, String precio, int imagenResId) {
+public class HistorialTour implements Serializable {
+
+    private String idTour;
+    private String titulo;
+    private String fecha;
+    private String hora;
+    private String estado;
+    private String precio;
+    private String viajeros;
+
+    private int imagenResId = 0;  // opcional
+
+    public HistorialTour() {}
+
+    public HistorialTour(String idTour, String titulo, String fecha, String hora,
+                         String estado, String precio, String viajeros, int imagenResId) {
+        this.idTour = idTour;
         this.titulo = titulo;
-        this.ubicacion = ubicacion;
+        this.fecha = fecha;
+        this.hora = hora;
         this.estado = estado;
-        this.duracion = duracion;
-        this.rating = rating;
         this.precio = precio;
+        this.viajeros = viajeros;
         this.imagenResId = imagenResId;
     }
 
-    // getters
+    public String getIdTour() { return idTour; }
     public String getTitulo() { return titulo; }
-    public String getUbicacion() { return ubicacion; }
+    public String getFecha() { return fecha; }
+    public String getHora() { return hora; }
     public String getEstado() { return estado; }
-    public String getDuracion() { return duracion; }
-    public int getRating() { return rating; }
     public String getPrecio() { return precio; }
+    public String getViajeros() { return viajeros; }
     public int getImagenResId() { return imagenResId; }
 }

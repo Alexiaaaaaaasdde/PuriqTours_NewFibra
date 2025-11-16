@@ -393,14 +393,14 @@
         android:layout_width="0dp"
         android:layout_height="90dp"
         android:background="@android:color/white"
-        app:itemBackground="@android:color/transparent"
-        app:itemIconSize="70dp"
+        app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/teal_700"
         app:itemTextColor="@color/teal_700"
         app:labelVisibilityMode="labeled"
+        app:itemBackground="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:itemIconSize="70dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

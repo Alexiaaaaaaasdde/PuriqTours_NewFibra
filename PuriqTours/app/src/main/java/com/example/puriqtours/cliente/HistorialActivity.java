@@ -130,23 +130,26 @@ public class HistorialActivity extends AppCompatActivity {
 
                     for (var doc : querySnapshot) {
 
-                        String estado = doc.getString("estado");
                         String idTour = doc.getString("idTour");
-                        String precio = "165";  // puedes obtenerlo del documento si lo guardas
-                        String duracion = "3h"; // temporal
-                        int rating = 4; // temporal
+                        String titulo = doc.getString("titulo");
+                        String fecha = doc.getString("fecha");
+                        String hora = doc.getString("hora");
+                        String estado = doc.getString("estado");
+                        String precio = doc.getString("precio");
+                        String viajeros = doc.getString("viajeros");
 
-                        // Imagen temporal según tourId
+                        // TEMPORAL imagen
                         int imagen = R.drawable.kuelap;
 
                         listaTours.add(
                                 new HistorialTour(
-                                        "Reserva de " + idTour,
                                         idTour,
+                                        titulo,
+                                        fecha,
+                                        hora,
                                         estado,
-                                        duracion,
-                                        rating,
                                         precio,
+                                        viajeros,
                                         imagen
                                 )
                         );
@@ -158,4 +161,5 @@ public class HistorialActivity extends AppCompatActivity {
                         System.out.println("ERROR FIRESTORE: " + e.getMessage())
                 );
     }
+
 }

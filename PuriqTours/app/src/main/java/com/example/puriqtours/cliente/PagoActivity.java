@@ -29,6 +29,11 @@ import android.app.PendingIntent;
 import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PagoActivity extends AppCompatActivity {
 
@@ -143,9 +148,21 @@ public class PagoActivity extends AppCompatActivity {
         btnConfirmar.setAlpha(0.5f);
 
         btnConfirmar.setOnClickListener(_view -> {
+
             dialogTarjeta.dismiss();
+
+            guardarReservaEnFirestore(
+                    getIntent().getStringExtra("tourId"),
+                    getIntent().getStringExtra("titulo"),
+                    getIntent().getStringExtra("fecha"),
+                    getIntent().getStringExtra("hora"),
+                    getIntent().getStringExtra("viajeros"),
+                    getIntent().getStringExtra("precio")
+            );
+
             mostrarDialogoReserva();
         });
+
 
         // 🔹 Validador de campos
         Runnable validarCampos = () -> {
@@ -214,6 +231,36 @@ public class PagoActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+    private void guardarReservaEnFirestore(String tourId, String titulo, String fecha,
+                                           String hora, String viajeros, String precio) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        String idCliente = mAuth.getCurrentUser().getUid();
+
+        Map<String, Object> reserva = new HashMap<>();
+        reserva.put("idCliente", idCliente);
+        reserva.put("idTour", tourId);
+        reserva.put("titulo", titulo);
+        reserva.put("fecha", fecha);
+        reserva.put("hora", hora);
+        reserva.put("viajeros", viajeros);
+        reserva.put("precio", precio);
+        reserva.put("estado", "Reservado");
+        reserva.put("timestamp", System.currentTimeMillis());
+
+        db.collection("reservas")
+                .add(reserva)
+                .addOnSuccessListener(r -> {
+                    System.out.println("✔ RESERVA GUARDADA");
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("❌ ERROR FIRESTORE " + e.getMessage());
+                });
+    }
+
 
     // 🔹 MÉTODO SEPARADO PARA ENVIAR LA NOTIFICACIÓN
     private void enviarNotificacion() {
