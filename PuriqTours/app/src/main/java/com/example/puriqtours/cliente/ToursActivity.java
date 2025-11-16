@@ -93,10 +93,8 @@ public class ToursActivity extends BaseActivity {
                             if (t != null) {
                                 t.setIdTour(doc.getId());
 
-                                // Validar campos obligatorios
-                                if (t.getTitle() != null && t.getLocation() != null) {
-                                    tourList.add(t);
-                                }
+                                // ✅ AGREGAR TODOS LOS TOURS sin validación
+                                tourList.add(t);
                             }
                         } catch (Exception e) {
                             // Log del error pero continuar con los demás tours
@@ -139,8 +137,10 @@ public class ToursActivity extends BaseActivity {
     private void filtrarPorTexto(String texto) {
         listaFiltrada.clear();
 
-        for (Tour t : tourList) {
-            try {
+        if (texto.trim().isEmpty()) {
+            listaFiltrada.addAll(tourList);
+        } else {
+            for (Tour t : tourList) {
                 String title = t.getTitle() != null ? t.getTitle().toLowerCase() : "";
                 String location = t.getLocation() != null ? t.getLocation().toLowerCase() : "";
                 String textoLower = texto.toLowerCase();
@@ -148,8 +148,6 @@ public class ToursActivity extends BaseActivity {
                 if (title.contains(textoLower) || location.contains(textoLower)) {
                     listaFiltrada.add(t);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
 

@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".cliente.ToursActivity">
+
     <!-- Contenido principal -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainContent"
@@ -14,103 +15,99 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
+        <!-- 🔹 Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#009688"
+            android:fitsSystemWindows="false"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            app:title="Puriq Tours"
+            app:titleCentered="true"
+            app:navigationIcon="@drawable/ic_menu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
-        android:layout_width="0dp"
-        android:fitsSystemWindows="false"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#009688"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:title="Puriq Tours"
-        app:titleCentered="true"
-        app:navigationIcon="@drawable/ic_menu"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            <!-- 🔹 Icono perfil -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profileIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/imagen_perfil"
+                app:shapeAppearanceOverlay="@style/RoundedImage"
+                app:strokeColor="@android:color/white"
+                app:strokeWidth="2dp"/>
+        </com.google.android.material.appbar.MaterialToolbar>
 
-        <!-- 🔹 Icono perfil -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profileIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:scaleType="centerCrop"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/imagen_perfil"
-            app:shapeAppearanceOverlay="@style/RoundedImage"
-            app:strokeColor="@android:color/white"
-            app:strokeWidth="2dp"/>
-    </com.google.android.material.appbar.MaterialToolbar>
-
-
-        <!-- 🔹 Contenido con scroll -->
-        <ScrollView
+        <!-- 🔹 Contenedor principal -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:orientation="vertical"
+            android:padding="12dp"
             android:background="#F8F9FA"
             app:layout_constraintTop_toBottomOf="@id/topAppBar"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:padding="12dp"
+            <!-- Barra de búsqueda -->
+            <EditText
+                android:id="@+id/searchBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="Buscar tours"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:background="@drawable/search_background"
+                android:padding="8dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#888888"
+                android:layout_marginBottom="12dp"/>
 
-                <!-- 🔍 Barra de búsqueda -->
-                <EditText
-                    android:id="@+id/searchBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Buscar tourLegacies"
-                    android:drawableStart="@android:drawable/ic_menu_search"
-                    android:background="@drawable/search_background"
-                    android:padding="8dp"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="#888888"
-                    android:layout_marginBottom="12dp"/>
+            <!-- Botón de filtro -->
+            <Button
+                android:id="@+id/btnFiltro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filtrar"
+                android:backgroundTint="#009688"
+                android:textColor="@android:color/white"
+                android:layout_gravity="end"
+                android:layout_marginBottom="16dp"/>
 
-                <!-- 🔹 Botón de filtro -->
-                <Button
-                    android:id="@+id/btnFiltro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Filtrar"
-                    android:backgroundTint="#009688"
-                    android:textColor="@android:color/white"
-                    android:layout_gravity="end"
-                    android:layout_marginBottom="16dp"/>
+            <!-- 🔥 RECYCLERVIEW PARA TOURS DINÁMICOS -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerTours"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="vertical"/>
 
-                <!-- ⭐ RECYCLER VIEW REAL DE TOURS (DINÁMICO DESDE FIREBASE) -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerTours"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"/>
-
-            </LinearLayout>
-        </ScrollView>
+        </LinearLayout>
 
         <!-- 🔹 Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="90dp"
-        android:background="@android:color/white"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/teal_700"
-        app:itemTextColor="@color/teal_700"
-        app:labelVisibilityMode="labeled"
-        app:itemBackground="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:itemIconSize="70dp"/>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
+            android:background="@android:color/white"
+            app:menu="@menu/bottom_nav_menu"
+            app:itemIconTint="@color/teal_700"
+            app:itemTextColor="@color/teal_700"
+            app:labelVisibilityMode="labeled"
+            app:itemBackground="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:itemIconSize="70dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- 🔹 Drawer lateral -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"

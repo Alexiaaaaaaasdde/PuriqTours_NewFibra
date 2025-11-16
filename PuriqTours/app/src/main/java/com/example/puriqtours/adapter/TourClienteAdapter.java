@@ -33,13 +33,13 @@ public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TourViewHolder holder, int position) {
-
         Tour tour = tourList.get(position);
 
-        holder.tourTitle.setText(tour.getTitle());
-        holder.tourLocation.setText(tour.getLocation());
-        holder.tourStatus.setText(tour.getStatus());
-        holder.tourDesc.setText(tour.getDesc());
+        // ✅ Manejar valores null con valores por defecto
+        holder.tourTitle.setText(tour.getTitle() != null ? tour.getTitle() : "Sin título");
+        holder.tourLocation.setText(tour.getLocation() != null ? tour.getLocation() : "Sin ubicación");
+        holder.tourStatus.setText(tour.getStatus() != null ? tour.getStatus() : "disponible");
+        holder.tourDesc.setText(tour.getDesc() != null ? tour.getDesc() : "Sin descripción");
 
         // ⭐ Rating
         if (tour.getRating() != null && tour.getRating() > 0) {
@@ -53,6 +53,7 @@ public class TourClienteAdapter extends RecyclerView.Adapter<TourClienteAdapter.
             Glide.with(holder.itemView.getContext())
                     .load(tour.getImageUrl())
                     .placeholder(R.drawable.kuelap)
+                    .error(R.drawable.kuelap)  // ✅ Agregar imagen de error
                     .into(holder.tourImage);
         } else {
             holder.tourImage.setImageResource(R.drawable.kuelap);
