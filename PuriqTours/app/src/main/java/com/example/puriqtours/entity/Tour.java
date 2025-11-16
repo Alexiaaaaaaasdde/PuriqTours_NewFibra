@@ -16,6 +16,12 @@ public class Tour implements Serializable {
     private String endTime;     // Guardar como String (HH:mm)
     private Usuario admin;
     private Integer rating;
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
 
     // 🔹 Constructor vacío requerido por Firebase
     public Tour() {}
