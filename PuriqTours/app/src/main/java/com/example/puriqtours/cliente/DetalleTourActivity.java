@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
+import com.example.puriqtours.login.LoginLegacyActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,16 +32,12 @@ public class DetalleTourActivity extends AppCompatActivity {
 
     private TextView tvTitulo, tvPrecio, tvFecha, tvViajeros;
     private ImageView imgTour, btnCalendario;
-    private Button btnReserva;
 
-    // Variables globales
     private int desayuno = 0, canotaje = 0;
     private int adultos = 2, ninos = 0, bebes = 0;
-    private int precioTotal = 0;
+
     private Dialog dialogDisponibilidad;
-
     private String fechaSeleccionadaGlobal = "Martes, 15 de Marzo de 2025";
-
     private String tourId;
 
     @Override
@@ -49,13 +45,14 @@ public class DetalleTourActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_tour);
 
-        // Recuperar HORA REAL del Tour enviado por intent
+        // 🔹 Obtener ID real del tour
         tourId = getIntent().getStringExtra("tourId");
 
-        // Referencias
+        // 🔹 Back
         ImageView btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> onBackPressed());
 
+        // 🔹 Referencias
         tvTitulo = findViewById(R.id.tvTitulo);
         tvPrecio = findViewById(R.id.tvPreciokuelap);
         imgTour = findViewById(R.id.imgTour);
@@ -63,16 +60,12 @@ public class DetalleTourActivity extends AppCompatActivity {
         btnCalendario = findViewById(R.id.btnCalendario);
         tvViajeros = findViewById(R.id.tvViajeros);
         Button btnDisponibilidad = findViewById(R.id.btnDisponibilidad);
-        btnReserva = findViewById(R.id.btnReserva);
 
-        // Acción de reservar
-        btnReserva.setOnClickListener(v -> registrarReserva());
-
-        // Abrir popups
+        // 🔹 Abrir popups
         tvViajeros.setOnClickListener(v -> mostrarDialogoViajeros(tvViajeros, null));
         btnDisponibilidad.setOnClickListener(v -> mostrarDialogoDisponibilidad());
 
-        // Recuperar datos del tour mostrado
+        // 🔹 Recuperar datos recibidos
         String titulo = getIntent().getStringExtra("titulo");
         String precio = getIntent().getStringExtra("precio");
 
@@ -81,15 +74,15 @@ public class DetalleTourActivity extends AppCompatActivity {
 
         imgTour.setImageResource(R.drawable.kuelap);
 
-        // Calendario
+        // 🔹 Calendario
         btnCalendario.setOnClickListener(v -> mostrarDatePicker());
         tvFecha.setOnClickListener(v -> mostrarDatePicker());
 
-        // Bottom Nav
+        // 🔹 Bottom Navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_tours);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+        bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
             if (id == R.id.nav_perfil) {
@@ -111,6 +104,7 @@ public class DetalleTourActivity extends AppCompatActivity {
         });
     }
 
+    // 📌 Calendario
     private void mostrarDatePicker() {
         final Calendar calendar = Calendar.getInstance();
         int año = calendar.get(Calendar.YEAR);
@@ -129,12 +123,13 @@ public class DetalleTourActivity extends AppCompatActivity {
 
                     tvFecha.setText(fechaSeleccionadaGlobal);
 
-                    // ✅ actualizar también dentro del popup si está abierto
+                    // Actualizar dentro del popup si está abierto
                     if (dialogDisponibilidad != null && dialogDisponibilidad.isShowing()) {
                         TextView tvFechaSel = dialogDisponibilidad.findViewById(R.id.tvFechaSeleccionada);
                         TextView tvDetalles = dialogDisponibilidad.findViewById(R.id.tvDetalles);
                         if (tvFechaSel != null) tvFechaSel.setText(fechaSeleccionadaGlobal);
-                        if (tvDetalles != null) tvDetalles.setText("2 opciones disponibles para el " + fechaSeleccionadaGlobal);
+                        if (tvDetalles != null)
+                            tvDetalles.setText("2 opciones disponibles para el " + fechaSeleccionadaGlobal);
                     }
                 },
                 año, mes, dia
@@ -142,17 +137,7 @@ public class DetalleTourActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void actualizarResumen(TextView tvResumen, TextView tvPrecioDestino) {
-        String resumen = adultos + " adultos";
-        if (ninos > 0) resumen += ", " + ninos + " niños";
-        if (bebes > 0) resumen += ", " + bebes + " bebés";
-
-        precioTotal = (adultos * 165) + (ninos * 20);
-
-        if (tvResumen != null) tvResumen.setText(resumen);
-        if (tvPrecioDestino != null) tvPrecioDestino.setText("Total: S/. " + precioTotal);
-    }
-
+    // 📌 Mostrar popup de viajeros
     private void mostrarDialogoViajeros(TextView tvResumenDestino, TextView tvPrecioDestino) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_viajeros);
@@ -167,7 +152,7 @@ public class DetalleTourActivity extends AppCompatActivity {
         tvNinos.setText(String.valueOf(ninos));
         tvBebes.setText(String.valueOf(bebes));
 
-        // Adultos
+        // Eventos
         dialog.findViewById(R.id.btnMasAdultos).setOnClickListener(v -> {
             adultos++;
             tvAdultos.setText(String.valueOf(adultos));
@@ -204,13 +189,27 @@ public class DetalleTourActivity extends AppCompatActivity {
         });
 
         btnAceptar.setOnClickListener(v -> {
-            actualizarResumen(tvViajeros, null); // siempre actualizar principal
+            actualizarResumen(tvViajeros, null);
             dialog.dismiss();
         });
 
         dialog.show();
     }
 
+    // 📌 Actualizar resumen de viajeros
+    private void actualizarResumen(TextView tvResumen, TextView tvPrecioDestino) {
+        String resumen = adultos + " adultos";
+        if (ninos > 0) resumen += ", " + ninos + " niños";
+        if (bebes > 0) resumen += ", " + bebes + " bebés";
+
+        if (tvResumen != null) tvResumen.setText(resumen);
+        if (tvPrecioDestino != null) {
+            int precioBase = (adultos * 165) + (ninos * 20);
+            tvPrecioDestino.setText("Total: S/. " + precioBase);
+        }
+    }
+
+    // 📌 Popup de disponibilidad
     private void mostrarDialogoDisponibilidad() {
         dialogDisponibilidad = new Dialog(this);
         dialogDisponibilidad.setContentView(R.layout.dialog_disponibilidad);
@@ -223,7 +222,7 @@ public class DetalleTourActivity extends AppCompatActivity {
         TextView tvDetalles = dialogDisponibilidad.findViewById(R.id.tvDetalles);
         ImageView btnCalendarioDisp = dialogDisponibilidad.findViewById(R.id.btnCalendarioDisponibilidad);
 
-        // 👉 ahora al tocar viajeros en el popup, abre el mismo diálogo pero actualiza también precio
+        // Viajeros en popup
         tvViajerosSel.setOnClickListener(v -> mostrarDialogoViajeros(tvViajerosSel, tvPrecioDisp));
 
         btnVerDetalles.setOnClickListener(v -> mostrarDialogoExtras(tvPrecioDisp, tvViajerosSel));
@@ -232,11 +231,11 @@ public class DetalleTourActivity extends AppCompatActivity {
         tvFechaSel.setText(fechaSeleccionadaGlobal);
         actualizarResumen(tvViajerosSel, tvPrecioDisp);
 
-        // Calendario dentro del popup
+        // Calendario en popup
         btnCalendarioDisp.setOnClickListener(v -> mostrarDatePicker());
 
-        // Botón Reservar
-        Button btnReservar = dialogDisponibilidad.findViewById(R.id.btnReservar);
+        // 🔥 Botón reservar ahora
+        Button btnReservar = dialogDisponibilidad.findViewById(R.id.btnReserva);
         btnReservar.setEnabled(false);
         btnReservar.setAlpha(0.5f);
 
@@ -250,7 +249,6 @@ public class DetalleTourActivity extends AppCompatActivity {
             btnHora1.setSelected(false);
             btnHora2.setSelected(false);
             v.setSelected(true);
-
             horaSeleccionada[0] = ((Button) v).getText().toString();
         };
 
@@ -258,16 +256,10 @@ public class DetalleTourActivity extends AppCompatActivity {
         btnHora2.setOnClickListener(horarioClickListener);
 
         btnReservar.setOnClickListener(v -> {
-            String fecha = tvFechaSel.getText().toString();
-            String viajeros = tvViajerosSel.getText().toString();
-            String precio = tvPrecioDisp.getText().toString();
-
-            dialogDisponibilidad.dismiss();
-
             Intent intent = new Intent(DetalleTourActivity.this, PagoActivity.class);
-            intent.putExtra("fecha", fecha);
-            intent.putExtra("viajeros", viajeros);
-            intent.putExtra("precio", precio);
+            intent.putExtra("fecha", tvFechaSel.getText().toString());
+            intent.putExtra("viajeros", tvViajerosSel.getText().toString());
+            intent.putExtra("precio", tvPrecioDisp.getText().toString());
             intent.putExtra("hora", horaSeleccionada[0]);
             startActivity(intent);
         });
@@ -275,6 +267,7 @@ public class DetalleTourActivity extends AppCompatActivity {
         dialogDisponibilidad.show();
     }
 
+    // 📌 Popup de extras
     private void mostrarDialogoExtras(TextView tvPrecioDisp, TextView tvViajerosSel) {
         Dialog dialogExtras = new Dialog(this);
         dialogExtras.setContentView(R.layout.dialog_detalles);
@@ -318,8 +311,8 @@ public class DetalleTourActivity extends AppCompatActivity {
         dialogExtras.show();
     }
 
+    // 📌 Registrar reserva en Firebase
     private void registrarReserva() {
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -330,7 +323,6 @@ public class DetalleTourActivity extends AppCompatActivity {
         reserva.put("idTour", tourId);
         reserva.put("fechaReserva", new Date());
         reserva.put("estado", "reservado");
-
         reserva.put("qrInicio", idCliente + "_" + tourId + "_inicio");
         reserva.put("qrFin", idCliente + "_" + tourId + "_fin");
 
@@ -342,6 +334,7 @@ public class DetalleTourActivity extends AppCompatActivity {
                 );
     }
 
+    // 📌 Popup de confirmación de reserva
     private void mostrarDialogoReserva() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_reserva_registrada);

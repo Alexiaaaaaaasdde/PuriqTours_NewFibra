@@ -43,415 +43,58 @@
             app:strokeWidth="2dp"/>
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <!-- 🔹 Contenido con scroll -->
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#F8F9FA"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!-- 🔹 Contenido con scroll -->
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#F8F9FA"
+            app:layout_constraintTop_toBottomOf="@id/topAppBar"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Barra de búsqueda -->
-            <EditText
-                android:id="@+id/searchBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Buscar tourLegacies"
-                android:drawableStart="@android:drawable/ic_menu_search"
-                android:background="@drawable/search_background"
-                android:padding="8dp"
-                android:textColor="@android:color/black"
-                android:textColorHint="#888888"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Botón de filtro -->
-            <Button
-                android:id="@+id/btnFiltro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Filtrar"
-                android:backgroundTint="#009688"
-                android:textColor="@android:color/white"
-                android:layout_gravity="end"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Lista de tourLegacies (ejemplo con LinearLayout, ideal luego un RecyclerView) -->
             <LinearLayout
                 android:orientation="vertical"
+                android:padding="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- Card de TourLegacy -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardKuelap"
+                <!-- 🔍 Barra de búsqueda -->
+                <EditText
+                    android:id="@+id/searchBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
+                    android:hint="Buscar tourLegacies"
+                    android:drawableStart="@android:drawable/ic_menu_search"
+                    android:background="@drawable/search_background"
+                    android:padding="8dp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#888888"
+                    android:layout_marginBottom="12dp"/>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                <!-- 🔹 Botón de filtro -->
+                <Button
+                    android:id="@+id/btnFiltro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Filtrar"
+                    android:backgroundTint="#009688"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="16dp"/>
 
-                        <ImageView
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:src="@drawable/kuelap"
-                            android:scaleType="centerCrop"/>
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="8dp">
-
-                            <TextView
-                                android:text="Tour número 1"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:textColor="@android:color/black"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="kuelap"
-                                android:textSize="14sp"
-                                android:textColor="#666"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="Se requiere guía para un tourLegacy..."
-                                android:textSize="13sp"
-                                android:textColor="#444"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <TextView
-                                android:text="Mañana • 3h"
-                                android:textSize="13sp"
-                                android:textColor="#009688"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <RatingBar
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:numStars="5"
-                                android:rating="4"
-                                android:stepSize="1"
-                                android:isIndicator="true"
-                                style="?android:attr/ratingBarStyleSmall"
-                                android:progressTint="@color/teal_700"
-                                android:layout_marginTop="4dp"/>
-                            <TextView
-                                android:id="@+id/tvPreciokuelap"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="S/ 165"
-                                android:textColor="@color/teal_700"
-                                android:textSize="16sp"
-                                android:layout_marginTop="6dp"/>
-
-
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardLima1"
+                <!-- ⭐ RECYCLER VIEW REAL DE TOURS (DINÁMICO DESDE FIREBASE) -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerTours"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
+                    android:nestedScrollingEnabled="false"/>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:src="@drawable/kuelap"
-                            android:scaleType="centerCrop"/>
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="8dp">
-
-                            <TextView
-                                android:text="Tour número 2"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:textColor="@android:color/black"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="Lima"
-                                android:textSize="14sp"
-                                android:textColor="#666"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="Se requiere guía para un tourLegacy..."
-                                android:textSize="13sp"
-                                android:textColor="#444"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <TextView
-                                android:text="Mañana • 3h"
-                                android:textSize="13sp"
-                                android:textColor="#009688"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <RatingBar
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:numStars="5"
-                                android:rating="4"
-                                android:stepSize="1"
-                                android:isIndicator="true"
-                                style="?android:attr/ratingBarStyleSmall"
-                                android:progressTint="@color/teal_700"
-                                android:layout_marginTop="4dp"/>
-                            <TextView
-                                android:id="@+id/tvPrecio2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="S/ 120.00"
-                                android:textColor="@color/teal_700"
-                                android:textSize="16sp"
-                                android:layout_marginTop="6dp"/>
-
-
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCusco2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:src="@drawable/kuelap"
-                            android:scaleType="centerCrop"/>
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="8dp">
-
-                            <TextView
-                                android:text="Tour número 3"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:textColor="@android:color/black"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="Cusco"
-                                android:textSize="14sp"
-                                android:textColor="#666"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="Se requiere guía para un tourLegacy..."
-                                android:textSize="13sp"
-                                android:textColor="#444"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <TextView
-                                android:text="Mañana • 3h"
-                                android:textSize="13sp"
-                                android:textColor="#009688"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <RatingBar
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:numStars="5"
-                                android:rating="4"
-                                android:stepSize="1"
-                                android:isIndicator="true"
-                                style="?android:attr/ratingBarStyleSmall"
-                                android:progressTint="@color/teal_700"
-                                android:layout_marginTop="4dp"/>
-                            <TextView
-                                android:id="@+id/tvPrecio3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="S/ 120.00"
-                                android:textColor="@color/teal_700"
-                                android:textSize="16sp"
-                                android:layout_marginTop="6dp"/>
-
-
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCusco3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:src="@drawable/kuelap"
-                            android:scaleType="centerCrop"/>
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="8dp">
-
-                            <TextView
-                                android:text="Tour número 4"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:textColor="@android:color/black"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="Cusco"
-                                android:textSize="14sp"
-                                android:textColor="#666"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                            <TextView
-                                android:text="Se requiere guía para un tourLegacy..."
-                                android:textSize="13sp"
-                                android:textColor="#444"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <TextView
-                                android:text="Mañana • 3h"
-                                android:textSize="13sp"
-                                android:textColor="#009688"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-                            <RatingBar
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:numStars="5"
-                                android:rating="4"
-                                android:stepSize="1"
-                                android:isIndicator="true"
-                                style="?android:attr/ratingBarStyleSmall"
-                                android:progressTint="@color/teal_700"
-                                android:layout_marginTop="4dp"/>
-                            <TextView
-                                android:id="@+id/tvPrecio4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="S/ 120.00"
-                                android:textColor="@color/teal_700"
-                                android:textSize="16sp"
-                                android:layout_marginTop="6dp"/>
-
-
-                        </LinearLayout>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
             </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        </ScrollView>
 
-                <!-- Card de TourLegacy -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCusco4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- Card de TourLegacy -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <!-- Card de TourLegacy -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardElevation="4dp"
-                    app:cardCornerRadius="12dp">
-
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
-    <!-- 🔹 Bottom Navigation -->
+        <!-- 🔹 Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
