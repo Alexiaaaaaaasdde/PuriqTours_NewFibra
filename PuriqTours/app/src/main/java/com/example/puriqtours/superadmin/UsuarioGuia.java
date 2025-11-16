@@ -20,11 +20,20 @@ public class UsuarioGuia extends Usuario {
         this.valoracion = valoracion;
     }
 
-    // Nuevo constructor que incluye la URL del profile image
+    // Compatibilidad: constructor usado antes por MainSuperAdminActivity
     public UsuarioGuia(String nombre, String ciudad, int valoracion, String profileImageUrl) {
         super(nombre, ciudad);
         this.valoracion = valoracion;
         this.profileImageUrl = profileImageUrl;
+    }
+
+    // Constructor con uid y state
+    public UsuarioGuia(String uid, String nombre, String ciudad, int valoracion, String profileImageUrl, String state) {
+        super(nombre, ciudad);
+        this.valoracion = valoracion;
+        this.profileImageUrl = profileImageUrl;
+        this.uid = uid;
+        this.state = state;
     }
     @Override
     public int getTipo() { return 1; }

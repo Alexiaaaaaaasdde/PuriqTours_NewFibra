@@ -24,9 +24,10 @@
             android:layout_marginTop="8dp"
             android:padding="8dp">
             <TextView
+                android:id="@+id/tvTotalIngresosResumen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ingresos\n10 320.98$"
+                android:text="0.00$"
                 android:textColor="#26A69A"
                 android:textSize="22sp"
                 android:textStyle="bold"/>

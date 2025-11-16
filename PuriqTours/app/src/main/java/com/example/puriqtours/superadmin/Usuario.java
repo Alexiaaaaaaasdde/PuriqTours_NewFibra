@@ -15,9 +15,17 @@ import java.util.List;
 public abstract class Usuario {
     public String nombre;
     public String ciudad;
+    public String uid;
+    public String state; // "habilitado" o "deshabilitado"
     public Usuario(String nombre, String ciudad) {
         this.nombre = nombre;
         this.ciudad = ciudad;
     }
     public abstract int getTipo(); // 0=Cliente, 1=Guía, 2=Administrador
+
+    // helpers
+    public String getUid() { return uid; }
+    public void setUid(String uid) { this.uid = uid; }
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
 }

@@ -16,6 +16,12 @@ public class UsuarioCliente extends Usuario {
     public UsuarioCliente(String nombre, String ciudad) {
         super(nombre, ciudad);
     }
+
+    public UsuarioCliente(String uid, String nombre, String ciudad, String state) {
+        super(nombre, ciudad);
+        this.uid = uid;
+        this.state = state;
+    }
     @Override
     public int getTipo() { return 0; }
 }

@@ -64,6 +64,22 @@ public class UsuariosActivity extends AppCompatActivity {
                 highlightFilter(R.id.btnTodos);
             }
         });
+        findViewById(R.id.ordenarLayout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Obtener el fragment actual y pedirle que ordene por nombre si soporta la operación
+                Fragment current = getSupportFragmentManager().findFragmentById(R.id.usuariosContentContainer);
+                if (current instanceof UsuariosClientesFragment) {
+                    ((UsuariosClientesFragment) current).sortByName();
+                } else if (current instanceof UsuariosGuiasFragment) {
+                    ((UsuariosGuiasFragment) current).sortByName();
+                } else if (current instanceof UsuariosAdministradoresFragment) {
+                    ((UsuariosAdministradoresFragment) current).sortByName();
+                } else if (current instanceof UsuariosTodosFragment) {
+                    ((UsuariosTodosFragment) current).sortByName();
+                }
+            }
+        });
         // Mostrar Guías por defecto (como el layout actual)
         showFragment(new UsuariosGuiasFragment());
         highlightFilter(R.id.btnGuias);

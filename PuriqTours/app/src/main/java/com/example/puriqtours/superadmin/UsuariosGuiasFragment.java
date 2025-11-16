@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsuariosGuiasFragment extends Fragment {
+    private UsuariosAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_usuarios_guias, container, false);
-
         RecyclerView recyclerView = new RecyclerView(getContext());
         recyclerView.setId(View.generateViewId());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -27,18 +27,43 @@ public class UsuariosGuiasFragment extends Fragment {
         recyclerView.setClipToPadding(false);
 
         List<Usuario> usuarios = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            usuarios.add(new UsuarioGuia("Guía " + i, "Ciudad " + i, (i % 5) + 1));
-        }
-
-        UsuariosAdapter adapter = new UsuariosAdapter(getContext(), usuarios);
-        recyclerView.setAdapter(adapter);
+    adapter = new UsuariosAdapter(getContext(), usuarios);
+    recyclerView.setAdapter(adapter);
 
         // Reemplaza el contenido del ScrollView por el RecyclerView
         ViewGroup root = (ViewGroup) view;
         root.removeAllViews();
         root.addView(recyclerView);
 
+        // Cargar usuarios rol == Guia desde Firestore
+        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+        db.collection("users").get(com.google.firebase.firestore.Source.SERVER)
+            .addOnSuccessListener(snapshot -> {
+                List<Usuario> list = new ArrayList<>();
+                for (com.google.firebase.firestore.QueryDocumentSnapshot doc : snapshot) {
+                    String rol = doc.getString("rol");
+                    if (rol == null) continue;
+                    String r = rol.toLowerCase();
+                    if (r.contains("guia")) {
+                        String uid = doc.getId();
+                        String name = doc.getString("name");
+                        if (name == null) name = doc.getString("username");
+                        String city = doc.getString("address");
+                        String state = doc.getString("state");
+                        int rating = 0;
+                        try { Object rv = doc.get("valoracion"); if (rv instanceof Number) rating = ((Number)rv).intValue(); } catch(Exception ex){}
+                        String profile = doc.getString("profile_image");
+                        list.add(new UsuarioGuia(uid, name != null ? name : "Guía", city != null ? city : "", rating, profile, state != null ? state : "habilitado"));
+                    }
+                }
+                this.adapter.setUsuarios(list);
+            });
+
         return view;
+    }
+
+    // permitir que la Activity solicite ordenar
+    public void sortByName() {
+        if (adapter != null) adapter.sortByNameAsc();
     }
 }

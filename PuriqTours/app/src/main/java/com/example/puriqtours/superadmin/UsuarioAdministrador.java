@@ -19,6 +19,14 @@ import java.util.List;public class UsuarioAdministrador extends Usuario {
         this.empresa = empresa;
         this.fechaRegistro = fechaRegistro;
     }
+
+    public UsuarioAdministrador(String uid, String nombre, String ciudad, String empresa, String fechaRegistro, String state) {
+        super(nombre, ciudad);
+        this.empresa = empresa;
+        this.fechaRegistro = fechaRegistro;
+        this.uid = uid;
+        this.state = state;
+    }
     @Override
     public int getTipo() { return 2; }
 }

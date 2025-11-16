@@ -17,9 +17,10 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"/>
         <TextView
+            android:id="@+id/tvTotalReservasResumen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5.000,00\n50 Reservas"
+            android:text="0,00\n0 Reservas"
             android:textColor="#26A69A"
             android:textSize="22sp"
             android:textStyle="bold"
