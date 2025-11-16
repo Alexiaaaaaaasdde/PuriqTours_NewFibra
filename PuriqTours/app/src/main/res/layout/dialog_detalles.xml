@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Detalles del tourLegacy -->"
+            android:text="Detalles del Tour"
             android:textStyle="bold"
             android:textColor="@color/teal_700"
             android:textSize="18sp"
@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hora de inicio del tourLegacy:"
+                android:text="Hora de inicio:"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:textColor="#2B746C"/>
@@ -44,8 +44,6 @@
                 android:textSize="14sp"
                 android:textColor="#2B746C"/>
         </LinearLayout>
-        <!-- Costo -->
-
 
         <!-- Idiomas -->
     <LinearLayout
@@ -84,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#2B746C"
-            android:text="Fecha del tourLegacy:"
+            android:text="Fecha del Tour:"
             android:textStyle="bold"
             android:textSize="14sp" />
 
@@ -398,9 +396,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="6dp"
-                        android:backgroundTint="@color/teal_700"
+                        android:backgroundTint="#4CAF50"
                         android:text="Agregar al Tour"
                         android:textColor="@android:color/white" />
+
 
                     <Button
                         android:id="@+id/btnSalir"
@@ -408,9 +407,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="6dp"
-                        android:backgroundTint="@color/teal_700"
+                        android:backgroundTint="#F44336"
                         android:text="Salir"
                         android:textColor="@android:color/white" />
+
                 </LinearLayout>
 
             </LinearLayout>
