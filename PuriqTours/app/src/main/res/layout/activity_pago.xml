@@ -202,24 +202,32 @@
                 android:background="@drawable/box_bg"
                 android:layout_marginTop="10dp">
 
-                <RadioButton
-                    android:id="@+id/rbTarjeta"
+                <RadioGroup
+                    android:id="@+id/radioGroupPago"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tarjeta de crédito/débito"
-                    android:textStyle="bold"
-                    android:drawableEnd="@drawable/visa"
-                    android:drawablePadding="8dp" />
+                    android:orientation="vertical">
 
-                <RadioButton
-                    android:id="@+id/rbGooglePay"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Google Pay"
-                    android:layout_marginTop="8dp"
-                    android:textStyle="bold"
-                    android:drawableEnd="@drawable/google"
-                    android:drawablePadding="8dp" />
+                    <RadioButton
+                        android:id="@+id/rbTarjeta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tarjeta de crédito/débito"
+                        android:textStyle="bold"
+                        android:drawableEnd="@drawable/visa"
+                        android:drawablePadding="8dp"/>
+
+                    <RadioButton
+                        android:id="@+id/rbGooglePay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Yape/Plin/GooglePay"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
+                        android:drawableEnd="@drawable/google"
+                        android:drawablePadding="8dp"/>
+                </RadioGroup>
+
 
             </LinearLayout>
 

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -125,8 +126,19 @@ public class PagoActivity extends AppCompatActivity {
         });
 
         // ---------- DIALOG TARJETA ----------
+        RadioGroup rgPago = findViewById(R.id.radioGroupPago);
+        RadioButton rbGooglePay = findViewById(R.id.rbGooglePay);
         RadioButton rbTarjeta = findViewById(R.id.rbTarjeta);
-        rbTarjeta.setOnClickListener(v -> mostrarDialogoTarjeta());
+
+// 👉 Evento para selección de forma de pago
+        rgPago.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbTarjeta) {
+                mostrarDialogoTarjeta();
+            } else if (checkedId == R.id.rbGooglePay) {
+                mostrarDialogoYapePlin();
+            }
+        });
+
     }
 
     private void mostrarDialogoTarjeta() {
@@ -158,9 +170,10 @@ public class PagoActivity extends AppCompatActivity {
                     getIntent().getStringExtra("hora"),
                     getIntent().getStringExtra("viajeros"),
                     getIntent().getStringExtra("precio"),
-                    getIntent().getStringExtra("img")  // ⭐ NUEVO
+                    getIntent().getStringExtra("img"),
+                    "Tarjeta",     // ⭐ nuevo parámetro
+                    "N/A"          // ⭐ nuevo parámetro
             );
-
 
             mostrarDialogoReserva();
         });
@@ -236,7 +249,7 @@ public class PagoActivity extends AppCompatActivity {
 
     private void guardarReservaEnFirestore(String tourId, String titulo, String fecha,
                                            String hora, String viajeros, String precio,
-                                           String imageUrl) {
+                                           String imageUrl, String metodoPago, String codigoOperacion) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -255,15 +268,20 @@ public class PagoActivity extends AppCompatActivity {
         reserva.put("timestamp", System.currentTimeMillis());
         reserva.put("imageUrl", imageUrl);
 
+        // 🔥 Nuevos campos
+        reserva.put("metodoPago", metodoPago);
+        reserva.put("codigoOperacion", codigoOperacion);
+
         db.collection("reservas")
                 .add(reserva)
                 .addOnSuccessListener(r -> {
-                    System.out.println("✔ RESERVA GUARDADA CON IMAGEN");
+                    System.out.println("✔ RESERVA GUARDADA con método: " + metodoPago);
                 })
                 .addOnFailureListener(e -> {
                     System.out.println("❌ ERROR FIRESTORE " + e.getMessage());
                 });
     }
+
 
 
 
@@ -296,4 +314,55 @@ public class PagoActivity extends AppCompatActivity {
             manager.notify(1002, builder.build());
         }
     }
+
+    private void mostrarDialogoYapePlin() {
+
+        Dialog dialogYape = new Dialog(PagoActivity.this);
+        dialogYape.setContentView(R.layout.dialog_qr_yape);
+        dialogYape.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView tvMonto = dialogYape.findViewById(R.id.tvMontoYape);
+        TextView tvCodigo = dialogYape.findViewById(R.id.tvCodigoOperacion);
+        Button btnYaPague = dialogYape.findViewById(R.id.btnYaPague);
+
+        // 🔹 Recuperar el monto
+        String precio = getIntent().getStringExtra("precio");
+        tvMonto.setText("Monto: " + precio);
+
+        // 🔹 Generar código automáticamente
+        String codigoOperacion = generarCodigoOperacion();
+        tvCodigo.setText("Cod. operación: " + codigoOperacion);
+
+        btnYaPague.setOnClickListener(v -> {
+
+            dialogYape.dismiss();
+
+            // 🔥 Guardar la reserva indicando método Yape/Plin
+            guardarReservaEnFirestore(
+                    getIntent().getStringExtra("tourId"),
+                    getIntent().getStringExtra("titulo"),
+                    getIntent().getStringExtra("fecha"),
+                    getIntent().getStringExtra("hora"),
+                    getIntent().getStringExtra("viajeros"),
+                    getIntent().getStringExtra("precio"),
+                    getIntent().getStringExtra("img"),
+                    "Yape/Plin/GooglePay",
+                    codigoOperacion   // AUTO-GENERADO
+            );
+
+            mostrarDialogoReserva();
+        });
+
+        dialogYape.show();
+    }
+
+
+    private String generarCodigoOperacion() {
+        int num = (int) (Math.random() * 900000) + 100000; // 6 dígitos
+        return "PAY-" + num;
+    }
+
+
+
+
 }

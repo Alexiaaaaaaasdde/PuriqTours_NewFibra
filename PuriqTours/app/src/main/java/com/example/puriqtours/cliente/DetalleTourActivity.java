@@ -44,6 +44,7 @@ public class DetalleTourActivity extends AppCompatActivity {
 
     private String tituloTour;
     private float precioTour;
+    private String location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class DetalleTourActivity extends AppCompatActivity {
 
         String desc = getIntent().getStringExtra("desc");
         String img = getIntent().getStringExtra("img");
-        String location = getIntent().getStringExtra("location");
+        location = getIntent().getStringExtra("location");
         int rating = getIntent().getIntExtra("rating", 0);
 
         // 🔹 Mostrar datos
@@ -296,6 +297,7 @@ public class DetalleTourActivity extends AppCompatActivity {
             intent.putExtra("hora", horaSeleccionada[0]);
             intent.putExtra("tourId", tourId);
             intent.putExtra("titulo", tituloTour);
+            intent.putExtra("ubicacion", location);
             intent.putExtra("img", getIntent().getStringExtra("img"));
 
             startActivity(intent);
