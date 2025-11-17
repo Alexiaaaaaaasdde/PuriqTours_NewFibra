@@ -12,7 +12,12 @@
           "package_name": "com.example.puriqtours"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "68499209549-jtn9pvm4si0stqo24bpir410hgr5b8qh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDCaHMU3V-OwsshvhxHtLmJj3lnLICesnQ"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68499209549-jtn9pvm4si0stqo24bpir410hgr5b8qh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

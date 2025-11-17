@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 🔹 Imagen de mapa como fondo -->
-    <org.osmdroid.views.MapView
-        android:id="@+id/osmMap"
+    <!-- 🔹 MAPA GOOGLE -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true" />
+        android:layout_height="match_parent" />
 
-    <!-- 🔹 Bottom sheet con info del destino -->
+    <!-- ════════════════════════════════════════ -->
+    <!-- 🔹 BOTTOM SHEET CON INFO DEL CHECKPOINT -->
+    <!-- ════════════════════════════════════════ -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomSheetDestino"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="8dp"
         android:layout_margin="12dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="10dp"
         android:backgroundTint="@android:color/white">
 
         <LinearLayout
@@ -28,52 +31,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- 🔹 Info del lugar -->
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+            <!-- 🔹 Título del checkpoint -->
+            <TextView
+                android:id="@+id/tvNombreDestino"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:text="Checkpoint"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
 
-                <ImageView
-                    android:id="@+id/imgDestino"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_launcher_foreground"
-                    android:layout_marginEnd="12dp"
-                    android:background="@drawable/machupicchu" />
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/tvNombreDestino"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hotel Piura"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-                    <TextView
-                        android:id="@+id/tvUbicacionDestino"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pucp, V tercer piso"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                        android:textColor="@color/darkgreen" />
-
-                    <TextView
-                        android:id="@+id/tvDistancia"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Distancia: 2.3 km"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                        android:textColor="@color/teal_700" />
-                </LinearLayout>
-            </LinearLayout>
+            <!-- 🔹 Distancia al checkpoint -->
+            <TextView
+                android:id="@+id/tvDistancia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distancia: -- m"
+                android:layout_marginTop="6dp"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="@color/teal_700"/>
 
             <!-- 🔹 Botones -->
             <LinearLayout
@@ -88,21 +64,19 @@
                     android:id="@+id/btnMarcarUbicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Marcar Ubicación"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-                    android:layout_marginEnd="20dp" />
-                <!-- Botón chat -->
+                    android:text="Marcar Ubicación" />
+
+                <!-- Botón finalizar -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnChat"
-                    style="@style/Widget.Material3.Button.IconButton"
+                    android:id="@+id/btnFinalizarTour"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:contentDescription="Abrir chat"
-                    android:icon="@drawable/ic_chat"
-                    android:iconTint="@color/teal_700" />
-
-
+                    android:layout_height="wrap_content"
+                    android:text="Finalizar"
+                    android:layout_marginStart="12dp"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:enabled="false"/>
             </LinearLayout>
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

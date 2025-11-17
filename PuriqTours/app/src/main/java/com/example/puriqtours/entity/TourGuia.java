@@ -1,40 +1,81 @@
 package com.example.puriqtours.entity;
-import java.time.LocalTime;
+
+import java.util.List;
 
 public class TourGuia {
 
-    private String titulo;
-    private String descripcion;
-    private int imagenResId;
+    // 🔹 Datos de la reserva
+    private String idReserva;
+    private String idTour;
+    private String idCliente;
+    private String idGuia;
+    private String status;
+    private String tokenInicio;
+    private String tokenFin;
 
-    private String ciudad;
+    // 🔹 Datos del tour (vienen de /tours)
+    private String name;
+    private String desc;
+    private String location;
+    private String date;
+    private String startTime;
+    private String endTime;
+    private String img;
+    private Double price;
+    private List<String> addedServices;
+    private List<CheckpointReserva> checkpoints;
 
-    private String fecha;
+    public TourGuia() {}
 
-    private LocalTime horaInicio;
+    public TourGuia(String idReserva, String idTour, String idCliente, String idGuia,
+                    String status, String tokenInicio, String tokenFin,
+                    String name, String desc, String location, String date,
+                    String startTime, String endTime, String img, Double price) {
 
-    private LocalTime horaFin;
+        this.idReserva = idReserva;
+        this.idTour = idTour;
+        this.idCliente = idCliente;
+        this.idGuia = idGuia;
+        this.status = status;
+        this.tokenInicio = tokenInicio;
+        this.tokenFin = tokenFin;
 
-    private boolean expandido; // controla si está expandido o no
-
-    public TourGuia(String titulo, String descripcion, int imagenResId, String ciudad, String fecha, LocalTime horaInicio, LocalTime horaFin) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.imagenResId = imagenResId;
-        this.ciudad = ciudad;
-        this.fecha = fecha;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.expandido = false;
+        this.name = name;
+        this.desc = desc;
+        this.location = location;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.img = img;
+        this.price = price;
     }
 
-    public String getTitulo() { return titulo; }
-    public String getDescripcion() { return descripcion; }
-    public int getImagenResId() { return imagenResId; }
-    public boolean isExpandido() { return expandido; }
-    public void setExpandido(boolean expandido) { this.expandido = expandido; }
-    public String getFecha() {return fecha;}
-    public LocalTime getHoraInicio() {return horaInicio;}
-    public LocalTime getHoraFin() {return horaFin;}
-    public String getCiudad() {return ciudad;}
+    // Getters
+    public String getIdReserva() { return idReserva; }
+    public String getIdTour() { return idTour; }
+    public String getIdCliente() { return idCliente; }
+    public String getIdGuia() { return idGuia; }
+    public String getStatus() { return status; }
+    public String getTokenInicio() { return tokenInicio; }
+    public String getTokenFin() { return tokenFin; }
+
+    public String getName() { return name; }
+    public String getDesc() { return desc; }
+    public String getLocation() { return location; }
+    public String getDate() { return date; }
+    public String getStartTime() { return startTime; }
+    public String getEndTime() { return endTime; }
+    public String getImg() { return img; }
+    public Double getPrice() { return price; }
+
+    public List<String> getAddedServices() {
+        return addedServices;
+    }
+
+    public void setAddedServices(List<String> addedServices) {
+        this.addedServices = addedServices;
+    }
+
+    public List<CheckpointReserva> getCheckpoints() { return checkpoints; }
+    public void setCheckpoints(List<CheckpointReserva> checkpoints) { this.checkpoints = checkpoints; }
 }

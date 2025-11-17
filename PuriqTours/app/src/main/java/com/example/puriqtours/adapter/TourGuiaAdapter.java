@@ -17,84 +17,113 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.guia.DetallesBottomSheet;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.TourGuia;
+import com.example.puriqtours.guia.DetallesReservaBottomSheet;
 import com.example.puriqtours.guia.IniciarTourActivity;
 
 import java.util.List;
+import android.content.Context;
+import androidx.fragment.app.FragmentActivity;
 
-public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.TourViewHolder> {
+import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 
-    private FragmentManager fragmentManager;
-    private List<TourGuia> tours;
+import java.util.List;
 
-    public TourGuiaAdapter(List<TourGuia> tours, FragmentManager fragmentManager) {
-        this.tours = tours;
-        this.fragmentManager = fragmentManager;
+public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.ViewHolder> {
+
+    private Context context;
+    private List<TourGuia> tourList;
+    private OnTourActionListener listener;
+    TextView tvDescripcionCompleta;
+
+
+    // 🔹 Interfaz para el botón “Iniciar tour”
+    public interface OnTourActionListener {
+        void onIniciar(TourGuia t);
+    }
+
+    public TourGuiaAdapter(Context context, List<TourGuia> tourList, OnTourActionListener listener) {
+        this.context = context;
+        this.tourList = tourList;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public TourViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View vista = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tour_guia, parent, false);
-        return new TourViewHolder(vista);
+    public TourGuiaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_tour_guia, parent, false);
+        return new TourGuiaAdapter.ViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull TourViewHolder holder, int position) {
-        TourGuia tour = tours.get(position);
+    public void onBindViewHolder(@NonNull TourGuiaAdapter.ViewHolder holder, int position) {
+        TourGuia t = tourList.get(position);
 
-        holder.tvTitulo.setText(tour.getTitulo());
-        holder.tvDescripcionCorta.setText(tour.getDescripcion());
-        holder.imgSolicitud.setImageResource(tour.getImagenResId());
-        holder.tvDescripcionCompleta.setText(tour.getDescripcion());
-        holder.tvCiudad.setText("Ciudad: " + tour.getCiudad());
-        holder.tvFecha.setText("Fecha: " + tour.getFecha());
-        holder.tvRangoHora.setText("Hora: " + tour.getHoraInicio() + "-" + tour.getHoraFin());
+        // 🔹 Datos principales del tour
+        holder.tvTitulo.setText(t.getName());
+        holder.tvDescripcionCorta.setText(t.getDesc());
+        holder.tvDescripcionCompleta.setText(t.getDesc());
+        holder.tvCiudad.setText("Ciudad: " + t.getLocation());
+        holder.tvFecha.setText("Fecha: " + t.getDate());
+        holder.tvRangoHora.setText("Hora: " + t.getStartTime() + " - " + t.getEndTime());
 
-        boolean expandido = tour.isExpandido();
-        holder.layoutExpandible.setVisibility(expandido ? View.VISIBLE : View.GONE);
+        // 🔹 Cargar imagen con Glide
+        Glide.with(context)
+                .load(t.getImg())
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .into(holder.imgSolicitud);
 
+        // 🔹 Expandible
         holder.itemView.setOnClickListener(v -> {
-            tour.setExpandido(!tour.isExpandido());
-            notifyItemChanged(position);
+            boolean visible = holder.layoutExpandible.getVisibility() == View.VISIBLE;
+            holder.layoutExpandible.setVisibility(visible ? View.GONE : View.VISIBLE);
         });
 
+        // 🔹 Abrir BOTTOMSHEET con los DETALLES del tour
         holder.btnDetalles.setOnClickListener(v -> {
-            DetallesBottomSheet bottomSheet = new DetallesBottomSheet();
-            bottomSheet.show(fragmentManager, bottomSheet.getTag());
+            DetallesReservaBottomSheet sheet = new DetallesReservaBottomSheet(t);
+            sheet.show(
+                    ((FragmentActivity) context).getSupportFragmentManager(),
+                    "DetallesBottomSheet"
+            );
         });
 
+        // 🔹 Acciones Iniciar
         holder.btnIniciar.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), IniciarTourActivity.class);
-            v.getContext().startActivity(intent);
+            if (listener != null) listener.onIniciar(t);
         });
-
     }
 
     @Override
     public int getItemCount() {
-        return tours.size();
+        return tourList.size();
     }
 
-    public static class TourViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgSolicitud;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        ShapeableImageView imgSolicitud;
         TextView tvTitulo, tvDescripcionCorta, tvDescripcionCompleta, tvCiudad, tvFecha, tvRangoHora;
         LinearLayout layoutExpandible;
-        Button btnDetalles, btnIniciar;
+        MaterialButton btnDetalles, btnIniciar;
 
-        public TourViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgSolicitud = itemView.findViewById(R.id.imgSolicitud);
-            tvTitulo = itemView.findViewById(R.id.tvTitulo);
-            tvDescripcionCorta = itemView.findViewById(R.id.tvDescripcionCorta);
-            tvDescripcionCompleta = itemView.findViewById(R.id.tvDescripcionCompleta);
-            tvCiudad = itemView.findViewById(R.id.tvCiudad);
-            tvFecha = itemView.findViewById(R.id.tvFecha);
-            tvRangoHora = itemView.findViewById(R.id.tvRangoHora);
-            layoutExpandible = itemView.findViewById(R.id.layoutExpandible);
-            btnDetalles = itemView.findViewById(R.id.btnDetalles);
-            btnIniciar = itemView.findViewById(R.id.btnIniciar);
 
+            imgSolicitud        = itemView.findViewById(R.id.imgSolicitud);
+            tvTitulo            = itemView.findViewById(R.id.tvTitulo);
+            tvDescripcionCorta  = itemView.findViewById(R.id.tvDescripcionCorta);
+            tvCiudad            = itemView.findViewById(R.id.tvCiudad);
+            tvFecha             = itemView.findViewById(R.id.tvFecha);
+            tvRangoHora         = itemView.findViewById(R.id.tvRangoHora);
+            layoutExpandible    = itemView.findViewById(R.id.layoutExpandible);
+            tvDescripcionCompleta = itemView.findViewById(R.id.tvDescripcionCompleta);
+
+
+            btnDetalles         = itemView.findViewById(R.id.btnDetalles);
+            btnIniciar          = itemView.findViewById(R.id.btnIniciar);
         }
     }
 }
+
