@@ -102,18 +102,22 @@
             <Button
                 android:id="@+id/btnChat"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_weight="1"
-                android:textColor="@color/white"
-                android:text="Chat" />
+                android:text="Chat"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#00796B"
+                android:shape="rectangle" />
 
             <Button
                 android:id="@+id/btnDetalles"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_weight="1"
-                android:textColor="@color/white"
-                android:text="Detalles" />
+                android:text="Detalles"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#2E7D32" />
+
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
