@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class HistorialTour implements Serializable {
 
+    private String idReserva;     // ID del documento en 'reservas'
     private String idTour;
     private String titulo;
     private String fecha;
@@ -12,16 +13,25 @@ public class HistorialTour implements Serializable {
     private String precio;
     private String viajeros;
 
-    private int imagenResId;
-    private String imageUrl;
+    private int imagenResId;      // recurso local por defecto
     private float rating;
+    private String imageUrl;      // URL de la imagen real
 
+    // 🔹 Constructor vacío obligatorio para Firebase
     public HistorialTour() {}
 
-    // Constructor CON URL de imagen
-    public HistorialTour(String idTour, String titulo, String fecha, String hora,
-                         String estado, String precio, String viajeros,
-                         int imagenResId, float rating, String imageUrl) {
+    // 🔹 Constructor usado en HistorialActivity
+    public HistorialTour(String idTour,
+                         String titulo,
+                         String fecha,
+                         String hora,
+                         String estado,
+                         String precio,
+                         String viajeros,
+                         int imagenResId,
+                         float rating,
+                         String imageUrl) {
+
         this.idTour = idTour;
         this.titulo = titulo;
         this.fecha = fecha;
@@ -34,14 +44,10 @@ public class HistorialTour implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    // Constructor SIN URL (para compatibilidad)
-    public HistorialTour(String idTour, String titulo, String fecha, String hora,
-                         String estado, String precio, String viajeros,
-                         int imagenResId, float rating) {
-        this(idTour, titulo, fecha, hora, estado, precio, viajeros, imagenResId, rating, null);
-    }
+    // 🔹 Setters y getters
+    public String getIdReserva() { return idReserva; }
+    public void setIdReserva(String idReserva) { this.idReserva = idReserva; }
 
-    // Getters
     public String getIdTour() { return idTour; }
     public String getTitulo() { return titulo; }
     public String getFecha() { return fecha; }
@@ -53,16 +59,5 @@ public class HistorialTour implements Serializable {
     public float getRating() { return rating; }
     public String getImageUrl() { return imageUrl; }
 
-    // Setters
-    public void setImagenResId(int imagenResId) {
-        this.imagenResId = imagenResId;
-    }
-
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

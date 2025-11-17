@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
 import com.example.puriqtours.cliente.ChatActivity;
-import com.example.puriqtours.cliente.EnProcesoActivity;
-import com.example.puriqtours.cliente.FinalizadoActivity;
-import com.example.puriqtours.cliente.ReservadoActivity;
+import com.example.puriqtours.cliente.ReservaDetalleActivity;
 import com.example.puriqtours.entity.HistorialTour;
 
 import java.util.ArrayList;
@@ -36,8 +34,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         this.listaTours = new ArrayList<>();
         this.listaToursOriginal = new ArrayList<>();
 
-        // Si la lista inicial no está vacía, copiarla
-        if (listaTours != null && !listaTours.isEmpty()) {
+        if (listaTours != null) {
             this.listaTours.addAll(listaTours);
             this.listaToursOriginal.addAll(listaTours);
         }
@@ -61,91 +58,54 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         holder.tvPrecio.setText(tour.getPrecio());
         holder.ratingBar.setRating(tour.getRating());
 
-        // ⭐ CARGAR IMAGEN DESDE URL O RECURSO
+        // ✅ Cargar imagen con Glide
         if (tour.getImageUrl() != null && !tour.getImageUrl().isEmpty()) {
-            Glide.with(context)
-                    .load(tour.getImageUrl())
-                    .placeholder(R.drawable.kuelap)
-                    .error(R.drawable.kuelap)
-                    .into(holder.imgTour);
+            Glide.with(context).load(tour.getImageUrl()).into(holder.imgTour);
         } else {
             holder.imgTour.setImageResource(tour.getImagenResId());
         }
 
-        holder.layoutOpciones.setVisibility(View.GONE);
+        // ✅ ASEGURAR QUE LOS BOTONES SEAN VISIBLES
+        holder.layoutOpciones.setVisibility(View.VISIBLE);
+        holder.btnChat.setVisibility(View.VISIBLE);
+        holder.btnDetalles.setVisibility(View.VISIBLE);
 
-        holder.itemView.setOnClickListener(v -> {
-            if (holder.layoutOpciones.getVisibility() == View.VISIBLE)
-                holder.layoutOpciones.setVisibility(View.GONE);
-            else
-                holder.layoutOpciones.setVisibility(View.VISIBLE);
-        });
-
+        // ✅ Click en botón Detalles
         holder.btnDetalles.setOnClickListener(v -> {
-            Intent intent = null;
-
-            switch (tour.getEstado().toLowerCase()) {
-                case "reservado":
-                    intent = new Intent(context, ReservadoActivity.class);
-                    break;
-                case "en proceso":
-                    intent = new Intent(context, EnProcesoActivity.class);
-                    break;
-                case "finalizado":
-                    intent = new Intent(context, FinalizadoActivity.class);
-                    break;
-            }
-
-            if (intent != null) {
-                intent.putExtra("titulo", tour.getTitulo());
-                intent.putExtra("fecha", tour.getFecha());
-                intent.putExtra("hora", tour.getHora());
-                intent.putExtra("precio", tour.getPrecio());
-                intent.putExtra("estado", tour.getEstado());
-                intent.putExtra("viajeros", tour.getViajeros());
-                intent.putExtra("imageUrl", tour.getImageUrl());
-                intent.putExtra("rating", tour.getRating());
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, ReservaDetalleActivity.class);
+            intent.putExtra("RESERVA_ID", tour.getIdReserva());
+            context.startActivity(intent);
         });
 
+        // ✅ Click en botón Chat
         holder.btnChat.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
+            intent.putExtra("RESERVA_ID", tour.getIdReserva());
+            intent.putExtra("TOUR_TITULO", tour.getTitulo());
             intent.putExtra("estado", tour.getEstado());
             context.startActivity(intent);
         });
     }
-
 
     @Override
     public int getItemCount() {
         return listaTours.size();
     }
 
-    // ✅ NUEVO MÉTODO PARA ACTUALIZAR LAS LISTAS
     public void actualizarLista(List<HistorialTour> nuevaLista) {
-        this.listaTours.clear();
-        this.listaToursOriginal.clear();
-
-        if (nuevaLista != null) {
-            this.listaTours.addAll(nuevaLista);
-            this.listaToursOriginal.addAll(nuevaLista);
-        }
-
+        listaTours.clear();
+        listaToursOriginal.clear();
+        listaTours.addAll(nuevaLista);
+        listaToursOriginal.addAll(nuevaLista);
         notifyDataSetChanged();
     }
 
-    // ---- FILTRO TEXTO ----
     public void filtrar(String texto) {
         List<HistorialTour> filtrada = new ArrayList<>();
 
-        if (texto.isEmpty()) {
-            filtrada.addAll(listaToursOriginal);
-        } else {
-            for (HistorialTour t : listaToursOriginal) {
-                if (t.getTitulo().toLowerCase().contains(texto.toLowerCase())) {
-                    filtrada.add(t);
-                }
+        for (HistorialTour t : listaToursOriginal) {
+            if (t.getTitulo().toLowerCase().contains(texto.toLowerCase())) {
+                filtrada.add(t);
             }
         }
 
@@ -154,7 +114,6 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         notifyDataSetChanged();
     }
 
-    // ---- FILTRO ESTADO ----
     public void filtrarEstado(String estado) {
         List<HistorialTour> filtrada = new ArrayList<>();
 
@@ -173,10 +132,8 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         notifyDataSetChanged();
     }
 
-    // ---- VIEWHOLDER ----
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tvTitulo, tvUbicacion, tvEstado, tvDuracion, tvPrecio;
+        TextView tvTitulo, tvEstado, tvDuracion, tvPrecio;
         RatingBar ratingBar;
         ImageView imgTour;
         LinearLayout layoutOpciones;
@@ -186,7 +143,6 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
             super(itemView);
 
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
-            tvUbicacion = itemView.findViewById(R.id.tvUbicacion);
             tvEstado = itemView.findViewById(R.id.tvEstado);
             tvDuracion = itemView.findViewById(R.id.tvDuracion);
             tvPrecio = itemView.findViewById(R.id.tvPrecio);

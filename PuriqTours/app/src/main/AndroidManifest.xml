@@ -137,6 +137,12 @@
         <activity
             android:name=".admin.ChatAdminActivity"
             android:exported="false" />
+
+        <!-- 🔹 Nueva pantalla unificada de detalles de reserva -->
+        <activity
+            android:name=".cliente.ReservaDetalleActivity"
+            android:exported="false" />
+
         <activity android:name=".superadmin.UsuariosActivity" />
         <activity android:name=".superadmin.LogsActivity" />
         <activity android:name=".superadmin.ReportesActivity" />

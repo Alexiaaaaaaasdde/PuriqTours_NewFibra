@@ -1,155 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
+    <!-- 🔹 Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:background="#009688"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:title="Puriq Tours"
+        android:background="@color/teal_700"
+        android:title="Puriq Tours"
+        android:titleTextColor="@android:color/white"
         app:titleCentered="true"
         app:navigationIcon="@drawable/ic_menu"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- 🔹 Icono perfil -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profileIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:scaleType="centerCrop"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/imagen_perfil"
-            app:shapeAppearanceOverlay="@style/RoundedImage"
-            app:strokeColor="@android:color/white"
-            app:strokeWidth="2dp"/>
-    </com.google.android.material.appbar.MaterialToolbar>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
+    <!-- 🔹 Scroll general -->
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:padding="16dp"
+        android:background="#F7F8F9"
         app:layout_constraintTop_toBottomOf="@id/topAppBar"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        android:background="#F8F9FA">
-
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp">
 
-
-            <!-- Detalles -->
-
-            <!-- 🔹 Bloque de Detalles con fondo box_bg -->
+            <!-- 🔹 Caja principal -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/box_bg"
                 android:orientation="vertical"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp">
-                <!-- Título -->
-                <!-- 🔹 Flecha atrás -->
+                android:padding="16dp">
+
+                <!-- Flecha atrás -->
                 <ImageButton
                     android:id="@+id/btnBack"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_arrow_back"
-                    android:contentDescription="Volver"
-                    android:tint="@color/teal_700"
-                    android:layout_marginBottom="8dp"/>
+                    app:tint="@color/teal_700"
+                    android:contentDescription="Volver"/>
+
+                <!-- Título -->
                 <TextView
-                    android:id="@+id/tvTituloFinalizado"
+                    android:id="@+id/tvTitulo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ciudadela de Kuélap"
-                    android:textSize="28sp"
+                    android:text="Título del Tour"
+                    android:textSize="26sp"
                     android:textStyle="bold"
                     android:textColor="#2B746C"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginTop="8dp"/>
 
                 <!-- Estado -->
                 <TextView
-                    android:id="@+id/tvEstadoenProceso"
+                    android:id="@+id/tvEstado"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Estado: En Proceso"
+                    android:text="Estado: Reservado"
                     android:textSize="16sp"
-                    android:textColor="#FF5722"
-                    android:layout_marginBottom="12dp"/>
+                    android:textColor="#009688"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="10dp"/>
 
-                <!-- Imagen -->
+                <!-- Imagen del tour -->
                 <ImageView
-                    android:id="@+id/imgTourFinalizado"
+                    android:id="@+id/imgTour"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:src="@drawable/kuelap"
+                    android:layout_height="210dp"
                     android:scaleType="centerCrop"
-                    android:layout_marginBottom="16dp"/>
+                    android:src="@drawable/kuelap"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Detalles -->
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Detalles de la reserva:"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#2B746C"
                     android:textStyle="bold"
-                    android:textSize="14sp"/>
+                    android:textColor="#2B746C"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="8dp"/>
+
                 <TextView
-                    android:text="Fecha: Martes, 15 de Marzo de 2025"
+                    android:id="@+id/tvFecha"
                     android:layout_width="wrap_content"
-                    android:textStyle="bold"
                     android:layout_height="wrap_content"
-                    android:textColor="#2B746C"
+                    android:text="Fecha:"
                     android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2B746C"
                     android:layout_marginBottom="6dp"/>
 
                 <TextView
-                    android:text="Personas: 2 personas"
+                    android:id="@+id/tvPersonas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#2B746C"
-                    android:textStyle="bold"
+                    android:text="Personas:"
                     android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2B746C"
                     android:layout_marginBottom="6dp"/>
 
                 <TextView
-                    android:text="Medio de pago: Tarjeta de crédito"
+                    android:id="@+id/tvMedioPago"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Medio de pago:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2B746C"
+                    android:layout_marginBottom="6dp"/>
+
+                <TextView
+                    android:id="@+id/tvPago"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Método de pago:"
                     android:textColor="#2B746C"
                     android:textStyle="bold"
                     android:textSize="14sp"
-
                     android:layout_marginBottom="6dp"/>
 
 
+                <TextView
+                    android:id="@+id/tvCosto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#2B746C"
+                    android:layout_marginBottom="16dp"/>
 
-                <!-- QR -->
+                <!-- Código QR -->
                 <ImageView
-                    android:id="@+id/imgQRFinalizado"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:src="@drawable/qr2"
+                    android:id="@+id/imgQR"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"/>
-
+                    android:layout_marginBottom="16dp"/>
 
             </LinearLayout>
-
-
         </LinearLayout>
     </ScrollView>
+
 
     <!-- 🔹 Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
