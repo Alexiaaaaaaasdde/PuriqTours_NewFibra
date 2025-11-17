@@ -221,13 +221,12 @@
                         android:id="@+id/rbGooglePay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Yape/Plin/GooglePay"
+                        android:text="Yape"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp"
-                        android:drawableEnd="@drawable/google"
+                        android:drawableEnd="@drawable/yape_small"
                         android:drawablePadding="8dp"/>
                 </RadioGroup>
-
 
             </LinearLayout>
 
