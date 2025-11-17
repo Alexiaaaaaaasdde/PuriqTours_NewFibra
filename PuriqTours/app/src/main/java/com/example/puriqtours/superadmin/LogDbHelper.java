@@ -91,7 +91,7 @@ public class LogDbHelper extends SQLiteOpenHelper {
     // Inserta 20 registros de ejemplo si la tabla está vacía
     public void insertInitialIfEmpty() {
         if (getCount() > 0) return;
-        String[] tipos = {"Empresas", "Guías", "Pagos", "Usuarios", "General"};
+        String[] tipos = {"Empresas", "Guias", "Pagos", "Usuarios", "General"};
         // Fecha ejemplo fija similar a lo que ya usas
         for (int i = 1; i <= 20; i++) {
             String tipo = tipos[(i - 1) % tipos.length];

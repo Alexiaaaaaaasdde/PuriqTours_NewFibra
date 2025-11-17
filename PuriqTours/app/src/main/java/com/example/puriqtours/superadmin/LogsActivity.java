@@ -207,7 +207,7 @@ public class LogsActivity extends AppCompatActivity {
         }
         if (btnGuias != null) {
             btnGuias.setOnClickListener(v -> {
-                currentFilter = "guías";
+                currentFilter = "guias";
                 loadLogsFromFirestore();
                 highlightFilter(v.getId());
             });
