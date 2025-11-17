@@ -296,8 +296,11 @@ public class DetalleTourActivity extends AppCompatActivity {
             intent.putExtra("hora", horaSeleccionada[0]);
             intent.putExtra("tourId", tourId);
             intent.putExtra("titulo", tituloTour);
+            intent.putExtra("img", getIntent().getStringExtra("img"));
+
             startActivity(intent);
         });
+
 
         dialogDisponibilidad.show();
     }

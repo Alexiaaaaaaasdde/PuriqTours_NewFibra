@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.entity.HistorialTour;
+import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.example.puriqtours.adapter.HistorialAdapter;
@@ -27,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistorialActivity extends AppCompatActivity {
+
+    private static final String TAG = "HistorialActivity";
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -44,6 +49,14 @@ public class HistorialActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
+        // Verificar que hay usuario autenticado
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Error: Usuario no autenticado", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginLegacyActivity.class));
+            finish();
+            return;
+        }
 
         // 🔹 BottomNavigation
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
@@ -79,6 +92,7 @@ public class HistorialActivity extends AppCompatActivity {
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
             } else if (id == R.id.nav_logout) {
+                mAuth.signOut();
                 startActivity(new Intent(this, LoginLegacyActivity.class));
                 finish();
             }
@@ -86,15 +100,13 @@ public class HistorialActivity extends AppCompatActivity {
             return true;
         });
 
-        // 🔹 RecyclerView
+        // 🔹 RecyclerView - INICIALIZAR ANTES DE CARGAR DATOS
         recyclerHistorial = findViewById(R.id.recyclerHistorial);
         recyclerHistorial.setLayoutManager(new LinearLayoutManager(this));
 
+        // Inicializar adapter con lista vacía
         adapter = new HistorialAdapter(listaTours, this);
         recyclerHistorial.setAdapter(adapter);
-
-        // Cargar datos REALES de Firestore
-        cargarHistorialDesdeFirebase();
 
         // 🔹 Buscador
         EditText searchBar = findViewById(R.id.searchBar);
@@ -116,20 +128,35 @@ public class HistorialActivity extends AppCompatActivity {
         chipEnProceso.setOnClickListener(v -> adapter.filtrarEstado("En proceso"));
         chipFinalizado.setOnClickListener(v -> adapter.filtrarEstado("Finalizado"));
         chipReservado.setOnClickListener(v -> adapter.filtrarEstado("Reservado"));
+
+        // 🔹 Cargar datos DESPUÉS de configurar el RecyclerView
+        cargarHistorialDesdeFirebase();
     }
 
     private void cargarHistorialDesdeFirebase() {
         String idCliente = mAuth.getCurrentUser().getUid();
+
+        Log.d(TAG, "🔍 Buscando reservas para cliente: " + idCliente);
 
         db.collection("reservas")
                 .whereEqualTo("idCliente", idCliente)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
 
+                    Log.d(TAG, "✅ Documentos encontrados: " + querySnapshot.size());
+
+                    if (querySnapshot.isEmpty()) {
+                        Toast.makeText(this, "No tienes reservas aún", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     listaTours.clear();
 
-                    for (var doc : querySnapshot) {
+                    for (var doc : querySnapshot.getDocuments()) {
 
+                        Log.d(TAG, "📄 Procesando documento: " + doc.getId());
+
+                        // OBTENER DATOS CON VALIDACIÓN
                         String idTour = doc.getString("idTour");
                         String titulo = doc.getString("titulo");
                         String fecha = doc.getString("fecha");
@@ -137,11 +164,36 @@ public class HistorialActivity extends AppCompatActivity {
                         String estado = doc.getString("estado");
                         String precio = doc.getString("precio");
                         String viajeros = doc.getString("viajeros");
+                        String imageUrl = doc.getString("imageUrl");
 
-                        // TEMPORAL imagen
+                        // VALIDAR QUE LOS CAMPOS CRÍTICOS NO SEAN NULL
+                        if (titulo == null || titulo.isEmpty()) {
+                            titulo = "Tour sin nombre";
+                        }
+                        if (fecha == null || fecha.isEmpty()) {
+                            fecha = "Fecha no disponible";
+                        }
+                        if (hora == null || hora.isEmpty()) {
+                            hora = "Hora no disponible";
+                        }
+                        if (estado == null || estado.isEmpty()) {
+                            estado = "Desconocido";
+                        }
+                        if (precio == null || precio.isEmpty()) {
+                            precio = "Precio no disponible";
+                        }
+                        if (viajeros == null || viajeros.isEmpty()) {
+                            viajeros = "No especificado";
+                        }
+                        if (idTour == null) {
+                            idTour = doc.getId();
+                        }
+
+                        // Imagen: usar placeholder si no hay URL
                         int imagen = R.drawable.kuelap;
-
                         float rating = 4.5f;
+
+                        Log.d(TAG, "➕ Agregando: " + titulo + " - Estado: " + estado);
 
                         listaTours.add(
                                 new HistorialTour(
@@ -153,18 +205,26 @@ public class HistorialActivity extends AppCompatActivity {
                                         precio,
                                         viajeros,
                                         imagen,
-                                        rating
+                                        rating,
+                                        imageUrl  // ✅ Pasar la URL de imagen
                                 )
                         );
-
-
                     }
 
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e ->
-                        System.out.println("ERROR FIRESTORE: " + e.getMessage())
-                );
-    }
+                    Log.d(TAG, "📊 Total tours cargados: " + listaTours.size());
 
+                    // ACTUALIZAR AMBAS LISTAS DEL ADAPTER
+                    adapter.actualizarLista(listaTours);
+
+                    Toast.makeText(this,
+                            "Cargadas " + listaTours.size() + " reservas",
+                            Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "❌ ERROR FIRESTORE: " + e.getMessage(), e);
+                    Toast.makeText(this,
+                            "Error al cargar reservas: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
+    }
 }

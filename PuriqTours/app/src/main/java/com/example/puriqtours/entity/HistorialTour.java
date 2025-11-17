@@ -13,14 +13,15 @@ public class HistorialTour implements Serializable {
     private String viajeros;
 
     private int imagenResId;
+    private String imageUrl;
     private float rating;
 
     public HistorialTour() {}
 
+    // Constructor CON URL de imagen
     public HistorialTour(String idTour, String titulo, String fecha, String hora,
                          String estado, String precio, String viajeros,
-                         int imagenResId, float rating) {
-
+                         int imagenResId, float rating, String imageUrl) {
         this.idTour = idTour;
         this.titulo = titulo;
         this.fecha = fecha;
@@ -30,8 +31,17 @@ public class HistorialTour implements Serializable {
         this.viajeros = viajeros;
         this.imagenResId = imagenResId;
         this.rating = rating;
+        this.imageUrl = imageUrl;
     }
 
+    // Constructor SIN URL (para compatibilidad)
+    public HistorialTour(String idTour, String titulo, String fecha, String hora,
+                         String estado, String precio, String viajeros,
+                         int imagenResId, float rating) {
+        this(idTour, titulo, fecha, hora, estado, precio, viajeros, imagenResId, rating, null);
+    }
+
+    // Getters
     public String getIdTour() { return idTour; }
     public String getTitulo() { return titulo; }
     public String getFecha() { return fecha; }
@@ -39,15 +49,20 @@ public class HistorialTour implements Serializable {
     public String getEstado() { return estado; }
     public String getPrecio() { return precio; }
     public String getViajeros() { return viajeros; }
-
     public int getImagenResId() { return imagenResId; }
     public float getRating() { return rating; }
+    public String getImageUrl() { return imageUrl; }
 
+    // Setters
     public void setImagenResId(int imagenResId) {
         this.imagenResId = imagenResId;
     }
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

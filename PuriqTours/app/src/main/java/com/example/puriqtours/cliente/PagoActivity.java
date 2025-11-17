@@ -157,8 +157,10 @@ public class PagoActivity extends AppCompatActivity {
                     getIntent().getStringExtra("fecha"),
                     getIntent().getStringExtra("hora"),
                     getIntent().getStringExtra("viajeros"),
-                    getIntent().getStringExtra("precio")
+                    getIntent().getStringExtra("precio"),
+                    getIntent().getStringExtra("img")  // ⭐ NUEVO
             );
+
 
             mostrarDialogoReserva();
         });
@@ -233,7 +235,8 @@ public class PagoActivity extends AppCompatActivity {
     }
 
     private void guardarReservaEnFirestore(String tourId, String titulo, String fecha,
-                                           String hora, String viajeros, String precio) {
+                                           String hora, String viajeros, String precio,
+                                           String imageUrl) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -250,16 +253,18 @@ public class PagoActivity extends AppCompatActivity {
         reserva.put("precio", precio);
         reserva.put("estado", "Reservado");
         reserva.put("timestamp", System.currentTimeMillis());
+        reserva.put("imageUrl", imageUrl);
 
         db.collection("reservas")
                 .add(reserva)
                 .addOnSuccessListener(r -> {
-                    System.out.println("✔ RESERVA GUARDADA");
+                    System.out.println("✔ RESERVA GUARDADA CON IMAGEN");
                 })
                 .addOnFailureListener(e -> {
                     System.out.println("❌ ERROR FIRESTORE " + e.getMessage());
                 });
     }
+
 
 
     // 🔹 MÉTODO SEPARADO PARA ENVIAR LA NOTIFICACIÓN

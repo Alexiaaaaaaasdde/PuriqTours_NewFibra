@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
 import com.example.puriqtours.cliente.ChatActivity;
 import com.example.puriqtours.cliente.EnProcesoActivity;
@@ -31,9 +32,15 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     private Context context;
 
     public HistorialAdapter(List<HistorialTour> listaTours, Context context) {
-        this.listaTours = new ArrayList<>(listaTours);
-        this.listaToursOriginal = new ArrayList<>(listaTours);
         this.context = context;
+        this.listaTours = new ArrayList<>();
+        this.listaToursOriginal = new ArrayList<>();
+
+        // Si la lista inicial no está vacía, copiarla
+        if (listaTours != null && !listaTours.isEmpty()) {
+            this.listaTours.addAll(listaTours);
+            this.listaToursOriginal.addAll(listaTours);
+        }
     }
 
     @NonNull
@@ -48,19 +55,25 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HistorialTour tour = listaTours.get(position);
 
-        // ---- MOSTRAR DATOS ----
         holder.tvTitulo.setText(tour.getTitulo());
-        holder.tvUbicacion.setText(""); // ya no existe, se deja vacío
         holder.tvEstado.setText("Estado: " + tour.getEstado());
         holder.tvDuracion.setText(tour.getFecha() + " • " + tour.getHora());
         holder.tvPrecio.setText(tour.getPrecio());
         holder.ratingBar.setRating(tour.getRating());
-        holder.imgTour.setImageResource(tour.getImagenResId());
 
-        // Ocultar opciones de inicio
+        // ⭐ CARGAR IMAGEN DESDE URL O RECURSO
+        if (tour.getImageUrl() != null && !tour.getImageUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(tour.getImageUrl())
+                    .placeholder(R.drawable.kuelap)
+                    .error(R.drawable.kuelap)
+                    .into(holder.imgTour);
+        } else {
+            holder.imgTour.setImageResource(tour.getImagenResId());
+        }
+
         holder.layoutOpciones.setVisibility(View.GONE);
 
-        // Expandir / Colapsar
         holder.itemView.setOnClickListener(v -> {
             if (holder.layoutOpciones.getVisibility() == View.VISIBLE)
                 holder.layoutOpciones.setVisibility(View.GONE);
@@ -68,7 +81,6 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
                 holder.layoutOpciones.setVisibility(View.VISIBLE);
         });
 
-        // ---- BOTÓN DETALLES ----
         holder.btnDetalles.setOnClickListener(v -> {
             Intent intent = null;
 
@@ -91,14 +103,12 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
                 intent.putExtra("precio", tour.getPrecio());
                 intent.putExtra("estado", tour.getEstado());
                 intent.putExtra("viajeros", tour.getViajeros());
-                intent.putExtra("imagen", tour.getImagenResId());
+                intent.putExtra("imageUrl", tour.getImageUrl());
                 intent.putExtra("rating", tour.getRating());
-
                 context.startActivity(intent);
             }
         });
 
-        // ---- BOTÓN CHAT ----
         holder.btnChat.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("estado", tour.getEstado());
@@ -106,9 +116,23 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         });
     }
 
+
     @Override
     public int getItemCount() {
         return listaTours.size();
+    }
+
+    // ✅ NUEVO MÉTODO PARA ACTUALIZAR LAS LISTAS
+    public void actualizarLista(List<HistorialTour> nuevaLista) {
+        this.listaTours.clear();
+        this.listaToursOriginal.clear();
+
+        if (nuevaLista != null) {
+            this.listaTours.addAll(nuevaLista);
+            this.listaToursOriginal.addAll(nuevaLista);
+        }
+
+        notifyDataSetChanged();
     }
 
     // ---- FILTRO TEXTO ----
