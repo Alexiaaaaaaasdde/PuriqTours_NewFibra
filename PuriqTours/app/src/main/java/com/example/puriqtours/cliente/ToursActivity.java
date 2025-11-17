@@ -90,10 +90,28 @@ public class ToursActivity extends BaseActivity {
             );
         }
 
+        // ---------- NAVEGACIÓN INFERIOR ----------
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
-        if (bottomNavigation != null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_tours);
-        }
+        bottomNavigation.setSelectedItemId(R.id.nav_tours);
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_perfil) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (id == R.id.nav_tours) {
+                startActivity(new Intent(this, ToursActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (id == R.id.nav_historial) {
+                startActivity(new Intent(this, HistorialActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            return false;
+        });
     }
 
     private void cargarToursDesdeFirebase() {
