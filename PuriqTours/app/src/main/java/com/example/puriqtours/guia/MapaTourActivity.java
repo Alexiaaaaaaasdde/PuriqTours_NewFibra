@@ -131,7 +131,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     private void cargarTokenFin() {
         db.collection("reservas").document(idReserva)
                 .get()
-                .addOnSuccessListener(doc -> tokenFin = doc.getString("tokenFin"));
+                .addOnSuccessListener(doc -> tokenFin = doc.getString("qrFin"));
     }
 
     // ============================================================================
@@ -343,7 +343,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
 
             db.collection("reservas")
                     .document(idReserva)
-                    .update("status", "Finalizado");
+                    .update("estado", "Finalizado");
 
             Toast.makeText(this, "Tour finalizado ✔", Toast.LENGTH_LONG).show();
             finish();

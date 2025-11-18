@@ -90,6 +90,33 @@ public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.ViewHo
             );
         });
 
+        // 🔹 Obtener estado del tour
+        String estado = t.getStatus();
+
+        // 🔹 Control del botón según estado
+        if (estado == null) estado = "Reservado";
+
+        switch (estado) {
+
+            case "Reservado":
+                holder.btnIniciar.setEnabled(true);
+                holder.btnIniciar.setAlpha(1f);
+                holder.btnIniciar.setText("Iniciar");
+                break;
+
+            case "En proceso":
+                holder.btnIniciar.setEnabled(true);
+                holder.btnIniciar.setAlpha(1f);
+                holder.btnIniciar.setText("Continuar");
+                break;
+
+            case "Finalizado":
+                holder.btnIniciar.setEnabled(false);
+                holder.btnIniciar.setAlpha(0.5f);
+                holder.btnIniciar.setText("Finalizado");
+                break;
+        }
+
         // 🔹 Acciones Iniciar
         holder.btnIniciar.setOnClickListener(v -> {
             if (listener != null) listener.onIniciar(t);

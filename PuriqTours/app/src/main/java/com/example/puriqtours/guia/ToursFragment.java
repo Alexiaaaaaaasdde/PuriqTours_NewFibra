@@ -51,18 +51,43 @@ public class ToursFragment extends Fragment {
 
         tourList = new ArrayList<>();
 
-        adapter = new TourGuiaAdapter(getContext(), tourList, t -> {
-            // Acción del botón "Iniciar"
-            Intent intent = new Intent(getContext(), IniciarTourActivity.class);
-            intent.putExtra("idReserva", t.getIdReserva());
-            intent.putExtra("idTour", t.getIdTour());
-            intent.putExtra("tokenInicio", t.getTokenInicio());
-            startActivity(intent);
-        });
+        cargarToursDelGuia();
 
+        adapter = new TourGuiaAdapter(getContext(), tourList, t -> {
+
+            String estado = t.getStatus();
+
+            if (estado == null) {
+                Toast.makeText(getContext(), "Estado no válido", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Log.d("TOUR", "Tour #"+ t.getIdTour() + " estado: " +  t.getStatus());
+            switch (estado) {
+
+                case "Reservado":
+                    // Abrir verificación del token
+                    Intent i1 = new Intent(getContext(), IniciarTourActivity.class);
+                    i1.putExtra("idReserva", t.getIdReserva());
+                    i1.putExtra("idTour", t.getIdTour());
+                    i1.putExtra("tokenInicio", t.getTokenInicio());
+                    startActivity(i1);
+                    break;
+
+                case "En proceso":
+                    // Ir directamente al mapa
+                    Intent i2 = new Intent(getContext(), MapaTourActivity.class);
+                    i2.putExtra("idReserva", t.getIdReserva());
+                    i2.putExtra("idTour", t.getIdTour());
+                    startActivity(i2);
+                    break;
+
+                case "Finalizado":
+                    Toast.makeText(getContext(), "El tour ya fue finalizado", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
         recyclerView.setAdapter(adapter);
 
-        cargarToursDelGuia();
 
         return view;
     }
@@ -114,11 +139,8 @@ public class ToursFragment extends Fragment {
                                 .document(idTour)
                                 .get()
                                 .addOnSuccessListener(tourDoc -> {
-
                                     if (!isAdded() || getContext() == null) return; // EVITA CRASH AQUI TAMBIÉN
-
                                     if (!tourDoc.exists()) return;
-
                                     TourGuia tg = new TourGuia(
                                             idReserva,
                                             idTour,
@@ -141,6 +163,9 @@ public class ToursFragment extends Fragment {
 
                                     tourList.add(tg);
                                     adapter.notifyDataSetChanged();
+
+                                    Log.d("FIRESTORE", "Tours cargados: " + tourList.size());
+                                    Log.d("Tour", "Tours : " + tg.getStatus());
                                 });
                     }
                 });

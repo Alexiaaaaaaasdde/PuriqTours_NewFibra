@@ -71,7 +71,10 @@ public class IniciarTourActivity extends AppCompatActivity {
         if (tokenInicioEsperado != null) {
 
             if (tokenIngresado.equals(tokenInicioEsperado)) {
-                abrirMapa();
+
+                // 🔹 Actualizar estado a "En proceso"
+                actualizarEstadoReserva();
+
             } else {
                 Toast.makeText(this, "Token incorrecto", Toast.LENGTH_SHORT).show();
             }
@@ -98,12 +101,16 @@ public class IniciarTourActivity extends AppCompatActivity {
                     }
 
                     if (tokenIngresado.equals(tokenInicioDb)) {
-                        abrirMapa();
+
+                        // 🔹 Actualizar estado a "En proceso"
+                        actualizarEstadoReserva();
+
                     } else {
                         Toast.makeText(this, "Token incorrecto", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
 
     private void abrirMapa() {
         Toast.makeText(this, "Token validado correctamente ✔", Toast.LENGTH_SHORT).show();
@@ -114,4 +121,19 @@ public class IniciarTourActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void actualizarEstadoReserva() {
+
+        db.collection("reservas")
+                .document(idReserva)
+                .update("estado", "En proceso")
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Tour iniciado ✔", Toast.LENGTH_SHORT).show();
+                    abrirMapa();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al actualizar estado", Toast.LENGTH_SHORT).show();
+                });
+    }
+
 }
