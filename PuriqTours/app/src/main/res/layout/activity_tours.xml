@@ -451,23 +451,23 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- 🔹 Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="90dp"
-        android:background="@android:color/white"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/teal_700"
-        app:itemTextColor="@color/teal_700"
-        app:labelVisibilityMode="labeled"
-        app:itemBackground="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:itemIconSize="70dp"/>
-
+        <!-- 🔹 Bottom Navigation -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="0dp"
+            android:layout_height="90dp"
+            android:background="@android:color/white"
+            app:menu="@menu/bottom_nav_menu"
+            app:itemIconTint="@color/teal_700"
+            app:itemTextColor="@color/teal_700"
+            app:labelVisibilityMode="labeled"
+            app:itemBackground="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:itemIconSize="70dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- 🔹 Drawer lateral -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"

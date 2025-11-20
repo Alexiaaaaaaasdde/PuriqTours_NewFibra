@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@drawable/box_bg">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pago con Yape / Plin / Google Pay"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#2B746C"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingrese el código de operación o ID de pago:"
+        android:textColor="#666"/>
+
+    <EditText
+        android:id="@+id/etCodigoPago"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Código / ID de operación"
+        android:background="@drawable/box_bg"
+        android:padding="12dp"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/btnConfirmarYape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmar pago"
+        android:backgroundTint="#009688"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>

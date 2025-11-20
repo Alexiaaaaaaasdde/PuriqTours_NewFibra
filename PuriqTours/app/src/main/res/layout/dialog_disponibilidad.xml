@@ -74,22 +74,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="2 opciones disponibles para el martes, 15 de Marzo de 2025"
+        android:text="Detalles"
         android:textColor="#666"
         android:textSize="13sp" />
+
     <Button
         android:id="@+id/btnDetalles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:backgroundTint="@color/teal_700"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:text="Detalles"
         android:textAllCaps="false"
-        android:backgroundTint="@color/teal_700"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="8dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:layout_gravity="start"/>
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white" />
 
     <!-- Card del tourLegacy -->
     <LinearLayout
@@ -101,12 +102,14 @@
         android:layout_marginTop="12dp">
 
         <TextView
+            android:id="@+id/tvTituloPopup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ciudadela de Kuélap"
+            android:text="---"
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="#2B746C" />
+
 
         <TextView
             android:id="@+id/tvPrecio"
@@ -146,15 +149,16 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- 🔹 BOTÓN DE RESERVA  -->
     <Button
-        android:id="@+id/btnReservar"
+        android:id="@+id/btnReserva"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#00695C"
         android:text="Reservar ahora"
-        android:enabled="false"
-        android:alpha="0.5"
-        android:backgroundTint="@color/teal_700"
-        android:textColor="@android:color/white"/>
+        android:textStyle="bold"
+        android:textColor="@android:color/white" />
+
 
 </LinearLayout>

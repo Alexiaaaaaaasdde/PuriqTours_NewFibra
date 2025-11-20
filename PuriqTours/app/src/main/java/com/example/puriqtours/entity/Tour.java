@@ -112,6 +112,11 @@ public class Tour implements Serializable {
         }
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+
     // 🔹 Constructor vacío requerido por Firebase
     public Tour() {}
 
