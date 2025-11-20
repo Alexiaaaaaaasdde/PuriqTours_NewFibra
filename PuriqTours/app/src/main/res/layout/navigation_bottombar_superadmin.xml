@@ -5,7 +5,7 @@
     android:layout_gravity="bottom"
     android:orientation="horizontal"
     android:background="#EFE8F2"
-    android:weightSum="4"
+    android:weightSum="3"
     android:elevation="8dp">
 
     <!-- Botón Principal -->
@@ -15,6 +15,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="center">
+
         <ImageButton
             android:id="@+id/btnPrincipal"
             android:layout_width="40dp"
@@ -23,7 +24,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="Principal"
             android:scaleType="centerInside"
-            android:padding="8dp"/>
+            android:padding="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
             android:text="Principal"
             android:textColor="#4DB6AC"
             android:textSize="14sp"
-            android:layout_marginTop="2dp"/>
+            android:layout_marginTop="2dp" />
     </LinearLayout>
 
     <!-- Botón Usuarios -->
@@ -50,42 +51,18 @@
             android:background="@android:color/transparent"
             android:contentDescription="Usuarios"
             android:scaleType="centerInside"
-            android:padding="8dp"/>
+            android:padding="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:text="Usuarios"
             android:textColor="#4DB6AC"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <!-- Botón Reportes -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
-        <ImageButton
-            android:id="@+id/btnReportes"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/reportes_superadmin"
-            android:background="@android:color/transparent"
-            android:contentDescription="Reportes"
-            android:scaleType="centerInside"
-            android:padding="8dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reportes"
-            android:textColor="#4DB6AC"
             android:textSize="14sp"
-            android:layout_marginTop="2dp"/>
+            android:layout_marginTop="2dp" />
     </LinearLayout>
+
+    <!-- Botón Logs -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -101,7 +78,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="Logs"
             android:scaleType="centerInside"
-            android:padding="8dp"/>
+            android:padding="8dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -109,6 +86,7 @@
             android:text="Logs"
             android:textColor="#4DB6AC"
             android:textSize="14sp"
-            android:layout_marginTop="2dp"/>
+            android:layout_marginTop="2dp" />
     </LinearLayout>
+
 </LinearLayout>

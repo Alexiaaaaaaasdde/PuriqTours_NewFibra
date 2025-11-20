@@ -41,6 +41,7 @@
                     android:contentDescription="Ventas"
                     android:tint="#26A69A"/>
                 <TextView
+                    android:id="@+id/tvVentasTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="120,000"
@@ -80,6 +81,7 @@
                     android:contentDescription="Empresas activas"
                     app:tint="#26A69A"/>
                 <TextView
+                    android:id="@+id/tvEmpresasActivas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="35"
@@ -125,6 +127,7 @@
                     android:contentDescription="Reservas este mes"
                     app:tint="#26A69A"/>
                 <TextView
+                    android:id="@+id/tvReservasMes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2450"

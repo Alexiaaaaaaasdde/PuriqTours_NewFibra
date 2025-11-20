@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Usuario;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -417,31 +418,47 @@ public class MainSuperAdminActivity extends AppCompatActivity {
     }
 
     // Cargar guías con state == "deshabilitado" y mostrarlos en el RecyclerView horizontal
+
+    // Cargar guías con state == "deshabilitado" y mostrarlos en el RecyclerView horizontal
     private void loadDisabledGuides() {
         if (db == null) return;
+
         db.collection("users")
-            .whereEqualTo("rol", "Guia")
-            .whereEqualTo("state", "deshabilitado")
-            .get(com.google.firebase.firestore.Source.SERVER)
-            .addOnSuccessListener(snapshot -> {
-                Log.d("MainSuperAdmin", "Guías deshabilitados obtenidos: " + snapshot.size());
-                java.util.List<UsuarioGuia> guias = new java.util.ArrayList<>();
-                for (QueryDocumentSnapshot doc : snapshot) {
-                    String name = doc.getString("name");
-                    if (name == null) name = doc.getString("username");
-                    String profile = doc.getString("profile_image");
-                    // valoracion y ciudad no están disponibles en el usuario, usar valores por defecto
-                    UsuarioGuia ug = new UsuarioGuia(name != null ? name : "Guía", "", 0, profile);
-                    guias.add(ug);
-                }
-                if (guiasAdapter != null) {
-                    guiasAdapter.setGuias(guias);
-                }
-            })
-            .addOnFailureListener(e -> {
-                Log.e("MainSuperAdmin", "Error al obtener guías deshabilitados: " + e.getMessage(), e);
-            });
+                .whereEqualTo("rol", "Guia")
+                .whereEqualTo("state", "deshabilitado")
+                .get(com.google.firebase.firestore.Source.SERVER)
+                .addOnSuccessListener(snapshot -> {
+
+                    Log.d("MainSuperAdmin", "Guías deshabilitados obtenidos: " + snapshot.size());
+
+                    java.util.List<Usuario> guias = new java.util.ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+
+                        Usuario guia = Usuario.fromSnapshot(doc);
+
+                        // fallback de nombre
+                        if (guia.getName() == null)
+                            guia.setName("Guía");
+
+                        // fallback de imagen
+                        if (guia.getProfile_image() == null)
+                            guia.setProfile_image("");
+
+                        guias.add(guia);
+                    }
+
+                    if (guiasAdapter != null) {
+                        guiasAdapter.setGuias(guias);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("MainSuperAdmin", "Error al obtener guías deshabilitados: " + e.getMessage(), e);
+                });
     }
+
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Vinculamos el layout activity_superadmin_home.xml
@@ -468,15 +485,7 @@ public class MainSuperAdminActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        // Navegación al hacer click en el botón Reportes
-        findViewById(R.id.btnReportes).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.ReportesActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-            }
-        });
+
         // Navegación al hacer click en el botón Logs
         findViewById(R.id.btnLogs).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -495,9 +504,15 @@ public class MainSuperAdminActivity extends AppCompatActivity {
 
         // Inicializar RecyclerView horizontal de guías (adapter vacío, se llenará desde Firestore)
         RecyclerView rvGuiasHorizontal = findViewById(R.id.rvGuiasHorizontal);
+
         if (rvGuiasHorizontal != null) {
-            rvGuiasHorizontal.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            java.util.List<UsuarioGuia> guias = new java.util.ArrayList<>();
+            rvGuiasHorizontal.setLayoutManager(
+                    new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            );
+
+            // Cambia UsuarioGuia → Usuario
+            java.util.List<Usuario> guias = new java.util.ArrayList<>();
+
             guiasAdapter = new GuiasHorizontalAdapter(this, guias);
             rvGuiasHorizontal.setAdapter(guiasAdapter);
         }
@@ -506,7 +521,7 @@ public class MainSuperAdminActivity extends AppCompatActivity {
         tvActiveUsersCount = findViewById(R.id.tvActiveUsersCount);
         tvEnabledGuidesCount = findViewById(R.id.tvEnabledGuidesCount);
         tvRegisteredCompaniesCount = findViewById(R.id.tvRegisteredCompaniesCount);
-    llToursBarsContainer = findViewById(R.id.llToursBarsContainer);
+        llToursBarsContainer = findViewById(R.id.llToursBarsContainer);
 
         // Inicializar Firestore
         db = FirebaseFirestore.getInstance();

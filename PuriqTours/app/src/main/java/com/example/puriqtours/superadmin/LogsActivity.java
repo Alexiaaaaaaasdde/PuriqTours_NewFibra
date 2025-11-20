@@ -15,7 +15,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,45 +33,57 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.R;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class LogsActivity extends AppCompatActivity {
     private LogsAdapter logsAdapter;
     private RecyclerView rvLogs;
-    private LogDbHelper dbHelper;
+    private FirebaseFirestore db;
+    
+    private List<LogItem> allLogs = new ArrayList<>();
+    private List<LogItem> filteredLogs = new ArrayList<>();
+    
+    // Estado
+    private String currentFilter = "general";
+    private boolean sortAscending = true;
+    private String searchQuery = "";
 
-    // estado para exportar cuando se solicita permiso en < API 29
-    private List<LogItem> pendingExportLogs;
-    private String pendingExportFilename;
     private ActivityResultLauncher<String> permissionLauncher;
     private ActivityResultLauncher<String> notificationPermissionLauncher;
-    private String currentFilter = "General";
+    
+    private List<LogItem> pendingExportLogs;
+    private String pendingExportFilename;
+    private String pendingNotificationTitle;
+    private String pendingNotificationMessage;
 
     private static final String CHANNEL_ID_DOWNLOADS = "downloads_channel";
     private static final int NOTIF_ID_DOWNLOAD = 1001;
-
-    // en caso se pida permiso de notificaciones, guardamos la info a notificar
-    private String pendingNotificationTitle;
-    private String pendingNotificationMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_superadmin_logs);
 
-        // crear helper DB y datos iniciales
-        dbHelper = new LogDbHelper(this);
-        dbHelper.insertInitialIfEmpty();
+        // Inicializar Firestore
+        db = FirebaseFirestore.getInstance();
 
         // Crear canal de notificaciones
         createNotificationChannel();
 
-        // registrar launcher para permiso WRITE_EXTERNAL_STORAGE (solo usado en < Q)
+        // registrar launcher para permiso WRITE_EXTERNAL_STORAGE
         permissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
@@ -82,7 +97,7 @@ public class LogsActivity extends AppCompatActivity {
             }
         );
 
-        // registrar launcher para permiso de notificaciones (POST_NOTIFICATIONS)
+        // registrar launcher para permiso de notificaciones
         notificationPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {
@@ -113,27 +128,51 @@ public class LogsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        View vBtnReportesNav = findViewById(R.id.btnReportes);
-        if (vBtnReportesNav != null) vBtnReportesNav.setOnClickListener(v -> {
-            Intent intent = new Intent(LogsActivity.this, ReportesActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        });
+
 
         View vBtnLogsNav = findViewById(R.id.btnLogs);
         if (vBtnLogsNav != null) vBtnLogsNav.setOnClickListener(v -> {
             // ya estás en Logs
         });
 
-        // RecyclerView y adapter (seguimos usando DB)
+        // RecyclerView y adapter
         rvLogs = findViewById(R.id.rvLogs);
         if (rvLogs != null) {
             rvLogs.setLayoutManager(new LinearLayoutManager(this));
-            logsAdapter = new LogsAdapter(this, dbHelper.getLogsByTipo("General"));
+            logsAdapter = new LogsAdapter(this, filteredLogs);
             rvLogs.setAdapter(logsAdapter);
         }
 
-        // Filtros: buscar cada botón con fallback (btnUsuariosFiltro o btnUsuarios) y asignar listeners si existen
+        // SearchView para buscar por descripción
+        EditText etSearch = findViewById(R.id.etSearchLogs);
+        if (etSearch != null) {
+            etSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searchQuery = s.toString().toLowerCase();
+                    applyFilters();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+        }
+
+        // Botón Ordenar
+        View btnSort = findViewById(R.id.btnOrdenarLogs);
+        if (btnSort != null) {
+            btnSort.setOnClickListener(v -> {
+                sortAscending = !sortAscending;
+                applyFilters();
+                String mensaje = sortAscending ? "Más antiguo → Más reciente" : "Más reciente → Más antiguo";
+                Toast.makeText(LogsActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        // Filtros por tipo
         View btnGeneral = findViewById(R.id.btnGeneral);
         View btnUsuariosFilter = findViewById(R.id.btnUsuariosFiltro);
         View btnPagos = findViewById(R.id.btnPagos);
@@ -142,62 +181,58 @@ public class LogsActivity extends AppCompatActivity {
 
         if (btnGeneral != null) {
             btnGeneral.setOnClickListener(v -> {
-                currentFilter = "General";
-                if (logsAdapter != null) logsAdapter.setLogs(dbHelper.getLogsByTipo(currentFilter));
+                currentFilter = "general";
+                loadLogsFromFirestore();
                 highlightFilter(v.getId());
             });
         }
         if (btnUsuariosFilter != null) {
             btnUsuariosFilter.setOnClickListener(v -> {
-                currentFilter = "Usuarios";
-                if (logsAdapter != null) logsAdapter.setLogs(dbHelper.getLogsByTipo(currentFilter));
+                currentFilter = "usuarios";
+                loadLogsFromFirestore();
                 highlightFilter(v.getId());
             });
         }
         if (btnPagos != null) {
             btnPagos.setOnClickListener(v -> {
-                currentFilter = "Pagos";
-                if (logsAdapter != null) logsAdapter.setLogs(dbHelper.getLogsByTipo(currentFilter));
+                currentFilter = "pagos";
+                loadLogsFromFirestore();
                 highlightFilter(v.getId());
             });
         }
         if (btnGuias != null) {
             btnGuias.setOnClickListener(v -> {
-                currentFilter = "Guías";
-                if (logsAdapter != null) logsAdapter.setLogs(dbHelper.getLogsByTipo(currentFilter));
+                currentFilter = "guias";
+                loadLogsFromFirestore();
                 highlightFilter(v.getId());
             });
         }
         if (btnEmpresas != null) {
             btnEmpresas.setOnClickListener(v -> {
-                currentFilter = "Empresas";
-                if (logsAdapter != null) logsAdapter.setLogs(dbHelper.getLogsByTipo(currentFilter));
+                currentFilter = "empresas";
+                loadLogsFromFirestore();
                 highlightFilter(v.getId());
             });
         }
 
-        // Botón Exportar: buscar de forma segura y asignar listener
+        // Botón Exportar
         View btnExport = findViewById(R.id.btnExportLogs);
         if (btnExport != null) {
             btnExport.setOnClickListener(v -> {
                 new AlertDialog.Builder(LogsActivity.this)
                     .setTitle("Exportar logs")
                     .setMessage("¿Guardar los logs filtrados en Descargas como PDF?")
-                    .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            List<LogItem> toExport = dbHelper.getLogsByTipo(currentFilter);
-                            String safeName = "logs_" + currentFilter.replaceAll("\\s+", "_").toLowerCase() + ".pdf";
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                savePdfToDownloadsMediaStore(toExport, safeName);
+                    .setPositiveButton("Guardar", (dialog, which) -> {
+                        String safeName = "logs_" + currentFilter.replaceAll("\\s+", "_").toLowerCase() + ".pdf";
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            savePdfToDownloadsMediaStore(filteredLogs, safeName);
+                        } else {
+                            if (ContextCompat.checkSelfPermission(LogsActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                savePdfToDownloadsLegacy(filteredLogs, safeName);
                             } else {
-                                if (ContextCompat.checkSelfPermission(LogsActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                                    savePdfToDownloadsLegacy(toExport, safeName);
-                                } else {
-                                    pendingExportLogs = toExport;
-                                    pendingExportFilename = safeName;
-                                    permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                                }
+                                pendingExportLogs = filteredLogs;
+                                pendingExportFilename = safeName;
+                                permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
                             }
                         }
                     })
@@ -206,14 +241,94 @@ public class LogsActivity extends AppCompatActivity {
             });
         }
 
+        // Cargar logs inicialmente (General)
+        loadLogsFromFirestore();
+        
         // Mostrar General por defecto
         if (btnGeneral != null) {
             highlightFilter(btnGeneral.getId());
         } else if (btnUsuariosFilter != null) {
             highlightFilter(btnUsuariosFilter.getId());
-        } else {
-            // fallback si no existen botones (no crash)
-            highlightFilter(R.id.btnGeneral);
+        }
+    }
+
+    /**
+     * Carga los logs desde Firestore según el filtro actual
+     */
+    private void loadLogsFromFirestore() {
+        android.util.Log.d("LogsActivity", "Cargando logs - Filtro: " + currentFilter);
+        
+        // Obtener todos los logs (sin filtro ni order by para evitar índice)
+        db.collection("logs").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                allLogs.clear();
+                List<LogItem> tempLogs = new ArrayList<>();
+                
+                for (DocumentSnapshot doc : task.getResult()) {
+                    try {
+                        String tipo = doc.getString("type");
+                        String descripcion = doc.getString("desc");
+                        Object timestampObj = doc.get("timestamp");
+                        String fecha = "";
+                        long timestampMiliseconds = 0;
+                        
+                        if (timestampObj != null) {
+                            com.google.firebase.Timestamp ts = (com.google.firebase.Timestamp) timestampObj;
+                            Date date = ts.toDate();
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                            fecha = sdf.format(date);
+                            timestampMiliseconds = date.getTime();
+                        }
+                        
+                        LogItem log = new LogItem(tipo, fecha, descripcion);
+                        log.timestamp = timestampMiliseconds;
+                        tempLogs.add(log);
+                    } catch (Exception e) {
+                        android.util.Log.e("LogsActivity", "Error procesando log: " + e.getMessage());
+                    }
+                }
+                
+                // Ordenar por timestamp descendente (más reciente primero)
+                Collections.sort(tempLogs, (a, b) -> Long.compare(b.timestamp, a.timestamp));
+                
+                // Filtrar por tipo actual
+                for (LogItem log : tempLogs) {
+                    if (log.tipo.equalsIgnoreCase(currentFilter)) {
+                        allLogs.add(log);
+                    }
+                }
+                
+                applyFilters();
+                android.util.Log.d("LogsActivity", "Logs cargados: " + allLogs.size());
+            } else {
+                android.util.Log.e("LogsActivity", "Error cargando logs: " + task.getException());
+                Toast.makeText(LogsActivity.this, "Error cargando logs", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Aplica filtros de búsqueda y ordenamiento a los logs
+     */
+    private void applyFilters() {
+        filteredLogs.clear();
+        
+        // Filtrar por búsqueda (descripción)
+        for (LogItem log : allLogs) {
+            if (searchQuery.isEmpty() || log.descripcion.toLowerCase().contains(searchQuery)) {
+                filteredLogs.add(log);
+            }
+        }
+        
+        // Ordenar por timestamp
+        if (sortAscending) {
+            // Ascendente: más antiguo primero
+            Collections.reverse(filteredLogs);
+        }
+        // else: descendente (más reciente primero) - ya viene así de Firestore
+        
+        if (logsAdapter != null) {
+            logsAdapter.setLogs(filteredLogs);
         }
     }
 
@@ -221,46 +336,33 @@ public class LogsActivity extends AppCompatActivity {
     private void savePdfToDownloadsMediaStore(List<LogItem> logs, String filename) {
         PdfDocument pdfDocument = new PdfDocument();
         try {
-            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create(); // tamaño A4 aproximado en pts
+            PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create(); // A4 en pts
             PdfDocument.Page page = pdfDocument.startPage(pageInfo);
             android.graphics.Canvas canvas = page.getCanvas();
             Paint paint = new Paint();
             paint.setTextSize(12f);
             int x = 20;
             int y = 40;
+            
             // Header
             paint.setFakeBoldText(true);
-            canvas.drawText("Logs - filtro: " + currentFilter, x, y, paint);
+            canvas.drawText("Logs - Filtro: " + currentFilter, x, y, paint);
             paint.setFakeBoldText(false);
             y += 20;
-            canvas.drawText("Tipo | Fecha | Descripcion", x, y, paint);
+            canvas.drawText("Tipo | Fecha | Descripción", x, y, paint);
             y += 18;
+            
             // Filas
-            for (LogItem li : logs) {
-                String line = li.tipo + " | " + li.fecha + " | " + (li.descripcion != null ? li.descripcion : "");
-                int maxCharsPerLine = 80;
-                if (line.length() > maxCharsPerLine) {
-                    String part = line.substring(0, Math.min(line.length(), maxCharsPerLine));
-                    canvas.drawText(part, x, y, paint);
-                    y += 16;
-                    int from = maxCharsPerLine;
-                    while (from < line.length()) {
-                        String sub = line.substring(from, Math.min(line.length(), from + maxCharsPerLine));
-                        canvas.drawText(sub, x, y, paint);
-                        y += 16;
-                        from += maxCharsPerLine;
-                    }
-                } else {
-                    canvas.drawText(line, x, y, paint);
-                    y += 16;
-                }
-                if (y > pageInfo.getPageHeight() - 40) {
+            for (LogItem log : logs) {
+                String line = log.tipo + " | " + log.fecha + " | " + (log.descripcion != null ? log.descripcion : "");
+                if (y > 800) {
                     pdfDocument.finishPage(page);
-                    pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pdfDocument.getPages().size() + 1).create();
                     page = pdfDocument.startPage(pageInfo);
                     canvas = page.getCanvas();
                     y = 40;
                 }
+                canvas.drawText(line, x, y, paint);
+                y += 16;
             }
             pdfDocument.finishPage(page);
 
@@ -271,17 +373,16 @@ public class LogsActivity extends AppCompatActivity {
 
             Uri uri = getContentResolver().insert(MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), values);
             if (uri == null) {
-                Toast.makeText(this, "No se pudo crear el archivo en Descargas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error: no se pudo crear el archivo", Toast.LENGTH_SHORT).show();
                 return;
             }
+            
             try (OutputStream os = getContentResolver().openOutputStream(uri)) {
                 pdfDocument.writeTo(os);
-                Toast.makeText(this, "PDF guardado en Descargas: " + filename, Toast.LENGTH_SHORT).show();
-                // notificar descarga
                 notifyDownloadSaved(filename, "Descargas");
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Error al escribir PDF", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error escribiendo PDF", Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {
@@ -292,7 +393,7 @@ public class LogsActivity extends AppCompatActivity {
         }
     }
 
-    // guarda PDF en Downloads usando la ruta pública (API < 29). Requiere permiso WRITE_EXTERNAL_STORAGE.
+    // guarda PDF en Downloads usando la ruta pública (API < 29)
     private void savePdfToDownloadsLegacy(List<LogItem> logs, String filename) {
         PdfDocument pdfDocument = new PdfDocument();
         try {
@@ -303,51 +404,37 @@ public class LogsActivity extends AppCompatActivity {
             paint.setTextSize(12f);
             int x = 20;
             int y = 40;
+            
             paint.setFakeBoldText(true);
-            canvas.drawText("Logs - filtro: " + currentFilter, x, y, paint);
+            canvas.drawText("Logs - Filtro: " + currentFilter, x, y, paint);
             paint.setFakeBoldText(false);
             y += 20;
-            canvas.drawText("Tipo | Fecha | Descripcion", x, y, paint);
+            canvas.drawText("Tipo | Fecha | Descripción", x, y, paint);
             y += 18;
-            for (LogItem li : logs) {
-                String line = li.tipo + " | " + li.fecha + " | " + (li.descripcion != null ? li.descripcion : "");
-                int maxCharsPerLine = 80;
-                if (line.length() > maxCharsPerLine) {
-                    String part = line.substring(0, Math.min(line.length(), maxCharsPerLine));
-                    canvas.drawText(part, x, y, paint);
-                    y += 16;
-                    int from = maxCharsPerLine;
-                    while (from < line.length()) {
-                        String sub = line.substring(from, Math.min(line.length(), from + maxCharsPerLine));
-                        canvas.drawText(sub, x, y, paint);
-                        y += 16;
-                        from += maxCharsPerLine;
-                    }
-                } else {
-                    canvas.drawText(line, x, y, paint);
-                    y += 16;
-                }
-                if (y > pageInfo.getPageHeight() - 40) {
+            
+            for (LogItem log : logs) {
+                String line = log.tipo + " | " + log.fecha + " | " + (log.descripcion != null ? log.descripcion : "");
+                if (y > 800) {
                     pdfDocument.finishPage(page);
-                    pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pdfDocument.getPages().size() + 1).create();
                     page = pdfDocument.startPage(pageInfo);
                     canvas = page.getCanvas();
                     y = 40;
                 }
+                canvas.drawText(line, x, y, paint);
+                y += 16;
             }
             pdfDocument.finishPage(page);
 
             File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             if (!downloadsDir.exists()) downloadsDir.mkdirs();
+            
             File outFile = new File(downloadsDir, filename);
             try (FileOutputStream fos = new FileOutputStream(outFile)) {
                 pdfDocument.writeTo(fos);
-                Toast.makeText(this, "PDF guardado en Descargas: " + outFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-                // notificar descarga
-                notifyDownloadSaved(filename, outFile.getAbsolutePath());
+                notifyDownloadSaved(filename, "Descargas");
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Error al escribir PDF", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error escribiendo PDF", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -363,7 +450,6 @@ public class LogsActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 showDownloadNotification("Descarga completada", filename + " guardado en " + message);
             } else {
-                // guardar pendiente y pedir permiso
                 pendingNotificationTitle = "Descarga completada";
                 pendingNotificationMessage = filename + " guardado en " + message;
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
@@ -406,15 +492,19 @@ public class LogsActivity extends AppCompatActivity {
         for (int id : candidateIds) {
             View btn = findViewById(id);
             if (btn != null) {
-                int color = (id == selectedId) ? getResources().getColor(R.color.teal_50) : getResources().getColor(android.R.color.white);
-                try {
-                    btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(color));
-                } catch (Exception ignored) {
-                    btn.setBackgroundColor(color);
+                if (id == selectedId) {
+                    btn.setAlpha(1.0f);
+                    btn.setScaleX(1.1f);
+                    btn.setScaleY(1.1f);
+                } else {
+                    btn.setAlpha(0.5f);
+                    btn.setScaleX(1.0f);
+                    btn.setScaleY(1.0f);
                 }
             }
         }
     }
 }
+
 
 

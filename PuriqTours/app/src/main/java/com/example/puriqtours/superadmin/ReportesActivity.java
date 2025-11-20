@@ -33,12 +33,7 @@ public class ReportesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        findViewById(R.id.btnReportes).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ya estás en Reportes
-            }
-        });
+
         findViewById(R.id.btnLogs).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

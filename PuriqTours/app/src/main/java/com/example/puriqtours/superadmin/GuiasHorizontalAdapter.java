@@ -1,25 +1,32 @@
 package com.example.puriqtours.superadmin;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Usuario;
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
+
 public class GuiasHorizontalAdapter extends RecyclerView.Adapter<GuiasHorizontalAdapter.GuiaViewHolder> {
-    private List<UsuarioGuia> guias;
+
+    private List<Usuario> guias;   // ← YA CORREGIDO
     private Context context;
-    public GuiasHorizontalAdapter(Context context, List<UsuarioGuia> guias) {
+
+    public GuiasHorizontalAdapter(Context context, List<Usuario> guias) {
         this.context = context;
         this.guias = guias;
     }
 
-    // Permite actualizar la lista de guías y refrescar el adapter
-    public void setGuias(List<UsuarioGuia> guias) {
+    public void setGuias(List<Usuario> guias) {
         this.guias = guias;
         notifyDataSetChanged();
     }
@@ -33,11 +40,16 @@ public class GuiasHorizontalAdapter extends RecyclerView.Adapter<GuiasHorizontal
 
     @Override
     public void onBindViewHolder(@NonNull GuiaViewHolder holder, int position) {
-        UsuarioGuia guia = guias.get(position);
-        holder.txtGuiaNombre.setText(guia.nombre);
-        if (guia.profileImageUrl != null && !guia.profileImageUrl.isEmpty()) {
+
+        Usuario guia = guias.get(position);
+
+        // Nombre correcto del campo
+        holder.txtGuiaNombre.setText(guia.getName());
+
+        // Imagen correcta del campo
+        if (guia.getProfile_image() != null && !guia.getProfile_image().isEmpty()) {
             Picasso.get()
-                    .load(guia.profileImageUrl)
+                    .load(guia.getProfile_image())
                     .placeholder(R.drawable.avatar1)
                     .error(R.drawable.avatar1)
                     .into(holder.imgGuiaAvatar);
@@ -54,6 +66,7 @@ public class GuiasHorizontalAdapter extends RecyclerView.Adapter<GuiasHorizontal
     public static class GuiaViewHolder extends RecyclerView.ViewHolder {
         ImageView imgGuiaAvatar;
         TextView txtGuiaNombre;
+
         public GuiaViewHolder(@NonNull View itemView) {
             super(itemView);
             imgGuiaAvatar = itemView.findViewById(R.id.imgGuiaAvatar);

@@ -15,70 +15,59 @@ import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Usuario;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuariosGuiasFragment extends Fragment {
+public class UsuariosBaneadosFragment extends Fragment {
 
     private UsuariosAdapter adapter;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_usuarios_guias, container, false);
+        View view = inflater.inflate(R.layout.fragment_usuarios_baneados, container, false);
 
-        // 🟢 Usamos el RecyclerView del XML
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerUsuariosGuias);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerUsuariosBaneados);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Padding inferior por la bottom bar
         int bottomBarHeightPx = (int) (70 * getResources().getDisplayMetrics().density);
         recyclerView.setPadding(0, 0, 0, bottomBarHeightPx);
         recyclerView.setClipToPadding(false);
 
-        // Adaptador vacío
         List<Usuario> usuarios = new ArrayList<>();
         adapter = new UsuariosAdapter(getContext(), usuarios);
         recyclerView.setAdapter(adapter);
 
-        // 🟣 Cargar GUÍAS desde Firestore
+        // 🔥 Cargar TODOS los usuarios baneados (Clientes, Guías, Admins)
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("users")
-                .whereEqualTo("rol", "Guia")
-                .whereEqualTo("status", "Activo")
+                .whereEqualTo("status", "Inactivo")  // ← SOLO filtra por inactivos
                 .addSnapshotListener((snapshot, error) -> {
 
                     if (error != null || snapshot == null) return;
 
-                    List<Usuario> guias = new ArrayList<>();
+                    List<Usuario> list = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
                         Usuario u = Usuario.fromSnapshot(doc);
-
-                        if (u.getName() == null)
-                            u.setName(doc.getString("username"));
-
-                        guias.add(u);
+                        if (u == null) continue;
+                        list.add(u);
                     }
 
-                    adapter.setUsuarios(guias);
+                    adapter.setUsuarios(list);
                 });
-
 
         return view;
     }
 
-    // Buscador
     public void filtrarTexto(String texto) {
         if (adapter != null) adapter.filter(texto);
     }
 
-    // Ordenar
     public void sortByName() {
         if (adapter != null) adapter.sortByNameAsc();
     }
