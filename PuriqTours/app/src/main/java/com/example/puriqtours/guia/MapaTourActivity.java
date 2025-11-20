@@ -131,7 +131,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     private void cargarTokenFin() {
         db.collection("reservas").document(idReserva)
                 .get()
-                .addOnSuccessListener(doc -> tokenFin = doc.getString("qrFin"));
+                .addOnSuccessListener(doc -> tokenFin = doc.getString("qrEnd"));
     }
 
     // ============================================================================
@@ -316,7 +316,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
         }
 
         btnFinalizar.setEnabled(true);
-        Toast.makeText(this, "Todos los checkpoints visitados ✔", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Todos los checkpoints visitados", Toast.LENGTH_LONG).show();
     }
 
     // ============================================================================

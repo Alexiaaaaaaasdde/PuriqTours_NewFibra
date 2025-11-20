@@ -2,6 +2,7 @@ package com.example.puriqtours.guia;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,7 +21,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
-public class MainGuiaActivity extends AppCompatActivity {
+public class MainGuiaActivity extends AppCompatActivity implements PerfilActualizadoListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -43,20 +44,13 @@ public class MainGuiaActivity extends AppCompatActivity {
         profileicon = findViewById(R.id.profileIcon);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
 
-        Usuario user = sessionManager.getUser();
-        String imageUrl = user.getProfile_image();
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            Picasso.get()
-                    .load(imageUrl)
-                    .placeholder(R.drawable.profile_image_dummy) // imagen temporal
-                    .error(R.drawable.profile_image_dummy) // si falla la carga
-                    .into(profileicon);
-        }
+        // 🔹 Cargar imagen de perfil en toolbar
+        cargarFotoToolbar();
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
-        // 🔹 Listener del Drawer
+        // 🔹 MENÚ LATERAL
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -83,7 +77,7 @@ public class MainGuiaActivity extends AppCompatActivity {
             return true;
         });
 
-        // 🔹 Cargar fragment por defecto
+        // 🔹 Fragment inicial
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.nav_tours);
             getSupportFragmentManager()
@@ -93,17 +87,19 @@ public class MainGuiaActivity extends AppCompatActivity {
             toolbar.setTitle("Puriq Tours");
         }
 
-        // Fragment inicial
+        // 🔹 Segundo fragment inicial (tu código original lo tenía, lo mantengo)
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new HomeFragment())
                     .commit();
         }
-        //Bottom Nav
+
+        // 🔹 Bottom Navigation
         bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();
-            if (id == R.id.nav_home){
+
+            if (id == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_tours) {
                 selectedFragment = new ToursFragment();
@@ -119,5 +115,31 @@ public class MainGuiaActivity extends AppCompatActivity {
 
             return true;
         });
+    }
+
+    // -----------------------------------------------------------------------------------
+    // 🔹 Metodo para recargar la foto del usuario en la toolbar
+    // -----------------------------------------------------------------------------------
+    private void cargarFotoToolbar() {
+        Usuario user = sessionManager.getUser();
+        if (user == null) return;
+
+        String imageUrl = user.getProfile_image();
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.profile_image_dummy)
+                    .error(R.drawable.profile_image_dummy)
+                    .into(profileicon);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------
+    // 🔹 Metodo que se llama automáticamente cuando el perfil se actualiza
+    // -----------------------------------------------------------------------------------
+    @Override
+    public void onPerfilActualizado() {
+        cargarFotoToolbar();  // ← Recarga la foto en la toolbar
     }
 }

@@ -143,6 +143,13 @@ public class ProfileFragment extends Fragment {
                             user.setPhone(etNumeroTelefonico.getText().toString());
                             user.setProfile_image(photoUrl);
                             sessionManager.saveUser(user);
+                            // Notificar al Activity principal que la foto cambió
+                            requireActivity().runOnUiThread(() -> {
+                                if (getActivity() instanceof PerfilActualizadoListener) {
+                                    ((PerfilActualizadoListener) getActivity()).onPerfilActualizado();
+                                }
+                            });
+
                             mostrarDialogo();
                         })
                         .addOnFailureListener(e -> {
@@ -269,4 +276,6 @@ public class ProfileFragment extends Fragment {
 
         btnSave.setVisibility(View.GONE);
     }
+
+
 }
