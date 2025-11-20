@@ -18,6 +18,7 @@ import com.example.puriqtours.R;
 import com.example.puriqtours.adapter.TourGuiaAdapter;
 import com.example.puriqtours.entity.TourGuia;
 import com.example.puriqtours.guia.IniciarTourActivity;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -43,8 +44,35 @@ public class ToursFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tours, container, false);
 
         // Inicializar
-        recyclerView = view.findViewById(R.id.recyclerViewSolicitudes);
+        recyclerView = view.findViewById(R.id.recyclerViewTours);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //Chips
+        ChipGroup chipGroup = view.findViewById(R.id.chipGroupTours);
+
+        chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+
+            if (checkedIds.isEmpty()) {
+                adapter.setEstadoFiltro("Todos");
+                return;
+            }
+
+            int id = checkedIds.get(0);
+
+            if (id == R.id.chipReservado) {
+                adapter.setEstadoFiltro("Reservado");
+
+            } else if (id == R.id.chipEnProceso) {
+                adapter.setEstadoFiltro("En proceso");
+
+            } else if (id == R.id.chipFinalizado) {
+                adapter.setEstadoFiltro("Finalizado");
+
+            } else {
+                adapter.setEstadoFiltro("Todos");
+            }
+        });
+
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -101,7 +129,6 @@ public class ToursFragment extends Fragment {
         if (mAuth.getCurrentUser() == null) return;
 
         String uidGuia = mAuth.getCurrentUser().getUid();
-        Log.d("FIRESTORE", "UID Guia: " + uidGuia);
 
         db.collection("reservas")
                 .whereEqualTo("idGuia", uidGuia)
@@ -129,11 +156,11 @@ public class ToursFragment extends Fragment {
                         String idTour = reservaDoc.getString("idTour");
 
                         String idCliente = reservaDoc.getString("idCliente");
-                        String status = reservaDoc.getString("estado");
-                        String tokenInicio = reservaDoc.getString("qrInicio");
-                        String tokenFin = reservaDoc.getString("qrFin");
+                        String status = reservaDoc.getString("status");
+                        String tokenInicio = reservaDoc.getString("qrStart");
+                        String tokenFin = reservaDoc.getString("qrEnd");
 
-                        List<String> addedServices = (List<String>) reservaDoc.get("added_services");
+                        List<String> addedServices = (List<String>) reservaDoc.get("addedServices");
 
                         db.collection("tours")
                                 .document(idTour)
@@ -165,7 +192,6 @@ public class ToursFragment extends Fragment {
                                     adapter.notifyDataSetChanged();
 
                                     Log.d("FIRESTORE", "Tours cargados: " + tourList.size());
-                                    Log.d("Tour", "Tours : " + tg.getStatus());
                                 });
                     }
                 });

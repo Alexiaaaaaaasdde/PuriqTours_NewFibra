@@ -10,17 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Encabezado opcional con imagen/mapa -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgMapa"
+        <!-- 🔹 MAPA DEL TOUR -->
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/maps"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.LargeComponent"
+            android:layout_height="220dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- 🔹 Actividades -->
+        <!-- 🔹 Descripción / Actividades -->
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -39,8 +36,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="Caminata, visita guiada"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+                android:text="Descripción del tour"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+
         </LinearLayout>
 
         <!-- 🔹 Duración total -->
@@ -62,11 +60,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="Duración total: 6h"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+                android:text="Duración total: 0h"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
         </LinearLayout>
 
-        <!-- 🔹 Costo -->
+        <!-- 🔹 Pago para el guía -->
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -85,11 +83,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="Costo: $45"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+                android:text="Pago guía: S/ 0"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
         </LinearLayout>
 
-        <!-- 🔹 Servicios extra -->
+        <!-- 🔹 Servicios extras (si aplica) -->
         <LinearLayout
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -108,31 +106,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="Transporte, snacks"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
-        </LinearLayout>
-
-        <!-- 🔹 Idiomas -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_language"
-                app:tint="@color/teal_700" />
-
-            <TextView
-                android:id="@+id/tvIdiomas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="Español, Inglés"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+                android:text="Servicios extra"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
         </LinearLayout>
 
         <!-- 🔹 Horario + Fecha -->
@@ -153,8 +128,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="Inicio: 09:00 - Fin: 15:00 | Fecha: 20/09/2025"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
+                android:text="Inicio: 00:00 - Fin: 00:00 | Fecha: --/--/----"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
         </LinearLayout>
 
     </LinearLayout>

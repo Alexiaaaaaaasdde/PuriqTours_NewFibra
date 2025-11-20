@@ -11,10 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.puriqtours.guia.DetallesBottomSheet;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.TourGuia;
 import com.example.puriqtours.guia.DetallesReservaBottomSheet;
@@ -35,6 +33,7 @@ public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.ViewHo
     private Context context;
     private List<TourGuia> tourList;
     private OnTourActionListener listener;
+    private String estadoFiltro = "Todos";
     TextView tvDescripcionCompleta;
 
 
@@ -69,6 +68,28 @@ public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.ViewHo
         holder.tvFecha.setText("Fecha: " + t.getDate());
         holder.tvRangoHora.setText("Hora: " + t.getStartTime() + " - " + t.getEndTime());
 
+        //Chips
+        if (!estadoFiltro.equals("Todos")) {
+            if (!t.getStatus().equals(estadoFiltro)) {
+                holder.itemView.setVisibility(View.GONE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+                return;
+            } else {
+                holder.itemView.setVisibility(View.VISIBLE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
+            }
+        } else {
+            holder.itemView.setVisibility(View.VISIBLE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+        }
+
+
         // 🔹 Cargar imagen con Glide
         Glide.with(context)
                 .load(t.getImg())
@@ -76,9 +97,12 @@ public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.ViewHo
                 .into(holder.imgSolicitud);
 
         // 🔹 Expandible
+        boolean expandido = t.isExpandido();
+        holder.layoutExpandible.setVisibility(expandido ? View.VISIBLE : View.GONE);
+
         holder.itemView.setOnClickListener(v -> {
-            boolean visible = holder.layoutExpandible.getVisibility() == View.VISIBLE;
-            holder.layoutExpandible.setVisibility(visible ? View.GONE : View.VISIBLE);
+            t.setExpandido(!t.isExpandido());
+            notifyItemChanged(position);
         });
 
         // 🔹 Abrir BOTTOMSHEET con los DETALLES del tour
@@ -121,6 +145,11 @@ public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.ViewHo
         holder.btnIniciar.setOnClickListener(v -> {
             if (listener != null) listener.onIniciar(t);
         });
+    }
+
+    public void setEstadoFiltro(String estado) {
+        this.estadoFiltro = estado;
+        notifyDataSetChanged();
     }
 
     @Override

@@ -7,28 +7,51 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.puriqtours.SplashActivity;
+import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.helper.UserSessionManager;
 import com.example.puriqtours.login.LoginActivity;
 import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 public class MainGuiaActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private MaterialToolbar toolbar;
+    private ShapeableImageView profileicon;
+    private FirebaseAuth auth;
+    private UserSessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_guia);
 
+        auth = FirebaseAuth.getInstance();
+        sessionManager = new UserSessionManager(this);
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.topAppBar);
+        profileicon = findViewById(R.id.profileIcon);
         BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+
+        Usuario user = sessionManager.getUser();
+        String imageUrl = user.getProfile_image();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.profile_image_dummy) // imagen temporal
+                    .error(R.drawable.profile_image_dummy) // si falla la carga
+                    .into(profileicon);
+        }
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
@@ -40,17 +63,10 @@ public class MainGuiaActivity extends AppCompatActivity {
             Fragment fragment = null;
             String title = getString(R.string.app_name);
 
-            if (id == R.id.nav_perfil) {
-                fragment = new ProfileFragment();
-                title = "Perfil";
-            } else if (id == R.id.nav_tours) {
-                fragment = new ToursFragment();
-                title = "Tours";
-            } else if (id == R.id.nav_historial) {
-                fragment = new HomeFragment();
-                title = "Historial";
-            } else if (id == R.id.nav_logout) {
-                startActivity(new Intent(this, LoginActivity.class));
+            if (id == R.id.nav_logout) {
+                auth.signOut();
+                sessionManager.clearSession();
+                startActivity(new Intent(this, SplashActivity.class));
                 finish();
                 return true;
             }
@@ -83,7 +99,7 @@ public class MainGuiaActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, new HomeFragment())
                     .commit();
         }
-
+        //Bottom Nav
         bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();

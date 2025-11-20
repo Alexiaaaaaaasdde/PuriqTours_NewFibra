@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +18,9 @@ import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Solicitud;
 import com.example.puriqtours.guia.DetallesBottomSheet;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -26,6 +28,10 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
 
     private final FragmentManager fragmentManager;
     private final List<Solicitud> solicitudes;
+
+    private String estadoFiltro = "Todos";
+
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public SolicitudAdapter(List<Solicitud> solicitudes, FragmentManager fragmentManager) {
         this.solicitudes = solicitudes;
@@ -45,23 +51,27 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
     public void onBindViewHolder(@NonNull SolicitudViewHolder holder, int position) {
         Solicitud solicitud = solicitudes.get(position);
 
-        // --- Asignar valores recuperados de Firestore ---
-        holder.tvTitulo.setText(solicitud.getTitulo());
-        holder.tvDescripcionCorta.setText(solicitud.getDescripcion());
-        holder.tvDescripcionCompleta.setText(solicitud.getDescripcion());
-        holder.tvCiudad.setText("Ciudad: " + solicitud.getCiudad());
-        holder.tvFecha.setText("Fecha: " + solicitud.getFecha());
-        holder.tvEmpresa.setText(solicitud.getEmpresa());
-        holder.tvRangoHora.setText("Hora: " + solicitud.getHoraInicio() + " - " + solicitud.getHoraFin());
+        // --------------------------
+        // 🔹 Adaptación a nueva estructura
+        // --------------------------
+        holder.tvTitulo.setText(solicitud.getTitle());
+        holder.tvDescripcionCorta.setText(solicitud.getDesc());
+        holder.tvDescripcionCompleta.setText(solicitud.getDesc());
+        holder.tvPay.setText("Paga: S/ " + solicitud.getPay());
+        holder.tvStatus.setText("Estado: " + solicitud.getStatus());
 
-        // 🔹 Cargar imagen desde Firebase Storage / URL
+        // --------------------------
+        // 🔹 Cargar imagen del tour
+        // --------------------------
         Glide.with(holder.itemView.getContext())
-                .load(solicitud.getImagenUrl()) // campo adaptado para Firestore
+                .load(solicitud.getImageUrl()) // URL obtenida desde el documento "tours"
                 .placeholder(R.drawable.placeholder_img)
                 .error(R.drawable.placeholder_img)
                 .into(holder.imgSolicitud);
 
-        // 🔹 Control de expansión del item
+        // --------------------------
+        // 🔹 Control de expansión
+        // --------------------------
         boolean expandido = solicitud.isExpandido();
         holder.layoutExpandible.setVisibility(expandido ? View.VISIBLE : View.GONE);
 
@@ -70,13 +80,54 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             notifyItemChanged(position);
         });
 
-        // 🔹 Mostrar detalles en BottomSheet
+        // --------------------------
+        // 🔹 Filtro visual por estado
+        // --------------------------
+        if (!estadoFiltro.equals("Todos")) {
+            if (!solicitud.getStatus().equals(estadoFiltro)) {
+                holder.itemView.setVisibility(View.GONE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+                return;
+            } else {
+                holder.itemView.setVisibility(View.VISIBLE);
+                holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                ));
+            }
+        } else {
+            holder.itemView.setVisibility(View.VISIBLE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+        }
+
+        // --------------------------
+        // 🔹 Botón Detalles
+        // --------------------------
         holder.btnDetalles.setOnClickListener(v -> {
-            DetallesBottomSheet bottomSheet = new DetallesBottomSheet();
-            bottomSheet.show(fragmentManager, bottomSheet.getTag());
+            DetallesBottomSheet sheet = new DetallesBottomSheet(solicitud.getIdReserva(), solicitud.getPay());
+            sheet.show(fragmentManager, "DetallesTour");
         });
 
+        // --------------------------
+        // 🔹 Verificación de Estado
+        // --------------------------
+
+        String estado = solicitud.getStatus(); // o getEstado(), según tu modelo
+
+        if (estado != null && estado.equals("Pendiente")) {
+            holder.btnAceptar.setVisibility(View.VISIBLE);
+            holder.btnRechazar.setVisibility(View.VISIBLE);
+        } else {
+            holder.btnAceptar.setVisibility(View.GONE);
+            holder.btnRechazar.setVisibility(View.GONE);
+        }
+
+        // --------------------------
         // 🔹 Acción botón Aceptar
+        // --------------------------
         holder.btnAceptar.setOnClickListener(v -> {
             Dialog dialog = new Dialog(v.getContext());
             dialog.setContentView(R.layout.dialog_aceptar);
@@ -86,44 +137,68 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
 
             btnAceptar.setOnClickListener(view -> {
-                Toast.makeText(v.getContext(), "Solicitud aceptada ✅", Toast.LENGTH_SHORT).show();
+                db.collection("solicitudes")
+                        .document(solicitud.getIdSolicitud())
+                        .update("status", "Aceptado")
+                        .addOnSuccessListener(aVoid -> {
+
+                            // 2️⃣ Agregar idGuia al documento de reservas/{idReserva}
+                            db.collection("reservas")
+                                    .document(solicitud.getIdReserva())
+                                    .update("idGuia", solicitud.getIdGuia())
+                                    .addOnSuccessListener(x -> {
+                                        Toast.makeText(v.getContext(),
+                                                "Solicitud aceptada",
+                                                Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(v.getContext(),
+                                                "Error agregando idGuia: " + e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    });
+
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(v.getContext(),
+                                        "Error actualizando solicitud: " + e.getMessage(),
+                                        Toast.LENGTH_LONG).show()
+                        );
                 dialog.dismiss();
             });
-
             btnCancelar.setOnClickListener(view -> dialog.dismiss());
             dialog.show();
 
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setLayout(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-            }
         });
 
+
+        // --------------------------
         // 🔹 Acción botón Rechazar
+        // --------------------------
         holder.btnRechazar.setOnClickListener(v -> {
             Dialog dialog = new Dialog(v.getContext());
             dialog.setContentView(R.layout.dialog_rechazar);
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-            Button btnAceptar = dialog.findViewById(R.id.btnRechazar);
+            Button btnRechazar = dialog.findViewById(R.id.btnRechazar);
             Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
 
-            btnAceptar.setOnClickListener(view -> {
-                Toast.makeText(v.getContext(), "Solicitud rechazada ❌", Toast.LENGTH_SHORT).show();
+            btnRechazar.setOnClickListener(view -> {
+                db.collection("solicitudes")
+                        .document(solicitud.getIdSolicitud())
+                        .update("status", "Rechazado")
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(v.getContext(), "Solicitud rechazada", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(v.getContext(),
+                                    "Error en rechazar la solicitud.",
+                                    Toast.LENGTH_LONG).show();
+                        });;
                 dialog.dismiss();
             });
 
             btnCancelar.setOnClickListener(view -> dialog.dismiss());
             dialog.show();
-
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setLayout(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-            }
         });
     }
 
@@ -132,24 +207,31 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
         return solicitudes != null ? solicitudes.size() : 0;
     }
 
+    public void setEstadoFiltro(String estado) {
+        this.estadoFiltro = estado;
+        notifyDataSetChanged();
+    }
+
     public static class SolicitudViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgSolicitud;
-        TextView tvTitulo, tvDescripcionCorta, tvDescripcionCompleta,
-                tvCiudad, tvFecha, tvRangoHora, tvEmpresa;
+
+        ShapeableImageView imgSolicitud;
+        TextView tvTitulo, tvDescripcionCorta, tvDescripcionCompleta, tvPay, tvStatus;
         LinearLayout layoutExpandible;
         Button btnDetalles, btnAceptar, btnRechazar;
 
         public SolicitudViewHolder(@NonNull View itemView) {
             super(itemView);
+
             imgSolicitud = itemView.findViewById(R.id.imgSolicitud);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvDescripcionCorta = itemView.findViewById(R.id.tvDescripcionCorta);
             tvDescripcionCompleta = itemView.findViewById(R.id.tvDescripcionCompleta);
-            tvCiudad = itemView.findViewById(R.id.tvCiudad);
-            tvFecha = itemView.findViewById(R.id.tvFecha);
-            tvEmpresa = itemView.findViewById(R.id.tvEmpresa);
-            tvRangoHora = itemView.findViewById(R.id.tvRangoHora);
+
+            tvPay = itemView.findViewById(R.id.tvPay);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
+
             layoutExpandible = itemView.findViewById(R.id.layoutExpandible);
+
             btnDetalles = itemView.findViewById(R.id.btnDetalles);
             btnAceptar = itemView.findViewById(R.id.btnAceptar);
             btnRechazar = itemView.findViewById(R.id.btnRechazar);

@@ -40,4 +40,23 @@
     <color name="yellow">#FFC107</color> <!-- Amarillo para estrellas -->
     <color name="background_light">#FAFAFA</color> <!-- Fondo claro -->
 
+    <color name="chip_pendiente">#FFF3C7</color>          <!-- Amarillo pastel -->
+    <color name="chip_pendiente_dark">#FFE082</color>
+
+    <color name="chip_aceptado">#D8F5D3</color>           <!-- Verde pastel -->
+    <color name="chip_aceptado_dark">#A5D6A7</color>
+
+    <color name="chip_rechazado">#F8D6D6</color>          <!-- Rojo rosa pastel -->
+    <color name="chip_rechazado_dark">#E5A4A4</color>
+
+    <color name="chip_todos_bg">#FFFFFF</color>           <!-- Blanco neutro -->
+    <color name="chip_todos_border">#D0D0D0</color>
+
+    <color name="chip_teal_light">#D0F2F0</color>       <!-- Teal muy suave -->
+    <color name="chip_teal_normal">#80CBC4</color>     <!-- Teal pastel -->
+    <color name="chip_teal_dark">#009688</color>       <!-- Teal principal PuriqTours -->
+    <color name="chip_border_teal">#4DB6AC</color>     <!-- Teal medio -->
+
+
+
 </resources>

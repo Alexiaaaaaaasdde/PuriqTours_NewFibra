@@ -24,6 +24,7 @@ public class TourGuia {
     private Double price;
     private List<String> addedServices;
     private List<CheckpointReserva> checkpoints;
+    private boolean expandido;
 
     public TourGuia() {}
 
@@ -78,4 +79,12 @@ public class TourGuia {
 
     public List<CheckpointReserva> getCheckpoints() { return checkpoints; }
     public void setCheckpoints(List<CheckpointReserva> checkpoints) { this.checkpoints = checkpoints; }
+
+    public boolean isExpandido() {
+        return expandido;
+    }
+
+    public void setExpandido(boolean expandido) {
+        this.expandido = expandido;
+    }
 }

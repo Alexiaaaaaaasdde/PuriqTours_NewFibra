@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,21 +9,7 @@
     android:padding="1dp"
     android:background="#F8F9FA">
 
-
-    <!-- 🔹 Lista de solicitudes -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSolicitudes"
-        android:layout_width="430dp"
-        android:layout_height="670dp"
-        android:clipToPadding="false"
-        android:padding="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
+    <!-- Título -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -30,11 +17,90 @@
         android:text="Mis Tours"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewSolicitudes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.859" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- SCROLL HORIZONTAL PARA CHIPS -->
+    <HorizontalScrollView
+        android:id="@+id/chipScrollTours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupTours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="6dp"
+            app:singleSelection="true"
+            app:selectionRequired="false"
+            app:singleLine="true">
+
+            <!-- TODOS -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipToursTodos"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Todos"
+                android:checked="true"
+                app:chipBackgroundColor="@color/chip_teal_light"
+                app:chipStrokeColor="@color/chip_border_teal"
+                app:chipStrokeWidth="1dp"/>
+
+            <!-- RESERVADO -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipReservado"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reservado"
+                app:chipBackgroundColor="@color/chip_teal_light"
+                app:chipStrokeColor="@color/chip_border_teal"
+                app:chipStrokeWidth="1dp"/>
+
+            <!-- EN PROCESO -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipEnProceso"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="En proceso"
+                app:chipBackgroundColor="@color/chip_teal_light"
+                app:chipStrokeColor="@color/chip_border_teal"
+                app:chipStrokeWidth="1dp"/>
+
+            <!-- FINALIZADO -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFinalizado"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finalizado"
+                app:chipBackgroundColor="@color/chip_teal_light"
+                app:chipStrokeColor="@color/chip_border_teal"
+                app:chipStrokeWidth="1dp"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
+
+    <!-- LISTA DE TOURS -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTours"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/chipScrollTours"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

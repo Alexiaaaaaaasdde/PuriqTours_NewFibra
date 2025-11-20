@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
 import com.example.puriqtours.adapter.SolicitudAdapter;
 import com.example.puriqtours.entity.Solicitud;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,6 +31,11 @@ public class HomeFragment extends Fragment {
     private List<Solicitud> listaSolicitudes;
     private FirebaseFirestore db;
 
+    private FirebaseAuth mAuth;
+
+    private ChipGroup chipGroupEstados;
+    private Chip chipTodos, chipPendiente, chipAceptado, chipRechazado;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -37,45 +44,116 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // ------------------------------------------------------
+        // 🔹 Inicializar RecyclerView
+        // ------------------------------------------------------
         recyclerView = view.findViewById(R.id.recyclerViewSolicitudes);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // 🔹 Inicializar Firestore y la lista
+        // ------------------------------------------------------
+        // 🔹 Firestore, Auth y lista
+        // ------------------------------------------------------
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         listaSolicitudes = new ArrayList<>();
 
-        // 🔹 Crear el adapter (vacío por ahora)
+        // ------------------------------------------------------
+        // 🔹 Inicializar Adapter
+        // ------------------------------------------------------
         adapter = new SolicitudAdapter(listaSolicitudes, getParentFragmentManager());
         recyclerView.setAdapter(adapter);
 
-        // 🔹 Cargar los datos desde Firebase
+        // ------------------------------------------------------
+        // 🔹 Inicializar Chips
+        // ------------------------------------------------------
+        chipGroupEstados = view.findViewById(R.id.chipGroupEstados);
+        chipTodos = view.findViewById(R.id.chipTodos);
+        chipPendiente = view.findViewById(R.id.chipPendiente);
+        chipAceptado = view.findViewById(R.id.chipAceptado);
+        chipRechazado = view.findViewById(R.id.chipRechazado);
+
+        configurarFiltroChips();
+
+        // ------------------------------------------------------
+        // 🔹 Cargar solicitudes
+        // ------------------------------------------------------
         cargarSolicitudesFirebase();
 
         return view;
     }
 
+    // ==========================================================
+    // 🔥 LÓGICA DEL FILTRO CON CHIPS
+    // ==========================================================
+    private void configurarFiltroChips() {
+        chipGroupEstados.setOnCheckedStateChangeListener((group, checkedIds) -> {
+
+            if (checkedIds.isEmpty()) {
+                adapter.setEstadoFiltro("Todos");
+                return;
+            }
+
+            int id = checkedIds.get(0);
+
+            if (id == R.id.chipPendiente) {
+                adapter.setEstadoFiltro("Pendiente");
+            } else if (id == R.id.chipAceptado) {
+                adapter.setEstadoFiltro("Aceptado");
+            } else if (id == R.id.chipRechazado) {
+                adapter.setEstadoFiltro("Rechazado");
+            } else {
+                adapter.setEstadoFiltro("Todos");
+            }
+        });
+    }
+
+    // ==========================================================
+    // 🔥 CARGA DE SOLICITUDES FIREBASE
+    // ==========================================================
     private void cargarSolicitudesFirebase() {
+
+        if (mAuth.getCurrentUser() == null) return;
+
+        String uidGuia = mAuth.getCurrentUser().getUid();
+        Log.d("FIREBASE", "ID guia: " + uidGuia);
+
         db.collection("solicitudes")
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    listaSolicitudes.clear(); // limpiar por si hay datos previos
+                .whereEqualTo("idGuia", uidGuia)
+                .addSnapshotListener((querySnapshot, error) -> {
+
+                    if (error != null || querySnapshot == null) return;
+
+                    listaSolicitudes.clear();
 
                     for (DocumentSnapshot doc : querySnapshot) {
+
                         Solicitud solicitud = doc.toObject(Solicitud.class);
-                        if (solicitud != null) {
-                            listaSolicitudes.add(solicitud);
-                        }
+                        solicitud.setIdSolicitud(doc.getId());
+
+                        if (solicitud == null) continue;
+
+                        String idReserva = solicitud.getIdReserva();
+                        Log.d("FIRESTORE", "Id de la reserva: " + idReserva);
+
+                        // 🔹 Obtener imagen desde el documento reserva
+                        db.collection("reservas")
+                                .document(idReserva)
+                                .get()
+                                .addOnSuccessListener(reservaDoc -> {
+
+                                    if (reservaDoc.exists()) {
+                                        String url = reservaDoc.getString("imageUrl");
+                                        solicitud.setImageUrl(url);
+                                    }
+
+                                    listaSolicitudes.add(solicitud);
+                                    adapter.notifyDataSetChanged();
+                                })
+                                .addOnFailureListener(e ->
+                                        Log.e("FIRESTORE",
+                                                "Error obteniendo imagen del tour " + idReserva, e)
+                                );
                     }
-
-                    adapter.notifyDataSetChanged();
-
-                    Log.d("FIRESTORE", "Solicitudes cargadas: " + listaSolicitudes.size());
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("FIRESTORE_ERROR", "Error al cargar solicitudes", e);
-                    Toast.makeText(requireContext(),
-                            "Error al cargar solicitudes: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
                 });
     }
 }

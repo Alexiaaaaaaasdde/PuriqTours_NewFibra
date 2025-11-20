@@ -126,7 +126,7 @@ public class IniciarTourActivity extends AppCompatActivity {
 
         db.collection("reservas")
                 .document(idReserva)
-                .update("estado", "En proceso")
+                .update("status", "En proceso")
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "Tour iniciado ✔", Toast.LENGTH_SHORT).show();
                     abrirMapa();

@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:padding="1dp"
     android:background="#F8F9FA">
 
-    <!-- 🔹 Lista de solicitudes -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSolicitudes"
-        android:layout_width="430dp"
-        android:layout_height="670dp"
-        android:clipToPadding="false"
-        android:padding="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
+    <!-- 🔹 Título -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -29,11 +15,91 @@
         android:text="Mis Solicitudes"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewSolicitudes"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.859" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 🔹 SCROLL HORIZONTAL PARA LOS CHIPS -->
+    <HorizontalScrollView
+        android:id="@+id/chipScroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupEstados"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="6dp"
+            app:singleSelection="true"
+            android:isScrollContainer="true"
+            app:selectionRequired="false"
+            app:singleLine="true">
+
+            <!-- 🔵 TODOS -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTodos"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Todos"
+                android:checked="true"
+                app:chipBackgroundColor="@color/white"
+                app:chipStrokeWidth="1dp"
+                app:chipStrokeColor="@color/black"/>
+
+            <!-- 🟡 PENDIENTE -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPendiente"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pendiente"
+                app:chipBackgroundColor="@color/chip_pendiente"
+                app:chipStrokeColor="@color/chip_pendiente_dark"
+                app:chipStrokeWidth="1dp"/>
+
+            <!-- 🟢 ACEPTADO -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAceptado"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aceptado"
+                app:chipBackgroundColor="@color/chip_aceptado"
+                app:chipStrokeColor="@color/chip_aceptado_dark"
+                app:chipStrokeWidth="1dp"/>
+
+            <!-- 🔴 RECHAZADO -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipRechazado"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rechazado"
+                app:chipBackgroundColor="@color/chip_rechazado"
+                app:chipStrokeColor="@color/chip_rechazado_dark"
+                app:chipStrokeWidth="1dp"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
+
+    <!-- 🔹 LISTA -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSolicitudes"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/chipScroll"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

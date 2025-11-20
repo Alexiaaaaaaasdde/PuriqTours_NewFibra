@@ -343,7 +343,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
 
             db.collection("reservas")
                     .document(idReserva)
-                    .update("estado", "Finalizado");
+                    .update("status", "Finalizado");
 
             Toast.makeText(this, "Tour finalizado ✔", Toast.LENGTH_LONG).show();
             finish();

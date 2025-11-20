@@ -130,8 +130,10 @@ public class SetupProfileActivity extends AppCompatActivity {
         dialog.show();
 
         String uid = user.getUid();
+
+        // 🔹 Carpeta profile_images + nombre único
         String imageName = uid + "_" + UUID.randomUUID().toString() + ".jpg";
-        StorageReference fileRef = storageRef.child(imageName);
+        StorageReference fileRef = storageRef.child("profile_images/" + imageName);
 
         fileRef.putBytes(compressedImageBytes)
                 .addOnSuccessListener(taskSnapshot ->
@@ -144,6 +146,7 @@ public class SetupProfileActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error al subir la imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     // --- Guardar datos del usuario en Firestore ---
     private void saveUserData(String username, String imageUrl) {
