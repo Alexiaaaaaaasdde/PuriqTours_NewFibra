@@ -219,10 +219,6 @@ public class Tour implements Serializable {
         this.idEmpresa = idEmpresa;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
