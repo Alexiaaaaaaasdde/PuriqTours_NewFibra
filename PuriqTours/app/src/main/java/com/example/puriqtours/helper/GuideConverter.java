@@ -19,6 +19,9 @@ public class GuideConverter {
         
         GuideAdmin guideAdmin = new GuideAdmin();
         
+        // Guardar UID original
+        guideAdmin.setUid(usuario.getUid());
+        
         // Intentar parsear el UID a int, o usar hashCode como fallback
         try {
             guideAdmin.setId(Integer.parseInt(usuario.getUid()));
@@ -39,22 +42,24 @@ public class GuideConverter {
         // Ubicación desde address
         guideAdmin.setLocation(usuario.getAddress() != null ? usuario.getAddress() : "Sin ubicación");
         
-        // Rating (si existe campo de valoración)
-        int rating = 0;
+        // Rating desde el campo rating del usuario guía
+        int rating = 4;  // Default
         try {
-            if (usuario.getActivities() != null && !usuario.getActivities().isEmpty()) {
-                // Por ahora usar 4 como rating por defecto
-                rating = 4;
+            if (usuario.getRating() != null) {
+                rating = usuario.getRating().intValue();
             }
         } catch (Exception e) {
             rating = 4;
         }
         guideAdmin.setRating(rating);
         
-        // Disponibilidad basada en state
-        boolean isAvailable = usuario.getStatus() != null && 
-                             usuario.getStatus().equalsIgnoreCase("habilitado");
+        // Disponibilidad basada en guide_status: "Habilitado" = disponible, "No habilitado" = no disponible
+        boolean isAvailable = usuario.getGuide_status() != null && 
+                             usuario.getGuide_status().equalsIgnoreCase("Habilitado");
         guideAdmin.setAvailable(isAvailable);
+        
+        // Profile image URL desde Firebase Storage
+        guideAdmin.setProfileImageUrl(usuario.getProfile_image());
         
         // Imagen por defecto
         guideAdmin.setImageResource(android.R.drawable.ic_menu_myplaces);

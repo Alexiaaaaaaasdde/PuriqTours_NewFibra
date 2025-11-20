@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
 import com.example.puriqtours.admin.GuideDetailActivity;
 import com.example.puriqtours.entity.GuideAdmin;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +54,13 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         holder.guideName.setText(guideAdmin.getName());
         holder.guideLocation.setText(guideAdmin.getLocation());
         
-        if (guideAdmin.getImageResource() != 0) {
-            holder.guideImage.setImageResource(guideAdmin.getImageResource());
+        // Cargar imagen de perfil con Picasso desde Firebase Storage
+        if (guideAdmin.getProfileImageUrl() != null && !guideAdmin.getProfileImageUrl().isEmpty()) {
+            Picasso.get()
+                    .load(guideAdmin.getProfileImageUrl())
+                    .placeholder(R.drawable.avatar)
+                    .error(R.drawable.avatar)
+                    .into(holder.guideImage);
         } else {
             holder.guideImage.setImageResource(R.drawable.avatar);
         }
@@ -84,10 +90,12 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             } else {
                 Intent intent = new Intent(context, GuideDetailActivity.class);
                 intent.putExtra("guide_id", guideAdmin.getId());
+                intent.putExtra("guide_uid", guideAdmin.getUid());
                 intent.putExtra("guide_name", guideAdmin.getName());
                 intent.putExtra("guide_location", guideAdmin.getLocation());
                 intent.putExtra("guide_rating", guideAdmin.getRating());
                 intent.putExtra("guide_available", guideAdmin.isAvailable());
+                intent.putExtra("guide_profile_image", guideAdmin.getProfileImageUrl());
                 context.startActivity(intent);
             }
         });

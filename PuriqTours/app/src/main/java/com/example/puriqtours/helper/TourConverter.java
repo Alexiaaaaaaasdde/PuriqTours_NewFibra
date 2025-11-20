@@ -25,11 +25,12 @@ public class TourConverter {
         tourAdmin.setName(tour.getTitle() != null ? tour.getTitle() : "Sin nombre");
         tourAdmin.setDescription(tour.getDesc() != null ? tour.getDesc() : "Sin descripción");
         tourAdmin.setLocation(tour.getLocation() != null ? tour.getLocation() : "Sin ubicación");
-        tourAdmin.setDate(tour.getDate() != null ? tour.getDate() : "Sin fecha");
+        tourAdmin.setRegion(tour.getRegion() != null ? tour.getRegion() : "Sin región");
         tourAdmin.setPrice(tour.getPrice() != null ? tour.getPrice().doubleValue() : 0.0);
         tourAdmin.setDuration(1); // Duración por defecto
         tourAdmin.setGuideAssigned(""); // Se puede obtener del campo guia si existe
         tourAdmin.setImageResource(android.R.drawable.ic_menu_gallery); // Imagen por defecto
+        tourAdmin.setImageUrl(tour.getImageUrl()); // URL de Firebase Storage
         tourAdmin.setAvailable(true);
         
         return tourAdmin;
@@ -47,7 +48,7 @@ public class TourConverter {
         tour.setTitle(tourAdmin.getName());
         tour.setDesc(tourAdmin.getDescription());
         tour.setLocation(tourAdmin.getLocation());
-        tour.setDate(tourAdmin.getDate());
+        tour.setRegion(tourAdmin.getRegion());
         tour.setPrice(tourAdmin.getPrice() != 0 ? (float) tourAdmin.getPrice() : null);
         tour.setStatus(tourAdmin.isAvailable() ? "disponible" : "no disponible");
         

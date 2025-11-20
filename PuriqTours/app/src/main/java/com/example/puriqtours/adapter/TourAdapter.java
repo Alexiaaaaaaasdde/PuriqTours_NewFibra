@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
 import com.example.puriqtours.admin.TourDetailActivity;
 import com.example.puriqtours.entity.TourAdmin;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,21 +53,19 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
 
         holder.tourTitle.setText(tourAdmin.getName());
         holder.tourDescription.setText(tourAdmin.getDescription());
-        holder.tourLocation.setText(tourAdmin.getLocation());
+        holder.tourLocation.setText(tourAdmin.getRegion());
         holder.tourPrice.setText("S/ " + tourAdmin.getPrice());
         holder.tourDuration.setText(tourAdmin.getDurationText());
 
-        if (tourAdmin.getImageResource() != 0) {
-            holder.tourImage.setImageResource(tourAdmin.getImageResource());
+        // Cargar imagen con Picasso desde Firebase Storage
+        if (tourAdmin.getImageUrl() != null && !tourAdmin.getImageUrl().isEmpty()) {
+            Picasso.get()
+                .load(tourAdmin.getImageUrl())
+                .placeholder(R.drawable.kuelap)
+                .error(R.drawable.kuelap)
+                .into(holder.tourImage);
         } else {
             holder.tourImage.setImageResource(R.drawable.kuelap);
-        }
-
-        holder.tourStatus.setText(tourAdmin.getStatus());
-        if (tourAdmin.getGuideAssigned() != null && !tourAdmin.getGuideAssigned().isEmpty()) {
-            holder.tourStatus.setTextColor(context.getResources().getColor(R.color.teal_700));
-        } else {
-            holder.tourStatus.setTextColor(context.getResources().getColor(R.color.red));
         }
 
         holder.cardView.setOnClickListener(v -> {
@@ -102,8 +101,10 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
                 } else {
                     List<TourAdmin> filteredList = new ArrayList<>();
                     for (TourAdmin tourAdmin : tourAdminList) {
-                        if (tourAdmin.getLocation().toLowerCase().contains(filterPattern) ||
-                            tourAdmin.getName().toLowerCase().contains(filterPattern)) {
+                        // Buscar por nombre, ubicación o región
+                        if (tourAdmin.getName().toLowerCase().contains(filterPattern) ||
+                            tourAdmin.getLocation().toLowerCase().contains(filterPattern) ||
+                            (tourAdmin.getRegion() != null && tourAdmin.getRegion().toLowerCase().contains(filterPattern))) {
                             filteredList.add(tourAdmin);
                         }
                     }
@@ -124,14 +125,16 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
         };
     }
 
-    // Método para filtrar por departamento específico
+    // Método para filtrar por región/departamento específico
     public void filterByDepartment(String department) {
         if (department == null || department.isEmpty() || department.equals("todos")) {
             tourAdminListFiltered = new ArrayList<>(tourAdminList);
         } else {
             List<TourAdmin> filteredList = new ArrayList<>();
             for (TourAdmin tourAdmin : tourAdminList) {
-                if (tourAdmin.getLocation().toLowerCase().contains(department.toLowerCase())) {
+                // Filtrar por región (departamento)
+                if (tourAdmin.getRegion() != null && 
+                    tourAdmin.getRegion().toLowerCase().contains(department.toLowerCase())) {
                     filteredList.add(tourAdmin);
                 }
             }
@@ -154,7 +157,6 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
         TextView tourLocation;
         TextView tourPrice;
         TextView tourDuration;
-        TextView tourStatus;
 
         public TourViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -165,7 +167,6 @@ public class TourAdapter extends RecyclerView.Adapter<TourAdapter.TourViewHolder
             tourLocation = itemView.findViewById(R.id.tourLocation);
             tourPrice = itemView.findViewById(R.id.tourPrice);
             tourDuration = itemView.findViewById(R.id.tourDuration);
-            tourStatus = itemView.findViewById(R.id.tourStatus);
         }
     }
 }

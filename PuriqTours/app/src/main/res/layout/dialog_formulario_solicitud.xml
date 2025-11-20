@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/rounded_dialog_background"
+    android:gravity="center_horizontal">
+
+    <!-- Título del Dialog -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proponer Reserva"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/teal_700"
+        android:layout_marginBottom="8dp"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Complete los detalles de la propuesta"
+        android:textSize="14sp"
+        android:textColor="@color/gray_medium"
+        android:gravity="center"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Campo: Título de la solicitud -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Título de la solicitud"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="16dp"
+        app:boxStrokeColor="@color/teal_700"
+        app:hintTextColor="@color/teal_700">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTituloSolicitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo: Descripción -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción del trabajo"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="16dp"
+        app:boxStrokeColor="@color/teal_700"
+        app:hintTextColor="@color/teal_700">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescripcionSolicitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:maxLines="5"
+            android:gravity="top" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo: Pago -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Pago por el trabajo (S/.)"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="24dp"
+        app:boxStrokeColor="@color/teal_700"
+        app:hintTextColor="@color/teal_700"
+        app:prefixText="S/. ">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPagoSolicitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Información adicional -->
+    <TextView
+        android:id="@+id/tvReservaInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reserva seleccionada: Machu Picchu - 25 Nov"
+        android:textSize="13sp"
+        android:textColor="@color/gray_dark"
+        android:background="@drawable/bg_input"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp"
+        android:drawableStart="@drawable/ic_calendar"
+        android:drawablePadding="8dp" />
+
+    <!-- Botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Botón Enviar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEnviarSolicitud"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="Enviar Propuesta"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:backgroundTint="@color/teal_700"
+            android:layout_marginEnd="8dp"
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_check_circle"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
+
+        <!-- Botón Cancelar -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelar"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:text="Cancelar"
+            android:textColor="@color/gray_dark"
+            android:backgroundTint="@color/gray_light"
+            android:layout_marginStart="8dp"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

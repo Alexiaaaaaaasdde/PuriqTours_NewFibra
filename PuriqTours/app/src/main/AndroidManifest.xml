@@ -123,6 +123,9 @@
             android:name=".admin.TourDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".admin.ReservaDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".admin.EditTourActivity"
             android:exported="false" />
         <activity

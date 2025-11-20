@@ -119,20 +119,39 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Fecha del tour -->
+            <!-- Región -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha del tour:"
+                android:text="Región (Departamento):"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
 
             <TextView
-                android:id="@+id/tvFechaTour"
+                android:id="@+id/tvRegion"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Abril 24, 2025"
+                android:text="Cusco"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Ubicación -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubicación:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvLocation"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Machu Picchu"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
                 android:gravity="center_vertical"
@@ -147,103 +166,13 @@
                 android:textColor="@color/black"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Servicio 1 -->
+            <!-- Contenedor dinámico de servicios extra -->
             <LinearLayout
+                android:id="@+id/layoutServiciosExtrasContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/rounded_corners"
-                android:backgroundTint="@color/white"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp"
-                android:elevation="2dp">
-
-                <TextView
-                    android:id="@+id/tvNombreServicio1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Desayuno"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvPrecioServicio1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Costo: 30 soles por persona"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvDescripcionServicio1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Descripción: Desayuno típico de la ciudad"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="12dp" />
-
-                <ImageView
-                    android:id="@+id/imgServicio1"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:src="@drawable/servicio_1"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_corners" />
-
-            </LinearLayout>
-
-            <!-- Servicio 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/rounded_corners"
-                android:backgroundTint="@color/white"
-                android:padding="16dp"
-                android:layout_marginBottom="24dp"
-                android:elevation="2dp">
-
-                <TextView
-                    android:id="@+id/tvNombreServicio2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Equipo de canotaje"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvPrecioServicio2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Costo: Gratis"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvDescripcionServicio2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Descripción: Equipo de canotaje necesario para el tour"
-                    android:textSize="14sp"
-                    android:textColor="@color/gray"
-                    android:layout_marginBottom="12dp" />
-
-                <ImageView
-                    android:id="@+id/imgServicio2"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:src="@drawable/servicio_2"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_corners" />
-
-            </LinearLayout>
+                android:layout_marginBottom="24dp" />
 
             <!-- Título Ruta -->
             <TextView
@@ -334,7 +263,7 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="Editar tour"
+            android:text="Editar"
             android:textSize="16sp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/teal_700"

@@ -7,6 +7,8 @@ public class GuideAdmin {
     private int rating;
     private boolean isAvailable;
     private int imageResource;
+    private String profileImageUrl;  // URL de Firebase Storage
+    private String uid;  // UID del guía en Firestore
 
     public GuideAdmin() {}
 
@@ -45,4 +47,10 @@ public class GuideAdmin {
 
     public int getImageResource() { return imageResource; }
     public void setImageResource(int imageResource) { this.imageResource = imageResource; }
+
+    public String getProfileImageUrl() { return profileImageUrl; }
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
+
+    public String getUid() { return uid; }
+    public void setUid(String uid) { this.uid = uid; }
 }

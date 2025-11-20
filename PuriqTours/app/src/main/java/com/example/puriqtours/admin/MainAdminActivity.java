@@ -25,8 +25,10 @@ import com.example.puriqtours.helper.FirestoreHelper;
 import com.example.puriqtours.helper.NotificationHelper;
 import com.example.puriqtours.helper.TourConverter;
 import com.example.puriqtours.helper.GuideConverter;
+import com.example.puriqtours.helper.UserSessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +38,14 @@ public class MainAdminActivity extends AppCompatActivity {
     private static final String TAG = "MainAdminActivity";
     private NotificationHelper notificationHelper;
     private FirestoreHelper firestoreHelper;
+    private UserSessionManager sessionManager;
     
     // Vistas de tour
     private CardView cardLatestTour;
     private TextView tourTitle;
     private TextView tourDescription;
     private ImageView tourImage;
+    private ImageView logoCenter; // Imagen de perfil del usuario
     
     // Contenedor de guías
     private LinearLayout guidesContainer;
@@ -53,6 +57,7 @@ public class MainAdminActivity extends AppCompatActivity {
         
         // Inicializar Firestore helper
         firestoreHelper = new FirestoreHelper();
+        sessionManager = new UserSessionManager(this);
         
         // Inicializar sistema de notificaciones
         initializeNotificationSystem();
@@ -124,9 +129,28 @@ public class MainAdminActivity extends AppCompatActivity {
         tourTitle = findViewById(R.id.tourTitle);
         tourDescription = findViewById(R.id.tourDescription);
         tourImage = findViewById(R.id.tourImage);
+        logoCenter = findViewById(R.id.logoCenter);
         
         // Contenedor de guías
         guidesContainer = findViewById(R.id.guidesContainer);
+        
+        // Cargar imagen de perfil del usuario
+        loadUserProfileImage();
+    }
+    
+    private void loadUserProfileImage() {
+        String currentUid = sessionManager.getUid();
+        if (currentUid != null && !currentUid.isEmpty()) {
+            firestoreHelper.loadAdminProfile(currentUid, admin -> {
+                if (admin != null && admin.getProfile_image() != null && !admin.getProfile_image().isEmpty()) {
+                    Picasso.get()
+                        .load(admin.getProfile_image())
+                        .placeholder(R.drawable.logo_empresa)
+                        .error(R.drawable.logo_empresa)
+                        .into(logoCenter);
+                }
+            });
+        }
     }
     
     private void loadLatestTour() {
@@ -138,12 +162,22 @@ public class MainAdminActivity extends AppCompatActivity {
                 // Convertir a TourAdmin para mostrar en UI
                 TourAdmin tourAdmin = TourConverter.tourToTourAdmin(latestTour);
                 
+                Log.d(TAG, "Tour más reciente cargado: " + tourAdmin.getName());
+                
                 // Mostrar datos en la card
                 tourTitle.setText(tourAdmin.getName());
                 tourDescription.setText(tourAdmin.getDescription());
                 
-                // Configurar imagen (usar la imagen por defecto por ahora)
-                tourImage.setImageResource(R.drawable.kuelap);
+                // Cargar imagen del tour desde Firebase Storage con Picasso
+                if (tourAdmin.getImageUrl() != null && !tourAdmin.getImageUrl().isEmpty()) {
+                    Picasso.get()
+                        .load(tourAdmin.getImageUrl())
+                        .placeholder(R.drawable.kuelap)
+                        .error(R.drawable.kuelap)
+                        .into(tourImage);
+                } else {
+                    tourImage.setImageResource(R.drawable.kuelap);
+                }
                 
                 // Configurar click para ir a detalles
                 cardLatestTour.setOnClickListener(v -> {
@@ -220,7 +254,17 @@ public class MainAdminActivity extends AppCompatActivity {
         imageParams.setMargins(0, 0, 0, 8);
         imageView.setLayoutParams(imageParams);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.drawable.imagen_perfil); // Imagen por defecto
+        
+        // Cargar imagen de perfil con Picasso desde Firebase Storage
+        if (guide.getProfileImageUrl() != null && !guide.getProfileImageUrl().isEmpty()) {
+            Picasso.get()
+                .load(guide.getProfileImageUrl())
+                .placeholder(R.drawable.imagen_perfil)
+                .error(R.drawable.imagen_perfil)
+                .into(imageView);
+        } else {
+            imageView.setImageResource(R.drawable.imagen_perfil); // Imagen por defecto
+        }
         
         // TextView para el nombre
         TextView nameText = new TextView(this);

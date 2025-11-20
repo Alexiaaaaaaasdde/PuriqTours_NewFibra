@@ -40,6 +40,25 @@
                 android:textColor="@color/teal_700"
                 android:layout_marginBottom="16dp" />
 
+            <!-- Título del tour -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Título del tour:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etTituloTour"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ingrese el título del tour"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
             <!-- Hora de inicio del tour -->
             <TextView
                 android:layout_width="wrap_content"
@@ -62,23 +81,26 @@
                 android:drawablePadding="8dp"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Duración del tour -->
+            <!-- Hora de fin del tour -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Duración del tour:"
+                android:text="Hora de fin:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
 
             <EditText
-                android:id="@+id/etDuracion"
+                android:id="@+id/etHoraFin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Ingrese la duración del tour"
+                android:hint="Ingrese la hora de fin"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
-                android:inputType="text"
+                android:focusable="false"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_schedule"
+                android:drawablePadding="8dp"
                 android:layout_marginBottom="16dp" />
 
             <!-- Costo por persona -->
@@ -119,26 +141,42 @@
                 android:inputType="text"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Fecha del tour -->
+            <!-- Departamento/Región -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha del tour:"
+                android:text="Departamento/Región:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
 
             <EditText
-                android:id="@+id/etFechaTour"
+                android:id="@+id/etRegion"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Seleccione la fecha del tour"
+                android:hint="Ingrese el departamento o región"
                 android:background="@drawable/rounded_edittext"
                 android:padding="12dp"
-                android:focusable="false"
-                android:clickable="true"
-                android:drawableEnd="@drawable/ic_calendar"
-                android:drawablePadding="8dp"
+                android:inputType="textCapWords"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Ubicación Principal -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubicación principal:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etLocation"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ingrese la ubicación principal"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:inputType="textCapWords"
                 android:layout_marginBottom="16dp" />
 
             <!-- Servicios extra -->
@@ -171,6 +209,49 @@
                     android:drawableStart="@drawable/ic_add_circle"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <!-- Imagen del tour -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Imagen del tour:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <Button
+                    android:id="@+id/btnSeleccionarImagenTour"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Seleccionar imagen"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/teal_700"
+                    android:textColor="@color/white"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tvImagenTourSeleccionada"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Sin imagen"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/rounded_edittext"
+                    android:padding="8dp" />
 
             </LinearLayout>
 

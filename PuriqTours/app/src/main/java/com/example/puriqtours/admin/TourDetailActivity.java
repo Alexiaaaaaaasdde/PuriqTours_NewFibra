@@ -16,15 +16,14 @@ import android.widget.Toast;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.helper.FirestoreHelper;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class TourDetailActivity extends AppCompatActivity {
 
-    private TextView tvHoraInicio, tvDuracion, tvCosto, tvIdiomas, tvFechaTour;
-    private TextView tvNombreServicio1, tvPrecioServicio1, tvDescripcionServicio1;
-    private TextView tvNombreServicio2, tvPrecioServicio2, tvDescripcionServicio2;
-    private ImageView imgServicio1, imgServicio2;
+    private TextView tvHoraInicio, tvDuracion, tvCosto, tvIdiomas, tvRegion, tvLocation;
+    private LinearLayout layoutServiciosExtrasContainer;
     private LinearLayout layoutUbicacionesContainer;
     private Button btnCerrar, btnEditarTour, btnEliminarTour;
     
@@ -104,20 +103,11 @@ public class TourDetailActivity extends AppCompatActivity {
         tvDuracion = findViewById(R.id.tvDuracion);
         tvCosto = findViewById(R.id.tvCosto);
         tvIdiomas = findViewById(R.id.tvIdiomas);
-        tvFechaTour = findViewById(R.id.tvFechaTour);
+        tvRegion = findViewById(R.id.tvRegion);
+        tvLocation = findViewById(R.id.tvLocation);
         
-        // Servicios extra
-        tvNombreServicio1 = findViewById(R.id.tvNombreServicio1);
-        tvPrecioServicio1 = findViewById(R.id.tvPrecioServicio1);
-        tvDescripcionServicio1 = findViewById(R.id.tvDescripcionServicio1);
-        imgServicio1 = findViewById(R.id.imgServicio1);
-        
-        tvNombreServicio2 = findViewById(R.id.tvNombreServicio2);
-        tvPrecioServicio2 = findViewById(R.id.tvPrecioServicio2);
-        tvDescripcionServicio2 = findViewById(R.id.tvDescripcionServicio2);
-        imgServicio2 = findViewById(R.id.imgServicio2);
-        
-        // Contenedor de ubicaciones dinámico
+        // Contenedores dinámicos
+        layoutServiciosExtrasContainer = findViewById(R.id.layoutServiciosExtrasContainer);
         layoutUbicacionesContainer = findViewById(R.id.layoutUbicacionesContainer);
         
         // Botones
@@ -134,7 +124,8 @@ public class TourDetailActivity extends AppCompatActivity {
         android.util.Log.d("TourDetail", "Hora inicio: " + tour.getStartTime());
         android.util.Log.d("TourDetail", "Hora fin: " + tour.getEndTime());
         android.util.Log.d("TourDetail", "Precio: " + tour.getPrice());
-        android.util.Log.d("TourDetail", "Fecha: " + tour.getDate());
+        android.util.Log.d("TourDetail", "Región: " + tour.getRegion());
+        android.util.Log.d("TourDetail", "Ubicación: " + tour.getLocation());
         android.util.Log.d("TourDetail", "Idiomas: " + tour.getIdiomas());
         android.util.Log.d("TourDetail", "Servicios extras: " + (tour.getServiciosExtras() != null ? tour.getServiciosExtras().size() : "null"));
         android.util.Log.d("TourDetail", "Ruta: " + (tour.getRuta() != null ? tour.getRuta().size() : "null"));
@@ -143,7 +134,8 @@ public class TourDetailActivity extends AppCompatActivity {
         tvHoraInicio.setText(tour.getStartTime() != null && !tour.getStartTime().isEmpty() ? tour.getStartTime() : "No especificado");
         tvDuracion.setText(tour.getEndTime() != null && !tour.getEndTime().isEmpty() ? tour.getEndTime() : "No especificado");
         tvCosto.setText(tour.getPrice() != null ? tour.getPrice() + " soles" : "0 soles");
-        tvFechaTour.setText(tour.getDate() != null && !tour.getDate().isEmpty() ? tour.getDate() : "Sin fecha");
+        tvRegion.setText(tour.getRegion() != null && !tour.getRegion().isEmpty() ? tour.getRegion() : "No especificada");
+        tvLocation.setText(tour.getLocation() != null && !tour.getLocation().isEmpty() ? tour.getLocation() : "No especificada");
         
         // Idiomas
         if (tour.getIdiomas() != null && !tour.getIdiomas().isEmpty()) {
@@ -156,43 +148,115 @@ public class TourDetailActivity extends AppCompatActivity {
         if (tour.getServiciosExtras() != null && !tour.getServiciosExtras().isEmpty()) {
             loadServiciosExtras(tour.getServiciosExtras());
         } else {
-            android.util.Log.d("TourDetail", "No hay servicios extras, cargando por defecto");
-            loadDefaultServicesAndLocations();
+            android.util.Log.d("TourDetail", "No hay servicios extras");
         }
         
         // Cargar ubicaciones
         if (tour.getRuta() != null && !tour.getRuta().isEmpty()) {
             loadUbicaciones(tour.getRuta());
         } else {
-            android.util.Log.d("TourDetail", "No hay ruta, cargando por defecto");
-            loadDefaultLocations();
+            android.util.Log.d("TourDetail", "No hay ruta definida");
         }
     }
     
     private void loadServiciosExtras(List<Tour.ServicioExtra> servicios) {
-        // Servicio 1
-        if (servicios.size() > 0) {
-            Tour.ServicioExtra servicio1 = servicios.get(0);
-            tvNombreServicio1.setText(servicio1.getNombre() != null ? servicio1.getNombre() : "Servicio 1");
-            tvPrecioServicio1.setText("Costo: " + (servicio1.getPrecio() != null ? servicio1.getPrecio() : "Gratis"));
-            tvDescripcionServicio1.setText("Descripción: " + (servicio1.getDescripcion() != null ? servicio1.getDescripcion() : "Sin descripción"));
-            imgServicio1.setImageResource(R.drawable.servicio_1);
+        // Limpiar contenedor
+        layoutServiciosExtrasContainer.removeAllViews();
+        
+        if (servicios == null || servicios.isEmpty()) {
+            // Mostrar mensaje de "Sin servicios"
+            TextView tvSinServicios = new TextView(this);
+            tvSinServicios.setText("No hay servicios extra disponibles");
+            tvSinServicios.setTextSize(14);
+            tvSinServicios.setTextColor(getResources().getColor(R.color.gray));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, (int) (16 * getResources().getDisplayMetrics().density));
+            tvSinServicios.setLayoutParams(params);
+            layoutServiciosExtrasContainer.addView(tvSinServicios);
+            return;
         }
         
-        // Servicio 2
-        if (servicios.size() > 1) {
-            Tour.ServicioExtra servicio2 = servicios.get(1);
-            tvNombreServicio2.setText(servicio2.getNombre() != null ? servicio2.getNombre() : "Servicio 2");
-            tvPrecioServicio2.setText("Costo: " + (servicio2.getPrecio() != null ? servicio2.getPrecio() : "Gratis"));
-            tvDescripcionServicio2.setText("Descripción: " + (servicio2.getDescripcion() != null ? servicio2.getDescripcion() : "Sin descripción"));
-            imgServicio2.setImageResource(R.drawable.servicio_2);
-        } else {
-            // Servicio 2 por defecto si solo hay 1 servicio
-            tvNombreServicio2.setText("No especificado");
-            tvPrecioServicio2.setText("Costo: -");
-            tvDescripcionServicio2.setText("Descripción: No disponible");
-            imgServicio2.setImageResource(R.drawable.servicio_2);
+        // Crear una tarjeta para cada servicio
+        for (Tour.ServicioExtra servicio : servicios) {
+            addServicioExtraView(servicio);
         }
+    }
+    
+    private void addServicioExtraView(Tour.ServicioExtra servicio) {
+        // Crear contenedor de servicio
+        LinearLayout servicioLayout = new LinearLayout(this);
+        servicioLayout.setOrientation(LinearLayout.VERTICAL);
+        servicioLayout.setBackgroundResource(R.drawable.rounded_corners);
+        servicioLayout.setBackgroundTintList(getResources().getColorStateList(android.R.color.white));
+        servicioLayout.setElevation(2 * getResources().getDisplayMetrics().density);
+        
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        servicioLayout.setPadding(padding, padding, padding, padding);
+        
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(0, 0, 0, padding);
+        servicioLayout.setLayoutParams(layoutParams);
+        
+        // Nombre del servicio
+        TextView tvNombre = new TextView(this);
+        tvNombre.setText(servicio.getTitle() != null ? servicio.getTitle() : "Servicio");
+        tvNombre.setTextSize(16);
+        tvNombre.setTypeface(null, android.graphics.Typeface.BOLD);
+        tvNombre.setTextColor(getResources().getColor(R.color.black));
+        LinearLayout.LayoutParams nombreParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        nombreParams.setMargins(0, 0, 0, (int) (8 * getResources().getDisplayMetrics().density));
+        tvNombre.setLayoutParams(nombreParams);
+        servicioLayout.addView(tvNombre);
+        
+        // Precio del servicio
+        TextView tvPrecio = new TextView(this);
+        tvPrecio.setText("Costo: " + (servicio.getPrice() != null ? servicio.getPrice() + " soles por persona" : "Gratis"));
+        tvPrecio.setTextSize(14);
+        tvPrecio.setTextColor(getResources().getColor(R.color.gray));
+        LinearLayout.LayoutParams precioParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        precioParams.setMargins(0, 0, 0, (int) (12 * getResources().getDisplayMetrics().density));
+        tvPrecio.setLayoutParams(precioParams);
+        servicioLayout.addView(tvPrecio);
+        
+        // Imagen del servicio
+        ImageView imgServicio = new ImageView(this);
+        imgServicio.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imgServicio.setBackgroundResource(R.drawable.rounded_corners);
+        LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            (int) (150 * getResources().getDisplayMetrics().density)
+        );
+        imgServicio.setLayoutParams(imgParams);
+        
+        // Cargar imagen con Picasso
+        if (servicio.getImageUrl() != null && !servicio.getImageUrl().isEmpty()) {
+            android.util.Log.d("TourDetail", "Cargando imagen: " + servicio.getImageUrl());
+            Picasso.get()
+                .load(servicio.getImageUrl())
+                .placeholder(R.drawable.servicio_1)
+                .error(R.drawable.servicio_1)
+                .into(imgServicio);
+        } else {
+            android.util.Log.d("TourDetail", "Sin URL de imagen, usando placeholder");
+            imgServicio.setImageResource(R.drawable.servicio_1);
+        }
+        
+        servicioLayout.addView(imgServicio);
+        
+        // Agregar tarjeta al contenedor
+        layoutServiciosExtrasContainer.addView(servicioLayout);
     }
     
     private void loadUbicaciones(List<Tour.Ubicacion> ubicaciones) {
@@ -242,7 +306,7 @@ public class TourDetailActivity extends AppCompatActivity {
         
         // TextView con el nombre de la ubicación
         TextView tvUbicacion = new TextView(this);
-        tvUbicacion.setText(ubicacion.getNombre() != null ? ubicacion.getNombre() : "Sin nombre");
+        tvUbicacion.setText(ubicacion.getTitle() != null ? ubicacion.getTitle() : "Sin nombre");
         tvUbicacion.setTextSize(12);
         tvUbicacion.setTextColor(getResources().getColor(R.color.gray, null));
         tvUbicacion.setBackgroundResource(R.drawable.rounded_edittext);
@@ -266,34 +330,35 @@ public class TourDetailActivity extends AppCompatActivity {
         );
         rightLayout.setLayoutParams(rightParams);
         
-        // Label de actividades
-        TextView labelActividades = new TextView(this);
-        labelActividades.setText("🚶 Actividades");
-        labelActividades.setTextSize(14);
-        labelActividades.setTextColor(getResources().getColor(R.color.black, null));
-        LinearLayout.LayoutParams labelActParams = new LinearLayout.LayoutParams(
+        // Label de coordenadas
+        TextView labelCoordenadas = new TextView(this);
+        labelCoordenadas.setText("📍 Coordenadas");
+        labelCoordenadas.setTextSize(14);
+        labelCoordenadas.setTextColor(getResources().getColor(R.color.black, null));
+        LinearLayout.LayoutParams labelCoordParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        labelActParams.setMargins(0, 0, 0, (int) (4 * getResources().getDisplayMetrics().density));
-        labelActividades.setLayoutParams(labelActParams);
+        labelCoordParams.setMargins(0, 0, 0, (int) (4 * getResources().getDisplayMetrics().density));
+        labelCoordenadas.setLayoutParams(labelCoordParams);
         
-        // TextView con las actividades
-        TextView tvActividades = new TextView(this);
-        tvActividades.setText(ubicacion.getActividades() != null && !ubicacion.getActividades().isEmpty() 
-            ? ubicacion.getActividades() : "Sin actividades");
-        tvActividades.setTextSize(12);
-        tvActividades.setTextColor(getResources().getColor(R.color.gray, null));
-        tvActividades.setBackgroundResource(R.drawable.rounded_edittext);
-        tvActividades.setPadding(
+        // TextView con las coordenadas
+        TextView tvCoordenadas = new TextView(this);
+        String coordenadas = "Lat: " + (ubicacion.getLat() != null ? ubicacion.getLat() : "0.0") + 
+                           "\nLng: " + (ubicacion.getLng() != null ? ubicacion.getLng() : "0.0");
+        tvCoordenadas.setText(coordenadas);
+        tvCoordenadas.setTextSize(12);
+        tvCoordenadas.setTextColor(getResources().getColor(R.color.gray, null));
+        tvCoordenadas.setBackgroundResource(R.drawable.rounded_edittext);
+        tvCoordenadas.setPadding(
             (int) (8 * getResources().getDisplayMetrics().density),
             (int) (8 * getResources().getDisplayMetrics().density),
             (int) (8 * getResources().getDisplayMetrics().density),
             (int) (8 * getResources().getDisplayMetrics().density)
         );
         
-        rightLayout.addView(labelActividades);
-        rightLayout.addView(tvActividades);
+        rightLayout.addView(labelCoordenadas);
+        rightLayout.addView(tvCoordenadas);
         
         // Agregar ambos layouts al row
         rowLayout.addView(leftLayout);
@@ -303,55 +368,6 @@ public class TourDetailActivity extends AppCompatActivity {
         layoutUbicacionesContainer.addView(rowLayout);
     }
     
-    private void loadDefaultLocations() {
-        // Limpiar contenedor
-        layoutUbicacionesContainer.removeAllViews();
-        
-        // Crear ubicaciones por defecto
-        Tour.Ubicacion ubicacion1 = new Tour.Ubicacion();
-        ubicacion1.setNombre("Plaza de Armas");
-        ubicacion1.setActividades("Caminata guiada");
-        addUbicacionView(1, ubicacion1);
-        
-        Tour.Ubicacion ubicacion2 = new Tour.Ubicacion();
-        ubicacion2.setNombre("Río Urubamba");
-        ubicacion2.setActividades("Canotaje y almuerzo");
-        addUbicacionView(2, ubicacion2);
-        
-        Tour.Ubicacion ubicacion3 = new Tour.Ubicacion();
-        ubicacion3.setNombre("Mercado Central");
-        ubicacion3.setActividades("Compras y descanso");
-        addUbicacionView(3, ubicacion3);
-    }
-    
-    private void loadDefaultData() {
-        // Cargar datos de ejemplo si no hay datos en Firestore
-        tvHoraInicio.setText("8:00 AM");
-        tvDuracion.setText("6 horas");
-        tvCosto.setText("30 soles");
-        tvIdiomas.setText("Español - Inglés");
-        tvFechaTour.setText("Abril 24, 2025");
-        
-        loadDefaultServicesAndLocations();
-    }
-    
-    private void loadDefaultServicesAndLocations() {
-        // Servicio 1 - Desayuno
-        tvNombreServicio1.setText("Desayuno");
-        tvPrecioServicio1.setText("Costo: 30 soles por persona");
-        tvDescripcionServicio1.setText("Descripción: Desayuno típico de la ciudad");
-        imgServicio1.setImageResource(R.drawable.servicio_1);
-        
-        // Servicio 2 - Equipo
-        tvNombreServicio2.setText("Equipo de canotaje");
-        tvPrecioServicio2.setText("Costo: Gratis");
-        tvDescripcionServicio2.setText("Descripción: Equipo de canotaje necesario para el tour");
-        imgServicio2.setImageResource(R.drawable.servicio_2);
-        
-        // Cargar ubicaciones por defecto
-        loadDefaultLocations();
-    }
-
     private void setupListeners() {
         // Botón cerrar
         btnCerrar.setOnClickListener(v -> finish());

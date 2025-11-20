@@ -20,11 +20,13 @@ import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.helper.FirestoreHelper;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Locale;
+
 import java.util.Calendar;
 
 public class EditTourActivity extends AppCompatActivity {
 
-    private TextInputEditText etHoraInicio, etDuracion, etCosto, etIdiomas, etFechaTour;
+    private TextInputEditText etHoraInicio, etHoraFin, etCosto, etIdiomas, etRegion, etLocation;
     private LinearLayout layoutServicios, layoutUbicaciones;
     private Button btnAgregarServicio, btnAgregarRuta, btnGuardarTour, btnCancelar;
     private Toolbar toolbar;
@@ -56,10 +58,11 @@ public class EditTourActivity extends AppCompatActivity {
     private void initViews() {
         toolbar = findViewById(R.id.toolbar);
         etHoraInicio = findViewById(R.id.etHoraInicio);
-        etDuracion = findViewById(R.id.etDuracion);
+        etHoraFin = findViewById(R.id.etHoraFin);
         etCosto = findViewById(R.id.etCosto);
         etIdiomas = findViewById(R.id.etIdiomas);
-        etFechaTour = findViewById(R.id.etFechaTour);
+        etRegion = findViewById(R.id.etRegion);
+        etLocation = findViewById(R.id.etLocation);
         layoutServicios = findViewById(R.id.layoutServicios);
         layoutUbicaciones = findViewById(R.id.layoutUbicaciones);
         btnAgregarServicio = findViewById(R.id.btnAgregarServicio);
@@ -93,22 +96,23 @@ public class EditTourActivity extends AppCompatActivity {
     
     private void displayTourData(Tour tour) {
         etHoraInicio.setText(tour.getStartTime() != null ? tour.getStartTime() : "");
-        etDuracion.setText(tour.getEndTime() != null ? tour.getEndTime() : "");
+        etHoraFin.setText(tour.getEndTime() != null ? tour.getEndTime() : "");
         etCosto.setText(tour.getPrice() != null ? String.valueOf(tour.getPrice()) : "");
         etIdiomas.setText(tour.getIdiomas() != null ? tour.getIdiomas() : "");
-        etFechaTour.setText(tour.getDate() != null ? tour.getDate() : "");
+        etRegion.setText(tour.getRegion() != null ? tour.getRegion() : "");
+        etLocation.setText(tour.getLocation() != null ? tour.getLocation() : "");
 
         // Agregar servicios existentes si los hay
         if (tour.getServiciosExtras() != null && !tour.getServiciosExtras().isEmpty()) {
             for (Tour.ServicioExtra servicio : tour.getServiciosExtras()) {
-                addExistingServicio(servicio.getNombre(), servicio.getPrecio(), servicio.getDescripcion());
+                addExistingServicio(servicio.getTitle(), String.valueOf(servicio.getPrice()), "");
             }
         }
 
         // Agregar ubicaciones/ruta existente si las hay
         if (tour.getRuta() != null && !tour.getRuta().isEmpty()) {
             for (Tour.Ubicacion ubicacion : tour.getRuta()) {
-                addExistingUbicacion(ubicacion.getNombre(), ubicacion.getActividades());
+                addExistingUbicacion(ubicacion.getTitle(), "");
             }
         }
     }
@@ -118,12 +122,11 @@ public class EditTourActivity extends AppCompatActivity {
         
         EditText etNombre = servicioView.findViewById(R.id.etNombreServicio);
         EditText etPrecio = servicioView.findViewById(R.id.etPrecioServicio);
-        EditText etDescripcion = servicioView.findViewById(R.id.etDescripcionServicio);
         Button btnEliminar = servicioView.findViewById(R.id.btnEliminarServicio);
 
         etNombre.setText(nombre);
         etPrecio.setText(precio);
-        etDescripcion.setText(descripcion);
+        // Descripción ya no se usa
 
         btnEliminar.setOnClickListener(v -> layoutServicios.removeView(servicioView));
 
@@ -146,8 +149,8 @@ public class EditTourActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        etHoraInicio.setOnClickListener(v -> showTimePicker());
-        etFechaTour.setOnClickListener(v -> showDatePicker());
+        etHoraInicio.setOnClickListener(v -> showTimePickerInicio());
+        etHoraFin.setOnClickListener(v -> showTimePickerFin());
         
         btnAgregarServicio.setOnClickListener(v -> showAgregarServicioDialog());
         btnAgregarRuta.setOnClickListener(v -> agregarNuevaUbicacion());
@@ -156,40 +159,32 @@ public class EditTourActivity extends AppCompatActivity {
         btnCancelar.setOnClickListener(v -> onBackPressed());
     }
 
-    private void showTimePicker() {
+    private void showTimePickerInicio() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 (view, hourOfDay, minuteOfHour) -> {
-                    String amPm = hourOfDay >= 12 ? "PM" : "AM";
-                    int displayHour = hourOfDay > 12 ? hourOfDay - 12 : hourOfDay;
-                    if (displayHour == 0) displayHour = 12;
-                    
-                    String time = String.format("%d:%02d %s", displayHour, minuteOfHour, amPm);
+                    String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minuteOfHour);
                     etHoraInicio.setText(time);
-                }, hour, minute, false);
+                }, hour, minute, true);
 
         timePickerDialog.show();
     }
 
-    private void showDatePicker() {
+    private void showTimePickerFin() {
         Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    String[] meses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-                    
-                    String fecha = meses[selectedMonth] + " " + selectedDay + ", " + selectedYear;
-                    etFechaTour.setText(fecha);
-                }, year, month, day);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, hourOfDay, minuteOfHour) -> {
+                    String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minuteOfHour);
+                    etHoraFin.setText(time);
+                }, hour, minute, true);
 
-        datePickerDialog.show();
+        timePickerDialog.show();
     }
 
     private void showAgregarServicioDialog() {
@@ -201,15 +196,13 @@ public class EditTourActivity extends AppCompatActivity {
 
         EditText etNombre = dialogView.findViewById(R.id.etNombreServicio);
         EditText etPrecio = dialogView.findViewById(R.id.etPrecioServicio);
-        EditText etDescripcion = dialogView.findViewById(R.id.etDescripcionServicio);
 
         builder.setPositiveButton("Agregar", (dialog, which) -> {
             String nombre = etNombre.getText().toString().trim();
             String precio = etPrecio.getText().toString().trim();
-            String descripcion = etDescripcion.getText().toString().trim();
 
-            if (!nombre.isEmpty() && !precio.isEmpty() && !descripcion.isEmpty()) {
-                agregarServicioExtra(nombre, precio, descripcion);
+            if (!nombre.isEmpty() && !precio.isEmpty()) {
+                agregarServicioExtra(nombre, precio, "");
             } else {
                 Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
             }
@@ -224,12 +217,11 @@ public class EditTourActivity extends AppCompatActivity {
         
         EditText etNombre = servicioView.findViewById(R.id.etNombreServicio);
         EditText etPrecio = servicioView.findViewById(R.id.etPrecioServicio);
-        EditText etDescripcion = servicioView.findViewById(R.id.etDescripcionServicio);
         Button btnEliminar = servicioView.findViewById(R.id.btnEliminarServicio);
 
         etNombre.setText(nombre);
         etPrecio.setText(precio);
-        etDescripcion.setText(descripcion);
+        // Descripción ya no se usa
 
         btnEliminar.setOnClickListener(v -> layoutServicios.removeView(servicioView));
 
@@ -248,10 +240,11 @@ public class EditTourActivity extends AppCompatActivity {
     private void guardarTour() {
         // Validar campos obligatorios
         if (etHoraInicio.getText().toString().trim().isEmpty() ||
-            etDuracion.getText().toString().trim().isEmpty() ||
+            etHoraFin.getText().toString().trim().isEmpty() ||
             etCosto.getText().toString().trim().isEmpty() ||
             etIdiomas.getText().toString().trim().isEmpty() ||
-            etFechaTour.getText().toString().trim().isEmpty()) {
+            etRegion.getText().toString().trim().isEmpty() ||
+            etLocation.getText().toString().trim().isEmpty()) {
             
             Toast.makeText(this, "Por favor completa todos los campos obligatorios", Toast.LENGTH_SHORT).show();
             return;
@@ -264,7 +257,7 @@ public class EditTourActivity extends AppCompatActivity {
 
         // Actualizar datos del tour actual
         currentTour.setStartTime(etHoraInicio.getText().toString().trim());
-        currentTour.setEndTime(etDuracion.getText().toString().trim());
+        currentTour.setEndTime(etHoraFin.getText().toString().trim());
         
         // Convertir costo a Float
         String costoStr = etCosto.getText().toString().trim();
@@ -276,7 +269,8 @@ public class EditTourActivity extends AppCompatActivity {
         }
         
         currentTour.setIdiomas(etIdiomas.getText().toString().trim());
-        currentTour.setDate(etFechaTour.getText().toString().trim());
+        currentTour.setRegion(etRegion.getText().toString().trim());
+        currentTour.setLocation(etLocation.getText().toString().trim());
         
         // Recopilar servicios extras
         java.util.List<Tour.ServicioExtra> servicios = new java.util.ArrayList<>();
@@ -284,17 +278,19 @@ public class EditTourActivity extends AppCompatActivity {
             View servicioView = layoutServicios.getChildAt(i);
             EditText etNombre = servicioView.findViewById(R.id.etNombreServicio);
             EditText etPrecio = servicioView.findViewById(R.id.etPrecioServicio);
-            EditText etDescripcion = servicioView.findViewById(R.id.etDescripcionServicio);
             
             String nombre = etNombre.getText().toString().trim();
-            String precio = etPrecio.getText().toString().trim();
-            String descripcion = etDescripcion.getText().toString().trim();
+            String precioStr = etPrecio.getText().toString().trim();
             
-            if (!nombre.isEmpty() && !precio.isEmpty() && !descripcion.isEmpty()) {
+            if (!nombre.isEmpty() && !precioStr.isEmpty()) {
                 Tour.ServicioExtra servicio = new Tour.ServicioExtra();
-                servicio.setNombre(nombre);
-                servicio.setPrecio(precio);
-                servicio.setDescripcion(descripcion);
+                servicio.setTitle(nombre);
+                try {
+                    servicio.setPrice(Float.parseFloat(precioStr));
+                } catch (NumberFormatException e) {
+                    servicio.setPrice(0.0f);
+                }
+                servicio.setImageUrl(""); // Placeholder
                 servicios.add(servicio);
             }
         }
@@ -305,15 +301,15 @@ public class EditTourActivity extends AppCompatActivity {
         for (int i = 0; i < layoutUbicaciones.getChildCount(); i++) {
             View ubicacionView = layoutUbicaciones.getChildAt(i);
             EditText etUbicacion = ubicacionView.findViewById(R.id.etNombreUbicacion);
-            EditText etActividades = ubicacionView.findViewById(R.id.etActividadesUbicacion);
             
             String nombreUbi = etUbicacion.getText().toString().trim();
-            String actividades = etActividades.getText().toString().trim();
             
-            if (!nombreUbi.isEmpty() && !actividades.isEmpty()) {
+            if (!nombreUbi.isEmpty()) {
                 Tour.Ubicacion ubicacion = new Tour.Ubicacion();
-                ubicacion.setNombre(nombreUbi);
-                ubicacion.setActividades(actividades);
+                ubicacion.setTitle(nombreUbi);
+                ubicacion.setOrder(i + 1);
+                ubicacion.setLat(0.0); // Placeholder
+                ubicacion.setLng(0.0); // Placeholder
                 ruta.add(ubicacion);
             }
         }

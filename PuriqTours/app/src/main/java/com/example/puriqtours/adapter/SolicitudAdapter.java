@@ -2,6 +2,7 @@ package com.example.puriqtours.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +19,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.guia.DetallesBottomSheet;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Solicitud;
+import com.example.puriqtours.helper.FirestoreHelper;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
 public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.SolicitudViewHolder> {
 
+    private static final String TAG = "SolicitudAdapter";
     private FragmentManager fragmentManager;
     private List<Solicitud> solicitudes;
+    private FirestoreHelper firestoreHelper;
 
     public SolicitudAdapter(List<Solicitud> solicitudes, FragmentManager fragmentManager) {
         this.solicitudes = solicitudes;
         this.fragmentManager = fragmentManager;
+        this.firestoreHelper = new FirestoreHelper();
     }
 
     @NonNull
@@ -43,21 +49,30 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
     public void onBindViewHolder(@NonNull SolicitudViewHolder holder, int position) {
         Solicitud solicitud = solicitudes.get(position);
 
-        holder.tvTitulo.setText(solicitud.getTitulo());
-        holder.tvDescripcionCorta.setText(solicitud.getDescripcion());
-        holder.imgSolicitud.setImageResource(solicitud.getImagenResId());
-        holder.tvDescripcionCompleta.setText(solicitud.getDescripcion());
-        holder.tvCiudad.setText("Ciudad: " + solicitud.getCiudad());
-        holder.tvFecha.setText("Fecha: " + solicitud.getFecha());
-        holder.tvEmpresa.setText(solicitud.getEmpresa());
-        holder.tvRangoHora.setText("Hora: " + solicitud.getHoraInicio() + "-" + solicitud.getHoraFin());
+        // Usar los campos correctos de la nueva estructura
+        holder.tvTitulo.setText(solicitud.getTitle() != null ? solicitud.getTitle() : "Sin título");
+        holder.tvDescripcionCorta.setText(solicitud.getDesc() != null ? solicitud.getDesc() : "Sin descripción");
+        holder.imgSolicitud.setImageResource(R.drawable.kuelap); // Imagen por defecto
+        holder.tvDescripcionCompleta.setText(solicitud.getDesc() != null ? solicitud.getDesc() : "Sin descripción");
+        
+        // Mostrar pago
+        String pagoText = "Pago: S/. " + (solicitud.getPay() != null ? solicitud.getPay().toString() : "0.00");
+        holder.tvCiudad.setText(pagoText);
+        
+        // Mostrar ID de reserva
+        holder.tvFecha.setText("Reserva: " + (solicitud.getIdReserva() != null ? solicitud.getIdReserva() : "N/A"));
+        
+        // Mostrar status
+        holder.tvEmpresa.setText("Estado: " + (solicitud.getStatus() != null ? solicitud.getStatus() : "Pendiente"));
+        holder.tvRangoHora.setText(""); // Sin hora por ahora
 
-        boolean expandido = solicitud.isExpandido();
-        holder.layoutExpandible.setVisibility(expandido ? View.VISIBLE : View.GONE);
+        // Por ahora siempre mostrar expandido
+        holder.layoutExpandible.setVisibility(View.VISIBLE);
 
         holder.itemView.setOnClickListener(v -> {
-            solicitud.setExpandido(!solicitud.isExpandido());
-            notifyItemChanged(position);
+            // Toggle expandido
+            int currentVisibility = holder.layoutExpandible.getVisibility();
+            holder.layoutExpandible.setVisibility(currentVisibility == View.VISIBLE ? View.GONE : View.VISIBLE);
         });
 
         holder.btnDetalles.setOnClickListener(v -> {
@@ -76,8 +91,33 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
             Button btnCancelar = dialog.findViewById(R.id.btnCancelar);
 
             btnAceptar.setOnClickListener(view -> {
-                Toast.makeText(v.getContext(), "Solicitud aceptada ✅", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                // Obtener el UID del guía actual (usuario logueado)
+                String guideUid = FirebaseAuth.getInstance().getUid();
+                
+                if (guideUid == null || solicitud.getIdReserva() == null) {
+                    Toast.makeText(v.getContext(), "Error: No se pudo aceptar la solicitud", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    return;
+                }
+                
+                // Asignar el guía a la reserva en Firestore
+                firestoreHelper.assignGuideToReserva(solicitud.getIdReserva(), guideUid, success -> {
+                    if (success) {
+                        Toast.makeText(v.getContext(), "Solicitud aceptada ✅", Toast.LENGTH_SHORT).show();
+                        
+                        // Remover la solicitud de la lista ya que fue aceptada
+                        int positionToRemove = holder.getAdapterPosition();
+                        if (positionToRemove != RecyclerView.NO_POSITION) {
+                            solicitudes.remove(positionToRemove);
+                            notifyItemRemoved(positionToRemove);
+                            notifyItemRangeChanged(positionToRemove, solicitudes.size());
+                        }
+                    } else {
+                        Toast.makeText(v.getContext(), "Error al aceptar la solicitud", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error al asignar guía a reserva: " + solicitud.getIdReserva());
+                    }
+                    dialog.dismiss();
+                });
             });
 
             btnCancelar.setOnClickListener(view -> dialog.dismiss());
@@ -126,6 +166,14 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
     @Override
     public int getItemCount() {
         return solicitudes.size();
+    }
+    
+    /**
+     * Actualizar la lista de solicitudes
+     */
+    public void updateList(List<Solicitud> newSolicitudes) {
+        this.solicitudes = newSolicitudes;
+        notifyDataSetChanged();
     }
 
     public static class SolicitudViewHolder extends RecyclerView.ViewHolder {

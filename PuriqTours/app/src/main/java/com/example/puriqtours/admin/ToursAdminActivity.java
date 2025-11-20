@@ -38,13 +38,16 @@ public class ToursAdminActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewTours;
     private TourAdapter tourAdapter;
+    private com.example.puriqtours.adapter.ReservaAdapter reservaAdapter;
     private List<TourAdmin> tourAdminList;
-    private Button btnFiltrar;
+    private List<com.example.puriqtours.entity.Reserva> reservaList;
+    private com.google.android.material.button.MaterialButton btnMisTours, btnReservas;
     private FloatingActionButton fabCrearTour;
     private TextInputEditText searchBar;
     private StorageHelper storageHelper;
     private FirestoreHelper firestoreHelper;
     private NotificationHelper notificationHelper;
+    private boolean showingTours = true; // true = tours, false = reservas
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +74,17 @@ public class ToursAdminActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Refrescar la lista cuando se regrese a esta actividad
-        if (storageHelper != null && tourAdapter != null) {
-            refreshToursList();
+        if (showingTours) {
+            loadToursFromEmpresa();
+        } else {
+            loadReservasFromEmpresa();
         }
     }
 
     private void initViews() {
         recyclerViewTours = findViewById(R.id.recyclerViewTours);
-        btnFiltrar = findViewById(R.id.btnFiltro);
+        btnMisTours = findViewById(R.id.btnMisTours);
+        btnReservas = findViewById(R.id.btnReservas);
         fabCrearTour = findViewById(R.id.fabCrearTour);
         searchBar = findViewById(R.id.searchBar);
     }
@@ -88,15 +94,24 @@ public class ToursAdminActivity extends AppCompatActivity {
         firestoreHelper = new FirestoreHelper();
         notificationHelper = new NotificationHelper(this);
         
-        // Inicializar lista vacía
+        // Inicializar listas vacías
         tourAdminList = new ArrayList<>();
+        reservaList = new ArrayList<>();
         
         // Cargar tours desde Firestore
-        loadToursFromFirestore();
+        loadToursFromEmpresa();
     }
     
-    private void loadToursFromFirestore() {
-        firestoreHelper.loadTours(tours -> {
+    private void loadToursFromEmpresa() {
+        // Obtener ID del admin/empresa logueado
+        String idEmpresa = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        
+        if (idEmpresa == null) {
+            Toast.makeText(this, "Error: Usuario no autenticado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        firestoreHelper.loadToursByEmpresa(idEmpresa, tours -> {
             if (tours != null && !tours.isEmpty()) {
                 // Convertir Tours de Firestore a TourAdmins para el adapter
                 tourAdminList = TourConverter.toursToTourAdmins(tours);
@@ -105,24 +120,56 @@ public class ToursAdminActivity extends AppCompatActivity {
                     tourAdapter.updateTours(tourAdminList);
                 }
                 
-                Log.d("ToursAdmin", "Tours cargados desde Firestore: " + tourAdminList.size());
+                Log.d("ToursAdmin", "Tours de empresa cargados: " + tourAdminList.size());
             } else {
-                // No hay tours en Firestore, mostrar lista vacía
+                // No hay tours, mostrar lista vacía
                 tourAdminList.clear();
                 
                 if (tourAdapter != null) {
                     tourAdapter.updateTours(tourAdminList);
                 }
                 
-                Log.d("ToursAdmin", "No hay tours en Firestore");
+                Log.d("ToursAdmin", "No hay tours creados por esta empresa");
+            }
+        });
+    }
+    
+    private void loadReservasFromEmpresa() {
+        // Obtener ID del admin/empresa logueado
+        String idEmpresa = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+        
+        if (idEmpresa == null) {
+            Toast.makeText(this, "Error: Usuario no autenticado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        firestoreHelper.loadReservasByEmpresa(idEmpresa, reservas -> {
+            if (reservas != null && !reservas.isEmpty()) {
+                reservaList = reservas;
+                
+                if (reservaAdapter != null) {
+                    reservaAdapter.updateList(reservaList);
+                }
+                
+                Log.d("ToursAdmin", "Reservas cargadas: " + reservaList.size());
+            } else {
+                // No hay reservas, mostrar lista vacía
+                reservaList.clear();
+                
+                if (reservaAdapter != null) {
+                    reservaAdapter.updateList(reservaList);
+                }
+                
+                Log.d("ToursAdmin", "No hay reservas para los tours de esta empresa");
             }
         });
     }
 
     private void setupRecyclerView() {
         tourAdapter = new TourAdapter(this, tourAdminList);
+        reservaAdapter = new com.example.puriqtours.adapter.ReservaAdapter(this, reservaList);
         recyclerViewTours.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewTours.setAdapter(tourAdapter);
+        recyclerViewTours.setAdapter(tourAdapter); // Por defecto mostramos tours
     }
 
     private void setupListeners() {
@@ -144,14 +191,23 @@ public class ToursAdminActivity extends AppCompatActivity {
             });
         }
 
-        // Botón de filtro por departamento
-        btnFiltrar.setOnClickListener(v -> showFilterDialog());
+        // Botón Mis Tours
+        btnMisTours.setOnClickListener(v -> showMisTours());
+
+        // Botón Reservas
+        btnReservas.setOnClickListener(v -> showReservas());
 
         // FloatingActionButton para crear nuevo tour
         fabCrearTour.setOnClickListener(v -> {
             Intent intent = new Intent(ToursAdminActivity.this, CreateTourActivity.class);
             startActivityForResult(intent, 100);
         });
+
+        // Botón de filtro por región
+        Button btnFiltro = findViewById(R.id.btnFiltro);
+        if (btnFiltro != null) {
+            btnFiltro.setOnClickListener(v -> showFilterDialog());
+        }
 
         // Configurar búsqueda en tiempo real
         if (searchBar != null) {
@@ -161,14 +217,63 @@ public class ToursAdminActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (tourAdapter != null) {
+                    if (showingTours && tourAdapter != null) {
                         tourAdapter.getFilter().filter(s);
+                    } else if (!showingTours && reservaAdapter != null) {
+                        reservaAdapter.filter(s.toString());
                     }
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {}
             });
+        }
+    }
+    
+    private void showMisTours() {
+        showingTours = true;
+        
+        // Cambiar colores de botones
+        btnMisTours.setBackgroundColor(getResources().getColor(R.color.teal_700));
+        btnMisTours.setTextColor(getResources().getColor(R.color.white));
+        btnReservas.setBackgroundColor(getResources().getColor(R.color.gray_light));
+        btnReservas.setTextColor(getResources().getColor(R.color.gray_dark));
+        
+        // Mostrar FAB para crear tour
+        fabCrearTour.show();
+        
+        // Cambiar adapter
+        recyclerViewTours.setAdapter(tourAdapter);
+        
+        // Limpiar búsqueda
+        if (searchBar != null) {
+            searchBar.setText("");
+        }
+    }
+    
+    private void showReservas() {
+        showingTours = false;
+        
+        // Cambiar colores de botones
+        btnReservas.setBackgroundColor(getResources().getColor(R.color.teal_700));
+        btnReservas.setTextColor(getResources().getColor(R.color.white));
+        btnMisTours.setBackgroundColor(getResources().getColor(R.color.gray_light));
+        btnMisTours.setTextColor(getResources().getColor(R.color.gray_dark));
+        
+        // Ocultar FAB (no se pueden crear reservas desde admin)
+        fabCrearTour.hide();
+        
+        // Cambiar adapter
+        recyclerViewTours.setAdapter(reservaAdapter);
+        
+        // Cargar reservas si aún no se han cargado
+        if (reservaList.isEmpty()) {
+            loadReservasFromEmpresa();
+        }
+        
+        // Limpiar búsqueda
+        if (searchBar != null) {
+            searchBar.setText("");
         }
     }
 
@@ -207,14 +312,21 @@ public class ToursAdminActivity extends AppCompatActivity {
         listDepartamentos.setOnItemClickListener((parent, view, position, id) -> {
             String departamentoSeleccionado = adapter.getItem(position);
             
-            // Usar el método filterByDepartment del adapter
-            if (tourAdapter != null) {
-                tourAdapter.filterByDepartment(departamentoSeleccionado);
+            if (showingTours) {
+                // Filtrar tours
+                if (tourAdapter != null) {
+                    tourAdapter.filterByDepartment(departamentoSeleccionado);
+                }
+                Toast.makeText(ToursAdminActivity.this,
+                        "Filtrando tours de " + departamentoSeleccionado,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Filtrar reservas
+                filterReservasByDepartment(departamentoSeleccionado);
+                Toast.makeText(ToursAdminActivity.this,
+                        "Filtrando reservas de " + departamentoSeleccionado,
+                        Toast.LENGTH_SHORT).show();
             }
-            
-            Toast.makeText(ToursAdminActivity.this,
-                    "Filtrando tours de " + departamentoSeleccionado,
-                    Toast.LENGTH_SHORT).show();
         });
 
         // Mostrar dialog
@@ -223,12 +335,48 @@ public class ToursAdminActivity extends AppCompatActivity {
                 .setView(dialogView)
                 .setNegativeButton("Cerrar", (dialog, which) -> dialog.dismiss())
                 .setPositiveButton("Mostrar todos", (dialog, which) -> {
-                    if (tourAdapter != null) {
-                        tourAdapter.filterByDepartment("todos");
+                    if (showingTours) {
+                        if (tourAdapter != null) {
+                            tourAdapter.filterByDepartment("todos");
+                        }
+                    } else {
+                        filterReservasByDepartment("todos");
                     }
                     dialog.dismiss();
                 })
                 .show();
+    }
+    
+    private void filterReservasByDepartment(String department) {
+        if (department.equalsIgnoreCase("todos")) {
+            // Mostrar todas las reservas
+            if (reservaAdapter != null) {
+                reservaAdapter.updateList(reservaList);
+            }
+            return;
+        }
+        
+        // Obtener los IDs de los tours que pertenecen a este departamento
+        List<String> tourIdsInDepartment = new ArrayList<>();
+        for (TourAdmin tour : tourAdminList) {
+            if (tour.getRegion() != null && 
+                tour.getRegion().toLowerCase().contains(department.toLowerCase())) {
+                tourIdsInDepartment.add(tour.getId());
+            }
+        }
+        
+        // Filtrar reservas que correspondan a esos tours
+        List<com.example.puriqtours.entity.Reserva> filteredReservas = new ArrayList<>();
+        for (com.example.puriqtours.entity.Reserva reserva : reservaList) {
+            if (tourIdsInDepartment.contains(reserva.getIdTour())) {
+                filteredReservas.add(reserva);
+            }
+        }
+        
+        // Actualizar adapter
+        if (reservaAdapter != null) {
+            reservaAdapter.updateList(filteredReservas);
+        }
     }
 
     private void setupBottomNavigation() {
@@ -296,6 +444,6 @@ public class ToursAdminActivity extends AppCompatActivity {
     
     private void refreshToursList() {
         // Recargar tours desde Firestore
-        loadToursFromFirestore();
+        loadToursFromEmpresa();
     }
 }

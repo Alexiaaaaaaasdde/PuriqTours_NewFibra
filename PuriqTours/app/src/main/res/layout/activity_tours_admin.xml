@@ -57,37 +57,79 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- 🔹 Barra de búsqueda -->
-                <com.google.android.material.textfield.TextInputLayout
+                <!-- 🔹 Barra de búsqueda con botón de filtro -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_marginBottom="16dp"
-                    app:startIconDrawable="@android:drawable/ic_menu_search"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusBottomEnd="12dp">
+                    android:gravity="center_vertical">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/searchBar"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:hint="Buscar tours"
-                        android:textColor="@android:color/black"
-                        android:textColorHint="@color/gray_medium"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:startIconDrawable="@android:drawable/ic_menu_search"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp">
 
-                <!-- 🔹 Botón de filtro -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFiltro"
-                    android:layout_width="wrap_content"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/searchBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Buscar tours"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@color/gray_medium"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFiltro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FILTRO"
+                        android:textSize="12sp"
+                        android:minWidth="0dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:backgroundTint="@color/teal_700"
+                        android:textColor="@color/white"
+                        style="@style/Widget.MaterialComponents.Button"/>
+                </LinearLayout>
+
+                <!-- 🔹 Botones de filtro: Mis Tours / Reservas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Filtrar"
-                    android:backgroundTint="@color/teal_700"
-                    android:textColor="@color/white"
-                    android:layout_gravity="end"
-                    android:layout_marginBottom="16dp"/>
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMisTours"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:text="Mis Tours"
+                        android:backgroundTint="@color/teal_700"
+                        android:textColor="@color/white"
+                        style="@style/Widget.MaterialComponents.Button"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnReservas"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Reservas"
+                        android:backgroundTint="@color/gray_light"
+                        android:textColor="@color/gray_dark"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                </LinearLayout>
 
                 <!-- Lista de tours con RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView

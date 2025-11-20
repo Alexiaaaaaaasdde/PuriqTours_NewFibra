@@ -5,10 +5,12 @@ public class TourAdmin {
     private String name;
     private String description;
     private String location;
+    private String region; // Departamento del tour
     private double price;
     private int duration;
     private String guideAssigned;
     private int imageResource;
+    private String imageUrl; // URL de Firebase Storage
     private String date;
     private boolean isAvailable;
 
@@ -50,6 +52,9 @@ public class TourAdmin {
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
+    public String getRegion() { return region; }
+    public void setRegion(String region) { this.region = region; }
+
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
 
@@ -61,6 +66,9 @@ public class TourAdmin {
 
     public int getImageResource() { return imageResource; }
     public void setImageResource(int imageResource) { this.imageResource = imageResource; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }

@@ -9,13 +9,14 @@ public class Tour implements Serializable {
     private String idTour; // Usar String si el ID proviene del docId de Firestore
     private String title;
     private String desc;
-    private String location;
-    private String date;        // Guardar como String (formato ISO o yyyy-MM-dd)
+    private String location;    // Ubicación específica (ej: "Machu Picchu", "Kuelap")
+    private String region;      // Departamento/Región (ej: "Cusco", "Arequipa")
     private Float price;
-    private String status;
+    private String status;      // "Disponible", "No Disponible"
     private String startTime;   // Guardar como String (HH:mm)
     private String endTime;     // Guardar como String (HH:mm)
-    private Usuario admin;
+    private String idEmpresa;   // UID del admin/empresa que creó el tour
+    private String imageUrl;    // URL de la imagen en Firebase Storage
     private Integer rating;
     
     // Campos adicionales para EditTourActivity
@@ -23,59 +24,91 @@ public class Tour implements Serializable {
     private List<ServicioExtra> serviciosExtras;
     private List<Ubicacion> ruta;
 
-    // Clases internas para servicios extras y ubicaciones
+    // Clases internas para servicios extras (subcollection: extraServices)
     public static class ServicioExtra implements Serializable {
-        private String nombre;
-        private String precio;
-        private String descripcion;
+        private String title;
+        private String imageUrl;
+        private Float price;
 
         public ServicioExtra() {}
 
-        public String getNombre() {
-            return nombre;
+        public ServicioExtra(String title, String imageUrl, Float price) {
+            this.title = title;
+            this.imageUrl = imageUrl;
+            this.price = price;
         }
 
-        public void setNombre(String nombre) {
-            this.nombre = nombre;
+        public String getTitle() {
+            return title;
         }
 
-        public String getPrecio() {
-            return precio;
+        public void setTitle(String title) {
+            this.title = title;
         }
 
-        public void setPrecio(String precio) {
-            this.precio = precio;
+        public String getImageUrl() {
+            return imageUrl;
         }
 
-        public String getDescripcion() {
-            return descripcion;
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
         }
 
-        public void setDescripcion(String descripcion) {
-            this.descripcion = descripcion;
+        public Float getPrice() {
+            return price;
+        }
+
+        public void setPrice(Float price) {
+            this.price = price;
         }
     }
 
+    // Clases internas para ubicaciones (subcollection: locations)
     public static class Ubicacion implements Serializable {
-        private String nombre;
-        private String actividades;
+        private String title;
+        private Integer order;
+        private Double lat;
+        private Double lng;
 
         public Ubicacion() {}
 
-        public String getNombre() {
-            return nombre;
+        public Ubicacion(String title, Integer order, Double lat, Double lng) {
+            this.title = title;
+            this.order = order;
+            this.lat = lat;
+            this.lng = lng;
         }
 
-        public void setNombre(String nombre) {
-            this.nombre = nombre;
+        public String getTitle() {
+            return title;
         }
 
-        public String getActividades() {
-            return actividades;
+        public void setTitle(String title) {
+            this.title = title;
         }
 
-        public void setActividades(String actividades) {
-            this.actividades = actividades;
+        public Integer getOrder() {
+            return order;
+        }
+
+        public void setOrder(Integer order) {
+            this.order = order;
+        }
+
+        public Double getLat() {
+            return lat;
+        }
+
+        public void setLat(Double lat) {
+            this.lat = lat;
+        }
+
+        public Double getLng() {
+            return lng;
+        }
+
+        public void setLng(Double lng) {
+            this.lng = lng;
         }
     }
 
@@ -83,19 +116,20 @@ public class Tour implements Serializable {
     public Tour() {}
 
     // 🔹 Constructor opcional
-    public Tour(String idTour, String title, String desc, String location, String date,
+    public Tour(String idTour, String title, String desc, String location, String region,
                 Float price, String status, String startTime, String endTime,
-                Usuario admin, Integer rating) {
+                String idEmpresa, String imageUrl, Integer rating) {
         this.idTour = idTour;
         this.title = title;
         this.desc = desc;
         this.location = location;
-        this.date = date;
+        this.region = region;
         this.price = price;
         this.status = status;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.admin = admin;
+        this.idEmpresa = idEmpresa;
+        this.imageUrl = imageUrl;
         this.rating = rating;
     }
 
@@ -132,12 +166,12 @@ public class Tour implements Serializable {
         this.location = location;
     }
 
-    public String getDate() {
-        return date;
+    public String getRegion() {
+        return region;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public Float getPrice() {
@@ -172,12 +206,20 @@ public class Tour implements Serializable {
         this.endTime = endTime;
     }
 
-    public Usuario getAdmin() {
-        return admin;
+    public String getIdEmpresa() {
+        return idEmpresa;
     }
 
-    public void setAdmin(Usuario admin) {
-        this.admin = admin;
+    public void setIdEmpresa(String idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Integer getRating() {

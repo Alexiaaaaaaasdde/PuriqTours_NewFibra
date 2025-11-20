@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 public class ProfileAdminActivity extends AppCompatActivity {
 
@@ -39,6 +41,7 @@ public class ProfileAdminActivity extends AppCompatActivity {
     // Views para perfil completo
     private ScrollView profileView;
     private TextView tvCompanyName, tvPhone, tvEmail, tvAddress;
+    private ImageView ivProfileImage;
     private LinearLayout readOnlyView, editView;
     private TextInputEditText etEditCompanyName, etEditPhone, etEditEmail;
     private MaterialButton btnEdit;
@@ -95,6 +98,7 @@ public class ProfileAdminActivity extends AppCompatActivity {
         tvPhone = findViewById(R.id.tvPhone);
         tvEmail = findViewById(R.id.tvEmail);
         tvAddress = findViewById(R.id.tvAddress);
+        ivProfileImage = findViewById(R.id.ivProfileImage);
         
         // Vistas de edición
         readOnlyView = findViewById(R.id.readOnlyView);
@@ -209,6 +213,18 @@ public class ProfileAdminActivity extends AppCompatActivity {
         tvPhone.setText(phone);
         tvEmail.setText(email);
         tvAddress.setText(address);
+        
+        // Cargar imagen de perfil desde Firebase Storage
+        String profileImageUrl = currentAdmin.getProfile_image();
+        if (profileImageUrl != null && !profileImageUrl.isEmpty() && ivProfileImage != null) {
+            Picasso.get()
+                .load(profileImageUrl)
+                .placeholder(R.drawable.logo_empresa)
+                .error(R.drawable.logo_empresa)
+                .into(ivProfileImage);
+        } else if (ivProfileImage != null) {
+            ivProfileImage.setImageResource(R.drawable.logo_empresa);
+        }
         
         // Resetear modo de edición
         exitEditMode();

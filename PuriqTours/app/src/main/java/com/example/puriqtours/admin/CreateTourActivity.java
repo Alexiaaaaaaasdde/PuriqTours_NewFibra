@@ -1,8 +1,10 @@
 package com.example.puriqtours.admin;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,9 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.helper.StorageHelper;
+import com.example.puriqtours.helper.StorageManager;
 import com.example.puriqtours.helper.FirestoreHelper;
 import com.example.puriqtours.helper.TourConverter;
 import com.example.puriqtours.entity.TourAdmin;
@@ -33,10 +39,11 @@ import java.util.Locale;
 public class CreateTourActivity extends AppCompatActivity {
 
     // Campos del formulario
-    private EditText etHoraInicio, etDuracion, etCosto, etIdiomas, etFechaTour;
-    private TextView tvCantidadServicios;
+    private EditText etTituloTour, etHoraInicio, etHoraFin, etCosto, etIdiomas, etRegion, etLocation;
+    private TextView tvCantidadServicios, tvImagenTourSeleccionada;
     private LinearLayout layoutServiciosExtra, layoutUbicaciones;
-    private Button btnCrearTour;
+    private Button btnCrearTour, btnSeleccionarImagenTour;
+    private Uri tourImageUri; // URI de la imagen del tour
     
     // Lista para manejar servicios extra dinámicos
     private List<ExtraService> serviciosExtra;
@@ -50,6 +57,13 @@ public class CreateTourActivity extends AppCompatActivity {
     // Helpers
     private StorageHelper storageHelper;
     private FirestoreHelper firestoreHelper;
+    private StorageManager storageManager;
+    
+    // Para selección de imagen
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private TextView currentImageTextView; // TextView que se está actualizando
+    private Uri selectedImageUri;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +76,10 @@ public class CreateTourActivity extends AppCompatActivity {
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         storageHelper = new StorageHelper(this);
         firestoreHelper = new FirestoreHelper();
+        storageManager = new StorageManager();
+        
+        // Configurar image picker launcher
+        setupImagePickerLauncher();
 
         // Configurar toolbar
         setupToolbar();
@@ -75,6 +93,33 @@ public class CreateTourActivity extends AppCompatActivity {
         // Agregar primera ubicación por defecto
         addUbicacionInput();
     }
+    
+    private void setupImagePickerLauncher() {
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        selectedImageUri = result.getData().getData();
+                        if (selectedImageUri != null && currentImageTextView != null) {
+                            currentImageTextView.setText("Imagen seleccionada ✓");
+                            currentImageTextView.setTag(selectedImageUri); // Guardar URI en el tag
+                            currentImageTextView.setTextColor(getResources().getColor(R.color.teal_700));
+                            
+                            // Si es la imagen del tour, guardarla en tourImageUri
+                            if (currentImageTextView.getId() == R.id.tvImagenTourSeleccionada) {
+                                tourImageUri = selectedImageUri;
+                            }
+                        }
+                    }
+                }
+        );
+    }
+    
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        imagePickerLauncher.launch(intent);
+    }
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -87,15 +132,19 @@ public class CreateTourActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        etTituloTour = findViewById(R.id.etTituloTour);
         etHoraInicio = findViewById(R.id.etHoraInicio);
-        etDuracion = findViewById(R.id.etDuracion);
+        etHoraFin = findViewById(R.id.etHoraFin);
         etCosto = findViewById(R.id.etCosto);
         etIdiomas = findViewById(R.id.etIdiomas);
-        etFechaTour = findViewById(R.id.etFechaTour);
+        etRegion = findViewById(R.id.etRegion);
+        etLocation = findViewById(R.id.etLocation);
         tvCantidadServicios = findViewById(R.id.tvCantidadServicios);
+        tvImagenTourSeleccionada = findViewById(R.id.tvImagenTourSeleccionada);
         layoutServiciosExtra = findViewById(R.id.layoutServiciosExtra);
         layoutUbicaciones = findViewById(R.id.layoutUbicaciones);
         btnCrearTour = findViewById(R.id.btnCrearTour);
+        btnSeleccionarImagenTour = findViewById(R.id.btnSeleccionarImagenTour);
         
         // Actualizar texto inicial de servicios
         updateServiciosText();
@@ -103,19 +152,25 @@ public class CreateTourActivity extends AppCompatActivity {
 
     private void setupListeners() {
         // Time picker para hora de inicio
-        etHoraInicio.setOnClickListener(v -> showTimePicker());
+        etHoraInicio.setOnClickListener(v -> showTimePickerInicio());
         
-        // Date picker para fecha del tour
-        etFechaTour.setOnClickListener(v -> showDatePicker());
+        // Time picker para hora de fin
+        etHoraFin.setOnClickListener(v -> showTimePickerFin());
         
         // Agregar servicio extra - hacer clickeable todo el layout
         layoutServiciosExtra.setOnClickListener(v -> showExtraServiceDialog());
+        
+        // Seleccionar imagen del tour
+        btnSeleccionarImagenTour.setOnClickListener(v -> {
+            currentImageTextView = tvImagenTourSeleccionada;
+            openImagePicker();
+        });
         
         // Crear tour
         btnCrearTour.setOnClickListener(v -> createTour());
     }
 
-    private void showTimePicker() {
+    private void showTimePickerInicio() {
         Calendar currentTime = Calendar.getInstance();
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
@@ -128,22 +183,20 @@ public class CreateTourActivity extends AppCompatActivity {
         timePickerDialog.show();
     }
 
-    private void showDatePicker() {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year, month, dayOfMonth) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    etFechaTour.setText(dateFormat.format(calendar.getTime()));
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-        
-        // No permitir fechas pasadas
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-        datePickerDialog.show();
+    private void showTimePickerFin() {
+        Calendar currentTime = Calendar.getInstance();
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = currentTime.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, hourOfDay, min) -> {
+                    String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, min);
+                    etHoraFin.setText(time);
+                }, hour, minute, true);
+        timePickerDialog.show();
     }
+
+
 
     private void showExtraServiceDialog() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_extra_service, null);
@@ -202,10 +255,10 @@ public class CreateTourActivity extends AppCompatActivity {
             }
         });
 
-        // Listener para adjuntar imagen (placeholder)
+        // Listener para adjuntar imagen
         btnAdjuntarImagen.setOnClickListener(v -> {
-            tvImagenSeleccionada.setText("imagen_servicio_" + numeroServicio + ".jpg");
-            Toast.makeText(this, "Funcionalidad de imagen pendiente", Toast.LENGTH_SHORT).show();
+            currentImageTextView = tvImagenSeleccionada;
+            openImagePicker();
         });
 
         serviciosViews.add(servicioView);
@@ -228,11 +281,14 @@ public class CreateTourActivity extends AppCompatActivity {
             View servicioView = serviciosViews.get(i);
             EditText etNombre = servicioView.findViewById(R.id.etNombreServicio);
             EditText etPrecio = servicioView.findViewById(R.id.etPrecioServicio);
-            EditText etDescripcion = servicioView.findViewById(R.id.etDescripcionServicio);
+            TextView tvImagenSeleccionada = servicioView.findViewById(R.id.tvImagenSeleccionada);
 
             String nombre = etNombre.getText().toString().trim();
             String precio = etPrecio.getText().toString().trim();
-            String descripcion = etDescripcion.getText().toString().trim();
+            
+            // Obtener URI de la imagen del tag (si fue seleccionada)
+            Uri imageUri = (Uri) tvImagenSeleccionada.getTag();
+            String imageUriString = imageUri != null ? imageUri.toString() : "";
 
             if (nombre.isEmpty()) {
                 etNombre.setError("El nombre del servicio es obligatorio");
@@ -244,13 +300,9 @@ public class CreateTourActivity extends AppCompatActivity {
                 etPrecio.requestFocus();
                 return false;
             }
-            if (descripcion.isEmpty()) {
-                etDescripcion.setError("La descripción del servicio es obligatoria");
-                etDescripcion.requestFocus();
-                return false;
-            }
 
-            ExtraService service = new ExtraService(nombre, precio, descripcion, "");
+            // Guardar servicio con la URI de la imagen (se subirá después al crear el tour)
+            ExtraService service = new ExtraService(nombre, precio, "", imageUriString);
             serviciosExtra.add(service);
         }
         return true;
@@ -306,84 +358,167 @@ public class CreateTourActivity extends AppCompatActivity {
     private void createTour() {
         if (validateForm()) {
             // Recopilar datos del formulario
-            String nombreTour = getFirstLocationName();
-            String destino = getDestinationSummary();
+            String tituloTour = etTituloTour.getText().toString().trim();
+            String location = etLocation.getText().toString().trim();
+            String region = etRegion.getText().toString().trim();
             String descripcion = getDescriptionSummary();
-            String fecha = etFechaTour.getText().toString();
             String horaInicio = etHoraInicio.getText().toString();
-            String duracion = etDuracion.getText().toString();
+            String horaFin = etHoraFin.getText().toString();
             String idiomas = etIdiomas.getText().toString();
             Float precio = Float.parseFloat(etCosto.getText().toString());
             
+            // Obtener ID del admin/empresa logueado
+            String idEmpresa = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+            
             // Crear objeto Tour para Firestore
             Tour nuevoTour = new Tour();
-            nuevoTour.setTitle(nombreTour);
-            nuevoTour.setLocation(destino);
+            nuevoTour.setTitle(tituloTour);
+            nuevoTour.setLocation(location);
+            nuevoTour.setRegion(region);
             nuevoTour.setDesc(descripcion);
-            nuevoTour.setDate(fecha);
             nuevoTour.setStartTime(horaInicio);
-            nuevoTour.setEndTime(duracion); // Guardar duración en horaFin
+            nuevoTour.setEndTime(horaFin);
             nuevoTour.setIdiomas(idiomas);
             nuevoTour.setPrice(precio);
-            nuevoTour.setStatus("disponible");
+            nuevoTour.setStatus("Disponible");
+            nuevoTour.setIdEmpresa(idEmpresa);
+            nuevoTour.setImageUrl(""); // Se actualizará al subir la imagen
+            nuevoTour.setRating(5); // Rating inicial
             
-            // Recopilar servicios extras
-            List<Tour.ServicioExtra> serviciosExtras = new ArrayList<>();
-            for (int i = 0; i < layoutServiciosExtra.getChildCount(); i++) {
-                View servicioView = layoutServiciosExtra.getChildAt(i);
-                EditText etNombreServicio = servicioView.findViewById(R.id.etNombreServicio);
-                EditText etPrecioServicio = servicioView.findViewById(R.id.etPrecioServicio);
-                EditText etDescripcionServicio = servicioView.findViewById(R.id.etDescripcionServicio);
-                
-                if (etNombreServicio != null && etNombreServicio.getText().length() > 0) {
-                    Tour.ServicioExtra servicio = new Tour.ServicioExtra();
-                    servicio.setNombre(etNombreServicio.getText().toString());
-                    servicio.setPrecio(etPrecioServicio.getText().toString());
-                    servicio.setDescripcion(etDescripcionServicio.getText().toString());
-                    serviciosExtras.add(servicio);
-                }
+            // Mostrar diálogo de progreso
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Subiendo imágenes...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+            
+            // Primero subir imagen del tour, luego servicios
+            if (tourImageUri != null) {
+                uploadTourImageAndContinue(nuevoTour, idEmpresa, tituloTour);
+            } else {
+                // Sin imagen del tour, continuar con servicios
+                uploadServiceImagesAndCreateTour(nuevoTour, idEmpresa, tituloTour);
             }
+        }
+    }
+    
+    private void uploadTourImageAndContinue(Tour nuevoTour, String idEmpresa, String tituloTour) {
+        progressDialog.setMessage("Subiendo imagen del tour...");
+        storageManager.uploadTourImage(tourImageUri, new StorageManager.OnImageUploadListener() {
+            @Override
+            public void onSuccess(String downloadUrl) {
+                nuevoTour.setImageUrl(downloadUrl);
+                // Continuar con imágenes de servicios
+                uploadServiceImagesAndCreateTour(nuevoTour, idEmpresa, tituloTour);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                progressDialog.dismiss();
+                Toast.makeText(CreateTourActivity.this, 
+                    "Error al subir imagen del tour: " + errorMessage, 
+                    Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                progressDialog.setMessage("Subiendo imagen del tour... " + progress + "%");
+            }
+        });
+    }
+    
+    private void uploadServiceImagesAndCreateTour(Tour nuevoTour, String idEmpresa, String nombreTour) {
+        List<Tour.ServicioExtra> serviciosExtras = new ArrayList<>();
+        
+        if (serviciosExtra.isEmpty()) {
+            // No hay servicios, crear tour directamente
             nuevoTour.setServiciosExtras(serviciosExtras);
-            
-            // Recopilar ubicaciones/ruta
-            List<Tour.Ubicacion> ruta = new ArrayList<>();
-            for (int i = 0; i < layoutUbicaciones.getChildCount(); i++) {
-                View ubicacionView = layoutUbicaciones.getChildAt(i);
-                EditText etNombreUbicacion = ubicacionView.findViewById(R.id.etNombreUbicacion);
-                EditText etActividadesUbicacion = ubicacionView.findViewById(R.id.etActividadesUbicacion);
-                
-                if (etNombreUbicacion != null && etNombreUbicacion.getText().length() > 0) {
-                    Tour.Ubicacion ubicacion = new Tour.Ubicacion();
-                    ubicacion.setNombre(etNombreUbicacion.getText().toString());
-                    ubicacion.setActividades(etActividadesUbicacion != null ? etActividadesUbicacion.getText().toString() : "");
-                    ruta.add(ubicacion);
+            saveTourToFirestore(nuevoTour, nombreTour);
+            return;
+        }
+        
+        // Subir imágenes de forma secuencial
+        uploadNextServiceImage(0, serviciosExtras, nuevoTour, nombreTour);
+    }
+    
+    private void uploadNextServiceImage(int index, List<Tour.ServicioExtra> serviciosExtras, Tour nuevoTour, String nombreTour) {
+        if (index >= serviciosExtra.size()) {
+            // Todas las imágenes subidas, guardar tour
+            nuevoTour.setServiciosExtras(serviciosExtras);
+            saveTourToFirestore(nuevoTour, nombreTour);
+            return;
+        }
+        
+        ExtraService servicio = serviciosExtra.get(index);
+        Tour.ServicioExtra servicioExtra = new Tour.ServicioExtra();
+        servicioExtra.setTitle(servicio.nombre);
+        
+        try {
+            servicioExtra.setPrice(Float.parseFloat(servicio.precio));
+        } catch (NumberFormatException e) {
+            servicioExtra.setPrice(0f);
+        }
+        
+        // Si hay URI de imagen, subirla
+        if (servicio.imagen != null && !servicio.imagen.isEmpty()) {
+            Uri imageUri = Uri.parse(servicio.imagen);
+            storageManager.uploadExtraServiceImage(imageUri, new StorageManager.OnImageUploadListener() {
+                @Override
+                public void onSuccess(String downloadUrl) {
+                    servicioExtra.setImageUrl(downloadUrl);
+                    serviciosExtras.add(servicioExtra);
+                    // Subir siguiente imagen
+                    uploadNextServiceImage(index + 1, serviciosExtras, nuevoTour, nombreTour);
                 }
-            }
-            nuevoTour.setRuta(ruta);
-            
-            // Guardar en Firestore
-            firestoreHelper.createTour(nuevoTour, (success, tourId) -> {
-                if (success && tourId != null) {
-                    Toast.makeText(this, "¡Tour creado exitosamente en Firestore!", Toast.LENGTH_SHORT).show();
-                    
-                    // También guardar en local como backup
-                    TourAdmin tourAdmin = TourConverter.tourToTourAdmin(nuevoTour);
-                    if (tourAdmin != null) {
-                        storageHelper.addTour(tourAdmin);
+
+                @Override
+                public void onError(String errorMessage) {
+                    // Guardar sin imagen
+                    servicioExtra.setImageUrl("");
+                    serviciosExtras.add(servicioExtra);
+                    Toast.makeText(CreateTourActivity.this, "Error al subir imagen: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    // Continuar con siguiente
+                    uploadNextServiceImage(index + 1, serviciosExtras, nuevoTour, nombreTour);
+                }
+
+                @Override
+                public void onProgress(int progress) {
+                    if (progressDialog != null) {
+                        progressDialog.setMessage("Subiendo imagen " + (index + 1) + "/" + serviciosExtra.size() + "... " + progress + "%");
                     }
-                    
-                    // Retornar a ToursActivity
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("tour_created", true);
-                    resultIntent.putExtra("tour_name", nombreTour);
-                    resultIntent.putExtra("tour_destination", destino);
-                    setResult(RESULT_OK, resultIntent);
-                    finish();
-                } else {
-                    Toast.makeText(this, "Error al crear tour en Firestore", Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            // No hay imagen, agregar sin imageUrl
+            servicioExtra.setImageUrl("");
+            serviciosExtras.add(servicioExtra);
+            uploadNextServiceImage(index + 1, serviciosExtras, nuevoTour, nombreTour);
         }
+    }
+    
+    private void saveTourToFirestore(Tour nuevoTour, String nombreTour) {
+        if (progressDialog != null) {
+            progressDialog.setMessage("Guardando tour...");
+        }
+        
+        // Guardar en Firestore
+        firestoreHelper.createTour(nuevoTour, (success, tourId) -> {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+            
+            if (success && tourId != null) {
+                Toast.makeText(this, "¡Tour creado exitosamente!", Toast.LENGTH_SHORT).show();
+                
+                // Retornar a ToursActivity
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("tour_created", true);
+                resultIntent.putExtra("tour_name", nombreTour);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            } else {
+                Toast.makeText(this, "Error al crear tour", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     
     private String getFirstLocationName() {
@@ -448,15 +583,21 @@ public class CreateTourActivity extends AppCompatActivity {
     }
 
     private boolean validateForm() {
+        if (etTituloTour.getText().toString().trim().isEmpty()) {
+            etTituloTour.setError("El título del tour es obligatorio");
+            etTituloTour.requestFocus();
+            return false;
+        }
+
         if (etHoraInicio.getText().toString().trim().isEmpty()) {
             etHoraInicio.setError("La hora de inicio es obligatoria");
             etHoraInicio.requestFocus();
             return false;
         }
 
-        if (etDuracion.getText().toString().trim().isEmpty()) {
-            etDuracion.setError("La duración es obligatoria");
-            etDuracion.requestFocus();
+        if (etHoraFin.getText().toString().trim().isEmpty()) {
+            etHoraFin.setError("La hora de fin es obligatoria");
+            etHoraFin.requestFocus();
             return false;
         }
 
@@ -472,9 +613,15 @@ public class CreateTourActivity extends AppCompatActivity {
             return false;
         }
 
-        if (etFechaTour.getText().toString().trim().isEmpty()) {
-            etFechaTour.setError("La fecha del tour es obligatoria");
-            etFechaTour.requestFocus();
+        if (etRegion.getText().toString().trim().isEmpty()) {
+            etRegion.setError("El departamento/región es obligatorio");
+            etRegion.requestFocus();
+            return false;
+        }
+
+        if (etLocation.getText().toString().trim().isEmpty()) {
+            etLocation.setError("La ubicación principal es obligatoria");
+            etLocation.requestFocus();
             return false;
         }
 
@@ -490,7 +637,7 @@ public class CreateTourActivity extends AppCompatActivity {
                 return false;
             }
 
-            if (etActividades.getText().toString().trim().isEmpty()) {
+            if (etActividades != null && etActividades.getText().toString().trim().isEmpty()) {
                 etActividades.setError("Las actividades son obligatorias");
                 etActividades.requestFocus();
                 return false;
