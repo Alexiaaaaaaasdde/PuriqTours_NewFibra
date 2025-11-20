@@ -141,7 +141,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Reporte de ventas por tourLegacy -->
+            <!-- Reporte de ventas por tour -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Reporte de ventas por tourLegacy"
+                    android:text="Reporte de ventas por tour"
                     android:textSize="16sp"
                     android:textColor="#009688"/>
 
@@ -229,7 +229,7 @@
 
                     </LinearLayout>
 
-                    <!-- Etiquetas de tourLegacies -->
+                    <!-- Etiquetas de tours -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

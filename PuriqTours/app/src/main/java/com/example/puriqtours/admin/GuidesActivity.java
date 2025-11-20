@@ -22,6 +22,8 @@ import com.example.puriqtours.R;
 import com.example.puriqtours.adapter.GuideAdapter;
 import com.example.puriqtours.entity.GuideAdmin;
 import com.example.puriqtours.helper.StorageHelper;
+import com.example.puriqtours.helper.FirestoreHelper;
+import com.example.puriqtours.helper.GuideConverter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -37,6 +39,7 @@ public class GuidesActivity extends AppCompatActivity {
     private Button btnFiltrar;
     private TextInputEditText etBuscar;
     private StorageHelper storageHelper;
+    private FirestoreHelper firestoreHelper;
     private NotificationHelper notificationHelper;
 
     @Override
@@ -75,10 +78,38 @@ public class GuidesActivity extends AppCompatActivity {
 
     private void createSampleData() {
         storageHelper = new StorageHelper(this);
+        firestoreHelper = new FirestoreHelper();
         notificationHelper = new NotificationHelper(this);
         
-        // Cargar guías desde SharedPreferences
-        guideAdminList = storageHelper.loadGuides();
+        // Inicializar lista vacía
+        guideAdminList = new ArrayList<>();
+        
+        // Cargar guías desde Firestore
+        loadGuidesFromFirestore();
+    }
+    
+    private void loadGuidesFromFirestore() {
+        firestoreHelper.loadGuides(usuarios -> {
+            if (usuarios != null && !usuarios.isEmpty()) {
+                // Convertir Usuarios (Guías) de Firestore a GuideAdmins para el adapter
+                guideAdminList = GuideConverter.usuariosToGuideAdmins(usuarios);
+                
+                if (guideAdapter != null) {
+                    guideAdapter.updateGuides(guideAdminList);
+                }
+                
+                android.util.Log.d("GuidesAdmin", "Guías cargados desde Firestore: " + guideAdminList.size());
+            } else {
+                // Si no hay guías en Firestore, cargar desde local como fallback
+                guideAdminList = storageHelper.loadGuides();
+                
+                if (guideAdapter != null) {
+                    guideAdapter.updateGuides(guideAdminList);
+                }
+                
+                android.util.Log.d("GuidesAdmin", "Guías cargados desde local: " + guideAdminList.size());
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -95,7 +126,7 @@ public class GuidesActivity extends AppCompatActivity {
                 // Simular propuesta de tour a guía seleccionado
                 if (!guideAdminList.isEmpty()) {
                     GuideAdmin randomGuideAdmin = guideAdminList.get((int) (Math.random() * guideAdminList.size()));
-                    notificationHelper.notifyTourProposedToGuide("TourLegacy Machu Picchu", randomGuideAdmin.getName(), "Cusco");
+                    notificationHelper.notifyTourProposedToGuide("Tour Machu Picchu", randomGuideAdmin.getName(), "Cusco");
                     Toast.makeText(this, "Simulando propuesta de tour a " + randomGuideAdmin.getName(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -207,6 +238,10 @@ public class GuidesActivity extends AppCompatActivity {
                     return true;
                 } else if (id == R.id.nav_reports) {
                     startActivity(new Intent(this, ReportsActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (id == R.id.nav_chat) {
+                    startActivity(new Intent(this, ChatListActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 } else if (id == R.id.nav_profile) {

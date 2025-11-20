@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/teal_700"
-        app:title="Editar tourLegacy"
+        app:title="Editar tour"
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="@color/white" />
@@ -31,11 +31,11 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Hora de inicio del tourLegacy -->
+            <!-- Hora de inicio del tour -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hora de inicio del tourLegacy:"
+                android:text="Hora de inicio del tour:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -59,11 +59,11 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Duración del tourLegacy -->
+            <!-- Duración del tour -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Duración del tourLegacy:"
+                android:text="Hora de fin:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -73,13 +73,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:boxStrokeColor="@color/teal_700"
-                app:hintTextColor="@color/teal_700">
+                app:hintTextColor="@color/teal_700"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_schedule">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDuracion"
+                    android:id="@+id/etHoraFin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ej: 4 horas" />
+                    android:hint="Ej: 18:00"
+                    android:focusable="false"
+                    android:clickable="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,11 +136,45 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Fecha del tourLegacy -->
+            <!-- Fecha del tour -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha del tourLegacy:"
+                android:text="Fecha del tour:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Departamento/Región -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Departamento/Región:"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:boxStrokeColor="@color/teal_700"
+                app:hintTextColor="@color/teal_700">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRegion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ej: Cusco, Arequipa, Lima"
+                    android:inputType="textCapWords" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Ubicación Principal -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubicación principal:"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:layout_marginBottom="8dp" />
@@ -149,14 +187,11 @@
                 app:hintTextColor="@color/teal_700">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFechaTour"
+                    android:id="@+id/etLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Selecciona la fecha"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:drawableEnd="@drawable/ic_calendar"
-                    android:drawableTint="@color/teal_700" />
+                    android:hint="Ej: Machu Picchu, Colca, Miraflores"
+                    android:inputType="textCapWords" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

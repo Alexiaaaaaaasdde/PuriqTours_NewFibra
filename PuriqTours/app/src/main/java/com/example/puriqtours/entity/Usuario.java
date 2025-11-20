@@ -24,6 +24,10 @@ public class Usuario implements Serializable {
     private String profile_image;
     private List<String> regions;
     private List<String> activities;
+    
+    // Campos específicos para Guías
+    private String guide_status;  // "Habilitado", "No habilitado"
+    private Double rating;  // Rating del guía (0.0 - 5.0)
 
     // 🔹 Constructor vacío (necesario para Firestore)
     public Usuario() {}
@@ -99,6 +103,12 @@ public class Usuario implements Serializable {
     public List<String> getActivities() { return activities; }
     public void setActivities(List<String> activities) { this.activities = activities; }
 
+    public String getGuide_status() { return guide_status; }
+    public void setGuide_status(String guide_status) { this.guide_status = guide_status; }
+
+    public Double getRating() { return rating; }
+    public void setRating(Double rating) { this.rating = rating; }
+
     // 🔹 Mapeo a Firestore
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
@@ -117,6 +127,8 @@ public class Usuario implements Serializable {
         map.put("profile_image", profile_image);
         map.put("regions", regions);
         map.put("activities", activities);
+        map.put("guide_status", guide_status);
+        map.put("rating", rating);
         return map;
     }
 

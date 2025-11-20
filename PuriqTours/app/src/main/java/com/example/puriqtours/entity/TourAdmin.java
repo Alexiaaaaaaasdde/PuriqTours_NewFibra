@@ -1,20 +1,22 @@
 package com.example.puriqtours.entity;
 
 public class TourAdmin {
-    private int id;
+    private String id; // Cambiado de int a String para Firestore
     private String name;
     private String description;
     private String location;
+    private String region; // Departamento del tour
     private double price;
     private int duration;
     private String guideAssigned;
     private int imageResource;
+    private String imageUrl; // URL de Firebase Storage
     private String date;
     private boolean isAvailable;
 
     public TourAdmin() {}
 
-    public TourAdmin(int id, String name, String description, String location, double price, int duration) {
+    public TourAdmin(String id, String name, String description, String location, double price, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -24,7 +26,7 @@ public class TourAdmin {
         this.isAvailable = true;
     }
 
-    public TourAdmin(int id, String name, String location, String description, String date, int imageResource, double price, int duration, String guideAssigned) {
+    public TourAdmin(String id, String name, String location, String description, String date, int imageResource, double price, int duration, String guideAssigned) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -38,8 +40,8 @@ public class TourAdmin {
     }
 
     // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -49,6 +51,9 @@ public class TourAdmin {
 
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+
+    public String getRegion() { return region; }
+    public void setRegion(String region) { this.region = region; }
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
@@ -61,6 +66,9 @@ public class TourAdmin {
 
     public int getImageResource() { return imageResource; }
     public void setImageResource(int imageResource) { this.imageResource = imageResource; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }

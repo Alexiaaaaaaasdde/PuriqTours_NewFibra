@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ReportsActivity extends AppCompatActivity {
 
@@ -57,9 +58,34 @@ public class ReportsActivity extends AppCompatActivity {
         com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(v -> {
-                // TODO: Implementar cerrar sesión
-                android.widget.Toast.makeText(this, "Cerrar sesión", android.widget.Toast.LENGTH_SHORT).show();
+                // Cerrar sesión
+                cerrarSesion();
             });
         }
+    }
+    
+    private void cerrarSesion() {
+        // Mostrar diálogo de confirmación
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> {
+                    // 1. Cerrar sesión de Firebase Authentication
+                    FirebaseAuth.getInstance().signOut();
+                    
+                    // 2. Limpiar datos de sesión en SharedPreferences
+                    android.content.SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    prefs.edit().clear().apply();
+                    
+                    // 3. Ir al login
+                    android.content.Intent intent = new android.content.Intent(ReportsActivity.this, com.example.puriqtours.login.LoginActivity.class);
+                    intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                    
+                    android.widget.Toast.makeText(this, "Sesión cerrada exitosamente", android.widget.Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 }
