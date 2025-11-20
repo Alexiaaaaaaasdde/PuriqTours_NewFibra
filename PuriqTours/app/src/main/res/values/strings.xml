@@ -38,5 +38,10 @@
         <item>Tumbes</item>
         <item>Ucayali</item>
     </string-array>
+    <string-array name="roles_usuarios">
+        <item>Cliente</item>
+        <item>Guía</item>
+        <item>Administrador</item>
+    </string-array>
 
 </resources>

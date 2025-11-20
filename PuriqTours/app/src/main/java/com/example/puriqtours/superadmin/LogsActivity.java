@@ -128,12 +128,7 @@ public class LogsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        View vBtnReportesNav = findViewById(R.id.btnReportes);
-        if (vBtnReportesNav != null) vBtnReportesNav.setOnClickListener(v -> {
-            Intent intent = new Intent(LogsActivity.this, ReportesActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        });
+
 
         View vBtnLogsNav = findViewById(R.id.btnLogs);
         if (vBtnLogsNav != null) vBtnLogsNav.setOnClickListener(v -> {

@@ -1,107 +1,99 @@
 package com.example.puriqtours.superadmin;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.example.puriqtours.R;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Usuario;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Source;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuariosAdministradoresFragment extends Fragment {
+
     private UsuariosAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_usuarios_administradores, container, false);
+
         FloatingActionButton fab = view.findViewById(R.id.fabAgregarAdmin);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Acción para agregar administrador
-            }
+        fab.setOnClickListener(v -> {
+            // Acción al agregar admin
         });
 
+        // → Usamos un RecyclerView programático (tú lo tenías así)
         RecyclerView recyclerView = new RecyclerView(getContext());
         recyclerView.setId(View.generateViewId());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        int bottomBarHeightPx = (int) (70 * getResources().getDisplayMetrics().density); // 70dp en px
-        recyclerView.setPadding(0, 0, 0, bottomBarHeightPx); // padding bottom para BottomBar
+
+        int bottomBarHeightPx = (int) (70 * getResources().getDisplayMetrics().density);
+        recyclerView.setPadding(0, 0, 0, bottomBarHeightPx);
         recyclerView.setClipToPadding(false);
 
-    List<Usuario> usuarios = new ArrayList<>();
-    adapter = new UsuariosAdapter(getContext(), usuarios);
-    recyclerView.setAdapter(adapter);
+        // Adapter vacío
+        List<Usuario> usuarios = new ArrayList<>();
+        adapter = new UsuariosAdapter(getContext(), usuarios);
+        recyclerView.setAdapter(adapter);
 
+        // Insertar RecyclerView al contenedor
         FrameLayout containerLayout = view.findViewById(R.id.recyclerContainer);
         containerLayout.removeAllViews();
         containerLayout.addView(recyclerView);
 
-        // Cargar administradores desde Firestore
-        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
-        db.collection("users").get(com.google.firebase.firestore.Source.SERVER)
-            .addOnSuccessListener(snapshot -> {
-                List<Usuario> list = new ArrayList<>();
-                for (com.google.firebase.firestore.QueryDocumentSnapshot doc : snapshot) {
-                    String rol = doc.getString("rol");
-                    if (rol == null) continue;
-                    String r = rol.toLowerCase();
-                    if (r.contains("admin")) {
-                        String uid = doc.getId();
-                        String name = doc.getString("name");
-                        if (name == null) name = doc.getString("username");
-                        String address = doc.getString("address");
-                        String empresaId = doc.getString("empresa");
-                        // registro puede venir como String, Timestamp, Date o incluso un Map => manejarlo sin lanzar excepciones
-                        Object registroObj = doc.get("registro");
-                        String registro = "";
-                        if (registroObj instanceof String) {
-                            registro = (String) registroObj;
-                        } else if (registroObj instanceof com.google.firebase.Timestamp) {
-                            registro = ((com.google.firebase.Timestamp) registroObj).toDate().toString();
-                        } else if (registroObj instanceof java.util.Date) {
-                            registro = ((java.util.Date) registroObj).toString();
-                        } else if (registroObj instanceof java.util.Map) {
-                            java.util.Map<?,?> m = (java.util.Map<?,?>) registroObj;
-                            Object f = m.get("fecha");
-                            if (f == null) f = m.get("date");
-                            registro = f != null ? f.toString() : m.toString();
-                        } else if (registroObj != null) {
-                            registro = registroObj.toString();
-                        }
+        // 🔥 Cargar administradores desde Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                        String state = doc.getString("state");
-                        UsuarioAdministrador ua = new UsuarioAdministrador(uid, name != null ? name : "Admin", address != null ? address : "", empresaId != null ? empresaId : "", registro, state != null ? state : "habilitado");
-                        list.add(ua);
+        db.collection("users")
+                .get(Source.SERVER)
+                .addOnSuccessListener(snapshot -> {
 
-                        // si empresaId parece un id, intentar obtener nombre de empresas
-                        if (empresaId != null && !empresaId.isEmpty()) {
-                            String eid = empresaId;
-                            db.collection("empresas").document(eid).get(com.google.firebase.firestore.Source.SERVER)
-                                .addOnSuccessListener(ed -> {
-                                    String nombreEmpresa = ed.getString("nombre");
-                                    if (nombreEmpresa != null) {
-                                        ua.empresa = nombreEmpresa;
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                });
+                    List<Usuario> admins = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+
+                        String rol = doc.getString("rol");
+                        if (rol == null) continue;
+
+                        // Solo administradores
+                        if (rol.equalsIgnoreCase("Admin") ||
+                                rol.equalsIgnoreCase("SuperAdmin")) {
+
+                            Usuario u = Usuario.fromSnapshot(doc);
+
+                            // Correcciones por si faltan campos
+                            if (u.getName() == null)
+                                u.setName(doc.getString("username"));
+
+                            admins.add(u);
                         }
                     }
-                }
-                this.adapter.setUsuarios(list);
-            });
+
+                    adapter.setUsuarios(admins);
+                });
 
         return view;
     }
 
-    // permitir ordenar desde la Activity
+    public void filtrarTexto(String texto) {
+        if (adapter != null) adapter.filter(texto);
+    }
+
     public void sortByName() {
         if (adapter != null) adapter.sortByNameAsc();
     }

@@ -20,69 +20,58 @@ import com.google.firebase.firestore.Source;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuariosGuiasFragment extends Fragment {
+public class UsuariosBaneadosFragment extends Fragment {
 
     private UsuariosAdapter adapter;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_usuarios_guias, container, false);
+        View view = inflater.inflate(R.layout.fragment_usuarios_baneados, container, false);
 
-        // 🟢 Usamos el RecyclerView del XML
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerUsuariosGuias);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerUsuariosBaneados);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         int bottomBarHeightPx = (int) (70 * getResources().getDisplayMetrics().density);
         recyclerView.setPadding(0, 0, 0, bottomBarHeightPx);
         recyclerView.setClipToPadding(false);
 
-        // Adaptador vacío
         List<Usuario> usuarios = new ArrayList<>();
         adapter = new UsuariosAdapter(getContext(), usuarios);
         recyclerView.setAdapter(adapter);
 
-        // 🟣 Cargar GUÍAS desde Firestore
+        // 🔥 Cargar clientes baneados (status = Inactivo)
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("users")
-                .get(Source.SERVER)
-                .addOnSuccessListener(snapshot -> {
+                .whereEqualTo("rol", "Cliente")
+                .whereEqualTo("status", "Inactivo")
+                .addSnapshotListener((snapshot, error) -> {
 
-                    List<Usuario> guias = new ArrayList<>();
+                    if (error != null || snapshot == null) return;
+
+                    List<Usuario> list = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
 
-                        String rol = doc.getString("rol");
-                        if (rol == null) continue;
+                        Usuario u = Usuario.fromSnapshot(doc);
+                        if (u == null) continue;
 
-                        if (rol.equalsIgnoreCase("Guia")) {
-
-                            Usuario u = Usuario.fromSnapshot(doc);
-
-                            // fallback por si falta el NAME
-                            if (u.getName() == null)
-                                u.setName(doc.getString("username"));
-
-                            guias.add(u);
-                        }
+                        list.add(u);
                     }
 
-                    adapter.setUsuarios(guias);
+                    adapter.setUsuarios(list);  // 🔥 Actualiza solo automáticamente
                 });
+
 
         return view;
     }
 
-    // Buscador
     public void filtrarTexto(String texto) {
         if (adapter != null) adapter.filter(texto);
     }
 
-    // Ordenar
     public void sortByName() {
         if (adapter != null) adapter.sortByNameAsc();
     }
