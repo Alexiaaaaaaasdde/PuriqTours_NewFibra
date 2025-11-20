@@ -15,7 +15,6 @@ import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Usuario;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,7 @@ public class UsuariosBaneadosFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerUsuariosBaneados);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Padding inferior por la bottom bar
         int bottomBarHeightPx = (int) (70 * getResources().getDisplayMetrics().density);
         recyclerView.setPadding(0, 0, 0, bottomBarHeightPx);
         recyclerView.setClipToPadding(false);
@@ -41,12 +41,11 @@ public class UsuariosBaneadosFragment extends Fragment {
         adapter = new UsuariosAdapter(getContext(), usuarios);
         recyclerView.setAdapter(adapter);
 
-        // 🔥 Cargar clientes baneados (status = Inactivo)
+        // 🔥 Cargar TODOS los usuarios baneados (Clientes, Guías, Admins)
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("users")
-                .whereEqualTo("rol", "Cliente")
-                .whereEqualTo("status", "Inactivo")
+                .whereEqualTo("status", "Inactivo")  // ← SOLO filtra por inactivos
                 .addSnapshotListener((snapshot, error) -> {
 
                     if (error != null || snapshot == null) return;
@@ -54,16 +53,13 @@ public class UsuariosBaneadosFragment extends Fragment {
                     List<Usuario> list = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
-
                         Usuario u = Usuario.fromSnapshot(doc);
                         if (u == null) continue;
-
                         list.add(u);
                     }
 
-                    adapter.setUsuarios(list);  // 🔥 Actualiza solo automáticamente
+                    adapter.setUsuarios(list);
                 });
-
 
         return view;
     }

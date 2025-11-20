@@ -49,30 +49,26 @@ public class UsuariosGuiasFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("users")
-                .get(Source.SERVER)
-                .addOnSuccessListener(snapshot -> {
+                .whereEqualTo("rol", "Guia")
+                .whereEqualTo("status", "Activo")
+                .addSnapshotListener((snapshot, error) -> {
+
+                    if (error != null || snapshot == null) return;
 
                     List<Usuario> guias = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
+                        Usuario u = Usuario.fromSnapshot(doc);
 
-                        String rol = doc.getString("rol");
-                        if (rol == null) continue;
+                        if (u.getName() == null)
+                            u.setName(doc.getString("username"));
 
-                        if (rol.equalsIgnoreCase("Guia")) {
-
-                            Usuario u = Usuario.fromSnapshot(doc);
-
-                            // fallback por si falta el NAME
-                            if (u.getName() == null)
-                                u.setName(doc.getString("username"));
-
-                            guias.add(u);
-                        }
+                        guias.add(u);
                     }
 
                     adapter.setUsuarios(guias);
                 });
+
 
         return view;
     }

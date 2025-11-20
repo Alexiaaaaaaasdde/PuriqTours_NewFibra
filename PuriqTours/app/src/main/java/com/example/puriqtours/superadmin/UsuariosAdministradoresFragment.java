@@ -37,7 +37,6 @@ public class UsuariosAdministradoresFragment extends Fragment {
             // Acción al agregar admin
         });
 
-        // → Usamos un RecyclerView programático (tú lo tenías así)
         RecyclerView recyclerView = new RecyclerView(getContext());
         recyclerView.setId(View.generateViewId());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -46,42 +45,34 @@ public class UsuariosAdministradoresFragment extends Fragment {
         recyclerView.setPadding(0, 0, 0, bottomBarHeightPx);
         recyclerView.setClipToPadding(false);
 
-        // Adapter vacío
         List<Usuario> usuarios = new ArrayList<>();
         adapter = new UsuariosAdapter(getContext(), usuarios);
         recyclerView.setAdapter(adapter);
 
-        // Insertar RecyclerView al contenedor
         FrameLayout containerLayout = view.findViewById(R.id.recyclerContainer);
         containerLayout.removeAllViews();
         containerLayout.addView(recyclerView);
 
-        // 🔥 Cargar administradores desde Firestore
+        // ⭐ Cargar administradores EN TIEMPO REAL
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("users")
-                .get(Source.SERVER)
-                .addOnSuccessListener(snapshot -> {
+                .whereEqualTo("rol", "Admin")      // solo admins
+                .whereEqualTo("status", "Activo")  // solo activos
+                .addSnapshotListener((snapshot, error) -> {
+
+                    if (error != null || snapshot == null) return;
 
                     List<Usuario> admins = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
+                        Usuario u = Usuario.fromSnapshot(doc);
+                        if (u == null) continue;
 
-                        String rol = doc.getString("rol");
-                        if (rol == null) continue;
+                        if (u.getName() == null)
+                            u.setName(doc.getString("username"));
 
-                        // Solo administradores
-                        if (rol.equalsIgnoreCase("Admin") ||
-                                rol.equalsIgnoreCase("SuperAdmin")) {
-
-                            Usuario u = Usuario.fromSnapshot(doc);
-
-                            // Correcciones por si faltan campos
-                            if (u.getName() == null)
-                                u.setName(doc.getString("username"));
-
-                            admins.add(u);
-                        }
+                        admins.add(u);
                     }
 
                     adapter.setUsuarios(admins);

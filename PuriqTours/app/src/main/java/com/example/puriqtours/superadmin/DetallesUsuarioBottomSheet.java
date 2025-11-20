@@ -23,7 +23,19 @@ public class DetallesUsuarioBottomSheet extends BottomSheetDialogFragment {
     }
 
     @Nullable
+
     @Override
+    public void onStart() {
+        super.onStart();
+
+        // 🔥 Hace que el fondo real respete el shape redondeado
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT)
+            );
+        }
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.bottomsheet_detalles_usuario, container, false);

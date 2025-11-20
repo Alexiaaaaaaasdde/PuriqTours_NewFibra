@@ -39,6 +39,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         this.listaUsuariosOriginal = new ArrayList<>(nuevos);
         notifyDataSetChanged();
     }
+
     private int dpToPx(int dp) {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale);
@@ -49,9 +50,10 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.setMargins(0, 0, dpToPx(12), 0); // margen derecha
+        params.setMargins(0, 0, dpToPx(12), 0);
         return params;
     }
+
     public void sortByNameAsc() {
         Collections.sort(listaUsuarios, (u1, u2) -> {
             String n1 = u1.getName() != null ? u1.getName() : "";
@@ -92,45 +94,42 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         String rol = usuario.getRol();
         String estado = usuario.getStatus();
 
-        // Botón Ver Detalles
+        // -------------------- BOTÓN VER DETALLES --------------------
         Button btnDetalles = new Button(context);
         btnDetalles.setText("Ver detalles");
         btnDetalles.setAllCaps(false);
         btnDetalles.setBackgroundResource(R.drawable.bg_oval_button);
-        btnDetalles.setTextColor(0xFFFFFFFF);
-
-        btnDetalles.setCompoundDrawablesWithIntrinsicBounds(
-                R.drawable.ic_eye,  // 👈 tu icono
-                0,
-                0,
-                0
-        );
-
-        btnDetalles.setCompoundDrawablePadding(dpToPx(6)); // separa texto del icono
-        btnDetalles.setMinWidth(dpToPx(112));
-
+        btnDetalles.setTextColor(Color.WHITE);
+        btnDetalles.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_eye, 0, 0, 0);
+        btnDetalles.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
+        btnDetalles.setCompoundDrawablePadding(dpToPx(2)); // ahora sí funciona
+        btnDetalles.setMinWidth(dpToPx(120));
         btnDetalles.setOnClickListener(v -> {
             DetallesUsuarioBottomSheet bottomSheet = new DetallesUsuarioBottomSheet(usuario);
             bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), "DetallesUsuario");
         });
 
-
         btnDetalles.setLayoutParams(paramsBoton());
         holder.layoutBotones.addView(btnDetalles);
 
-        // Solo clientes
-        if ("Cliente".equalsIgnoreCase(rol)) {
+        // -------------------- CLIENTE / GUIA / ADMIN --------------------
+        if (rol.equalsIgnoreCase("cliente") ||
+                rol.equalsIgnoreCase("guia") ||
+                rol.equalsIgnoreCase("admin")) {
 
             if ("Activo".equalsIgnoreCase(estado)) {
+
+                // ---- BLOQUEAR ----
                 Button btnBloq = new Button(context);
                 btnBloq.setText("Bloquear");
                 btnBloq.setAllCaps(false);
                 btnBloq.setBackgroundResource(R.drawable.bg_oval_button);
                 btnBloq.getBackground().mutate().setTint(Color.parseColor("#E63127"));
-
+                btnBloq.setTextColor(Color.WHITE);
                 btnBloq.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_block, 0, 0, 0);
-                btnBloq.setCompoundDrawablePadding(dpToPx(1)); // separa el icono del texto
-                btnBloq.setMinWidth(dpToPx(108));
+                btnBloq.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
+                btnBloq.setCompoundDrawablePadding(dpToPx(2));
+                btnBloq.setMinWidth(dpToPx(120));
 
                 btnBloq.setOnClickListener(v -> {
                     FirebaseFirestore.getInstance()
@@ -146,31 +145,20 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
 
                 btnBloq.setLayoutParams(paramsBoton());
                 holder.layoutBotones.addView(btnBloq);
+
             } else {
+
+                // ---- DESBLOQUEAR ----
                 Button btnDes = new Button(context);
                 btnDes.setText("Desbloquear");
                 btnDes.setAllCaps(false);
                 btnDes.setBackgroundResource(R.drawable.bg_oval_button);
-
-// 🔥 Color TEAL (azul verdoso claro)
-                btnDes.getBackground().mutate().setTint(Color.parseColor("#7AD7D0"));
-
-// icono
-                btnDes.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_unlock,  // tu icono
-                        0,
-                        0,
-                        0
-                );
-
-// separación entre texto e icono
-                btnDes.setCompoundDrawablePadding(dpToPx(6));
-
-// ancho mínimo (como los demás botones)
-                btnDes.setMinWidth(dpToPx(112));
-
-// texto blanco
+                btnDes.getBackground().mutate().setTint(Color.parseColor("#3133E0"));
                 btnDes.setTextColor(Color.WHITE);
+                btnDes.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unlock, 0, 0, 0);
+                btnDes.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
+                btnDes.setCompoundDrawablePadding(dpToPx(2));
+                btnDes.setMinWidth(dpToPx(120));
 
                 btnDes.setOnClickListener(v -> {
                     FirebaseFirestore.getInstance()
@@ -184,11 +172,8 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
                             });
                 });
 
-// margen igual que los otros botones
                 btnDes.setLayoutParams(paramsBoton());
-
                 holder.layoutBotones.addView(btnDes);
-
             }
         }
     }
