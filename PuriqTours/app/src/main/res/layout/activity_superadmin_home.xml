@@ -283,6 +283,211 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"/>
                 </com.google.android.material.card.MaterialCardView>
+
+                <!-- Distribución de Usuarios -->
+                <TextView
+                    android:id="@+id/tvDistribucionUsuarios"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distribución de usuarios"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#009688"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Gráfico Pie para Distribución de Usuarios -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPieChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:backgroundTint="#FFFFFF">
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartUsuarios"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Total de Usuarios Registrados (por mes) -->
+                <TextView
+                    android:id="@+id/tvTotalUsuariosRegistrados"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total de usuarios registrados"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#009688"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:backgroundTint="#FFFFFF">
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/lineChartUsuariosRegistrados"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Total de Ventas -->
+                <TextView
+                    android:id="@+id/tvTotalVentas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total de ventas"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#009688"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:id="@+id/tvTotalIngresosResumen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.00$"
+                        android:textColor="#009688"
+                        android:textSize="22sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:backgroundTint="#FFFFFF">
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/areaChartIngresos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Ventas por Tour más Vendido -->
+                <TextView
+                    android:id="@+id/tvVentasPorTour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ventas por tour más vendido"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#009688"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:backgroundTint="#FFFFFF">
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartVentas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Total de Reservas -->
+                <TextView
+                    android:id="@+id/tvTotalReservas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total de reservas"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#009688"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvTotalReservasResumen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0,00\n0 Reservas"
+                    android:textColor="#009688"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:backgroundTint="#FFFFFF">
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/lineChartReservas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Reservas por Empresa de Turismo -->
+                <TextView
+                    android:id="@+id/tvReservasPorEmpresa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reservas por empresa de turismo"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#009688"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    android:backgroundTint="#FFFFFF">
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/barChartEmpresas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"/>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
