@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.entity.HistorialTour;
-import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.example.puriqtours.adapter.HistorialAdapter;
+import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
@@ -71,7 +71,7 @@ public class HistorialActivity extends AppCompatActivity {
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
             } else if (id == R.id.nav_logout) {
-                Intent intent = new Intent(this, LoginLegacyActivity.class);
+                Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }

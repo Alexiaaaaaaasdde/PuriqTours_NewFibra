@@ -19,8 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.puriqtours.entity.LocalAuth;
-import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
+import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -73,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
                 LocalAuth localAuth = new LocalAuth(this);
                 localAuth.setLogged(false); // 🔹 solo cerrar sesión, sin borrar info
 
-                Intent intent = new Intent(this, LoginLegacyActivity.class);
+                Intent intent = new Intent(this, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();

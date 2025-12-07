@@ -7,9 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.admin.MainAdminActivity;
-import com.example.puriqtours.guia.MainGuiaActivity;
 import com.example.puriqtours.login.LoginActivity;
-import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.superadmin.MainSuperAdminActivity;
 import com.google.firebase.FirebaseApp;
 
@@ -31,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Cliente → LoginLegacyActivity
         btnCliente.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, LoginLegacyActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         });
 
