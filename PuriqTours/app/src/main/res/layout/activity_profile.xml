@@ -643,15 +643,5 @@
             app:itemIconSize="70dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Menú lateral -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/drawer_menu"
-        app:itemIconTint="@color/nav_item_colors"
-        app:itemTextColor="@color/nav_item_colors"
-        app:itemIconSize="66dp"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

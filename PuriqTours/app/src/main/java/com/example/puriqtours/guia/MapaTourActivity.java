@@ -45,6 +45,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
 
     // 🔹 Distancia mínima para marcar un checkpoint (50 metros)
     private static final float DISTANCIA_MINIMA = 50f;
+    private static final int LOCATION_PERMISSION_REQUEST = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,9 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
         // Mapa
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
         // Firestore
         cargarTokenFin();
@@ -77,7 +80,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
 
         // Botones
         btnMarcar.setOnClickListener(v -> marcarCheckpoint());
-        btnFinalizar.setOnClickListener(v -> dialogFinalizar());
+        btnFinalizar.setOnClickListener(v -> mostrarDialogoFinalizarTour());
     }
 
     // ============================================================================
@@ -87,25 +90,68 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1000
-            );
+        // ✅ Verificar permisos antes de activar ubicación
+        if (!verificarPermisosUbicacion()) {
+            solicitarPermisosUbicacion();
             return;
         }
 
-        mMap.setMyLocationEnabled(true);
+        // ✅ Usar anotación para suprimir el warning (los permisos ya se verificaron)
+        activarUbicacionEnMapa();
         iniciarGps();
+    }
+
+    // ============================================================================
+    // VERIFICAR Y SOLICITAR PERMISOS
+    // ============================================================================
+    private boolean verificarPermisosUbicacion() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void solicitarPermisosUbicacion() {
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                LOCATION_PERMISSION_REQUEST
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permisos concedidos, activar ubicación
+                activarUbicacionEnMapa();
+                iniciarGps();
+            } else {
+                Toast.makeText(this,
+                        "⚠️ Se necesitan permisos de ubicación para usar el mapa",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    // ✅ Método separado con supresión de warning (los permisos ya están verificados)
+    @SuppressWarnings("MissingPermission")
+    private void activarUbicacionEnMapa() {
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+        }
     }
 
     // ============================================================================
     // GPS EN TIEMPO REAL
     // ============================================================================
+    @SuppressWarnings("MissingPermission")
     private void iniciarGps() {
+        // Este método solo se llama si los permisos están concedidos
+        if (!verificarPermisosUbicacion()) {
+            return;
+        }
 
         LocationRequest locationRequest = LocationRequest.create()
                 .setInterval(2500)
@@ -131,7 +177,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     private void cargarTokenFin() {
         db.collection("reservas").document(idReserva)
                 .get()
-                .addOnSuccessListener(doc -> tokenFin = doc.getString("qrEnd"));
+                .addOnSuccessListener(doc -> tokenFin = doc.getString("tokenFin"));
     }
 
     // ============================================================================
@@ -154,8 +200,10 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
 
                     for (DocumentSnapshot ds : snap.getDocuments()) {
                         CheckpointReserva cp = ds.toObject(CheckpointReserva.class);
-                        cp.setId(ds.getId());
-                        checkpointList.add(cp);
+                        if (cp != null) {
+                            cp.setId(ds.getId());
+                            checkpointList.add(cp);
+                        }
                     }
 
                     pintarCheckpoints();
@@ -168,6 +216,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     // PINTAR MARKERS
     // ============================================================================
     private void pintarCheckpoints() {
+        if (mMap == null) return;
 
         mMap.clear();
 
@@ -175,7 +224,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
 
             LatLng pos = new LatLng(cp.getLat(), cp.getLng());
 
-            float color = cp.getStatus().equals("Visitado")
+            float color = "Visitado".equals(cp.getStatus())
                     ? BitmapDescriptorFactory.HUE_GREEN
                     : BitmapDescriptorFactory.HUE_RED;
 
@@ -196,8 +245,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     // RUTA POLYLINE
     // ============================================================================
     private void pintarRuta() {
-
-        if (checkpointList.size() < 2) return;
+        if (mMap == null || checkpointList.size() < 2) return;
 
         PolylineOptions poly = new PolylineOptions()
                 .width(10)
@@ -244,7 +292,7 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     // ============================================================================
     private void actualizarBottomSheet() {
 
-        if (guiaLocation == null || checkpointList.isEmpty()) return;
+        if (guiaLocation == null || checkpointList.isEmpty() || mMap == null) return;
 
         CheckpointReserva masCercano = obtenerMasCercano();
         if (masCercano == null) return;
@@ -316,40 +364,44 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
         }
 
         btnFinalizar.setEnabled(true);
-        Toast.makeText(this, "Todos los checkpoints visitados", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "✅ Todos los checkpoints visitados - Puedes finalizar el tour", Toast.LENGTH_LONG).show();
     }
 
     // ============================================================================
-    // FINALIZAR TOUR
+    // 🔥 MOSTRAR BOTTOM SHEET PARA FINALIZAR CON ESCÁNER QR
     // ============================================================================
-    private void dialogFinalizar() {
-
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle("Finalizar Tour");
-        b.setMessage("Ingrese el token de finalización:");
-
-        EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        b.setView(input);
-
-        b.setPositiveButton("Validar", (d, w) -> {
-
-            String token = input.getText().toString().trim();
-
-            if (!token.equals(tokenFin)) {
-                Toast.makeText(this, "Token incorrecto ❌", Toast.LENGTH_SHORT).show();
+    private void mostrarDialogoFinalizarTour() {
+        // Verificar que todos los checkpoints estén visitados
+        for (CheckpointReserva cp : checkpointList) {
+            if (!"Visitado".equals(cp.getStatus())) {
+                Toast.makeText(this, "⚠️ Debes visitar todos los checkpoints primero", Toast.LENGTH_LONG).show();
                 return;
             }
+        }
 
-            db.collection("reservas")
-                    .document(idReserva)
-                    .update("status", "Finalizado");
+        // Verificar que el tour esté en proceso
+        db.collection("reservas")
+                .document(idReserva)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    String estado = doc.getString("status");
 
-            Toast.makeText(this, "Tour finalizado ✔", Toast.LENGTH_LONG).show();
-            finish();
-        });
+                    if (!"En proceso".equalsIgnoreCase(estado)) {
+                        Toast.makeText(this,
+                                "⚠️ El tour no está en proceso",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-        b.setNegativeButton("Cancelar", (d, w) -> d.cancel());
-        b.show();
+                    // 🔥 ABRIR EL BOTTOM SHEET CON ESCÁNER QR
+                    FinalizarTourBottomSheet bottomSheet =
+                            FinalizarTourBottomSheet.newInstance(idReserva);
+                    bottomSheet.show(getSupportFragmentManager(), "FinalizarTour");
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this,
+                            "❌ Error al verificar el estado del tour",
+                            Toast.LENGTH_SHORT).show();
+                });
     }
 }

@@ -58,6 +58,10 @@
     <color name="chip_teal_dark">#009688</color>       <!-- Teal principal PuriqTours -->
     <color name="chip_border_teal">#4DB6AC</color>     <!-- Teal medio -->
 
-
+    <!-- Colores para el escáner QR -->
+    <color name="zxing_custom_possible_result_points">#c099cc00</color>
+    <color name="zxing_custom_result_view">#b0000000</color>
+    <color name="zxing_custom_viewfinder_laser">#FF6F00</color>
+    <color name="zxing_custom_viewfinder_mask">#60000000</color>
 
 </resources>

@@ -62,7 +62,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         if (tour.getImageUrl() != null && !tour.getImageUrl().isEmpty()) {
             Glide.with(context).load(tour.getImageUrl()).into(holder.imgTour);
         } else {
-            holder.imgTour.setImageResource(tour.getImagenResId());
+            holder.imgTour.setImageResource(tour.getImagen());
         }
 
         // ✅ ASEGURAR QUE LOS BOTONES SEAN VISIBLES

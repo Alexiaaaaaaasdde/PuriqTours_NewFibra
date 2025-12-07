@@ -1,10 +1,16 @@
 package com.example.puriqtours;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -36,13 +42,39 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createNotificationChannel();
+        createNotificationChannel(); // 🔥 Canal de notificaciones
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         if (auth.getCurrentUser() != null) {
             uid = auth.getCurrentUser().getUid();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 3000);
+            }
+        }
+
+        // 🔥 ESCUCHAR AUTOMÁTICAMENTE LAS NOTIFICACIONES DESDE FIRESTORE
+        if (uid != null) {
+
+            FirebaseFirestore.getInstance()
+                    .collection("notificaciones")
+                    .document(uid)
+                    .addSnapshotListener((doc, err) -> {
+
+                        if (doc != null && doc.exists()) {
+                            String titulo = doc.getString("titulo");
+                            String mensaje = doc.getString("mensaje");
+
+                            if (titulo != null && mensaje != null) {
+                                mostrarNotificacion(titulo, mensaje);
+                            }
+                        }
+                    });
         }
     }
 
@@ -58,7 +90,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         toolbar.getMenu().clear();
 
-        // Cargar imagen
+        // Cargar imagen del usuario
         if (uid != null) {
             db.collection("users").document(uid).get()
                     .addOnSuccessListener(doc -> {
@@ -114,17 +146,51 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /** 🔥 CANAL DE NOTIFICACIONES DEL SISTEMA */
     protected void createNotificationChannel() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            android.app.NotificationChannel channel = new android.app.NotificationChannel(
-                    "puriqtours_channel",
-                    "Reservas PuriqTours",
-                    android.app.NotificationManager.IMPORTANCE_DEFAULT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "puriq",
+                    "Puriq Tours",
+                    NotificationManager.IMPORTANCE_HIGH
             );
             channel.setDescription("Notificaciones sobre reservas y pagos de tours");
 
-            android.app.NotificationManager manager = getSystemService(android.app.NotificationManager.class);
+            NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
     }
+
+    protected void mostrarNotificacion(String titulo, String mensaje) {
+
+        // 1️⃣ Verificar permiso explícitamente para evitar warning
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                // Si no hay permiso, NO lanzar notificación
+                return;
+            }
+        }
+
+        // 2️⃣ Crear builder de notificación
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "puriq")
+                .setSmallIcon(R.drawable.ic_notifications)
+                .setContentTitle(titulo)
+                .setContentText(mensaje)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        // 3️⃣ Envolver notify() en try/catch para eliminar warning del IDE
+        try {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(
+                    (int) System.currentTimeMillis(),
+                    builder.build()
+            );
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

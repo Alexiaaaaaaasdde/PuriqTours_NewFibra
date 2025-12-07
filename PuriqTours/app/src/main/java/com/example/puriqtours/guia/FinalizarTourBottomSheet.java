@@ -15,6 +15,25 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class FinalizarTourBottomSheet extends BottomSheetDialogFragment {
 
+    private String idReserva;
+
+    public static FinalizarTourBottomSheet newInstance(String idReserva) {
+        FinalizarTourBottomSheet fragment = new FinalizarTourBottomSheet();
+        Bundle args = new Bundle();
+        args.putString("idReserva", idReserva);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Obtener el idReserva de los argumentos
+        if (getArguments() != null) {
+            idReserva = getArguments().getString("idReserva");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -24,13 +43,11 @@ public class FinalizarTourBottomSheet extends BottomSheetDialogFragment {
 
         Button btnFinalizar = view.findViewById(R.id.btnEscanearFinalizar);
         btnFinalizar.setOnClickListener(v -> {
-            dismiss();
+            dismiss(); // Cerrar el bottom sheet
 
-            Intent intent = new Intent(requireContext(), MainGuiaActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent intent = new Intent(requireContext(), FinalizarTourActivity.class);
+            intent.putExtra("idReserva", idReserva);
             startActivity(intent);
-
-            requireActivity().finish();
         });
 
         return view;

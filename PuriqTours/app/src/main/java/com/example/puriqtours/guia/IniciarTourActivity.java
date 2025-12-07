@@ -1,120 +1,177 @@
 package com.example.puriqtours.guia;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.puriqtours.R;
-
-import android.app.AlertDialog;
-import android.text.InputType;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.puriqtours.R;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.ResultPoint;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IniciarTourActivity extends AppCompatActivity {
 
-    private String idReserva;
-    private String idTour;
-    private String tokenInicioEsperado;
+    private static final int CAMERA_PERMISSION_CODE = 100;
 
+    private DecoratedBarcodeView barcodeView;
+    private Button btnEscanear;
     private FirebaseFirestore db;
 
+    private String idReserva;
+    private String idTour;
+    private boolean escaneoActivo = false;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iniciar_tour);
 
         db = FirebaseFirestore.getInstance();
 
-        // 🔹 Recibir datos desde ToursFragment
+        // Recibir datos desde ToursFragment
         idReserva = getIntent().getStringExtra("idReserva");
         idTour = getIntent().getStringExtra("idTour");
-        tokenInicioEsperado = getIntent().getStringExtra("tokenInicio");
 
-        // Mostrar el diálogo para ingresar el token
-        mostrarDialogToken();
+        inicializarVistas();
+        configurarBotonEscanear();
     }
 
-    private void mostrarDialogToken() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Verificar Token de Inicio");
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setHint("Ingrese el token");
-        builder.setView(input);
-
-        builder.setPositiveButton("Validar", (dialog, which) -> {
-            String tokenIngresado = input.getText().toString().trim();
-
-            if (tokenIngresado.isEmpty()) {
-                Toast.makeText(this, "Debe ingresar un token.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            validarToken(tokenIngresado);
-        });
-
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
-
-        builder.show();
+    private void inicializarVistas() {
+        btnEscanear = findViewById(R.id.btnEscanear);
+        // La vista del escáner se inicializará cuando se presione el botón
     }
 
-    private void validarToken(String tokenIngresado) {
-
-        // Si ya enviamos el token desde el fragment, esta verificación es inmediata
-        if (tokenInicioEsperado != null) {
-
-            if (tokenIngresado.equals(tokenInicioEsperado)) {
-
-                // 🔹 Actualizar estado a "En proceso"
-                actualizarEstadoReserva();
-
+    private void configurarBotonEscanear() {
+        btnEscanear.setOnClickListener(v -> {
+            if (verificarPermisosCamara()) {
+                iniciarEscanerQR();
             } else {
-                Toast.makeText(this, "Token incorrecto", Toast.LENGTH_SHORT).show();
+                solicitarPermisosCamara();
+            }
+        });
+    }
+
+    private boolean verificarPermisosCamara() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void solicitarPermisosCamara() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                CAMERA_PERMISSION_CODE);
+    }
+
+    private void iniciarEscanerQR() {
+        // Cambiar a layout con escáner
+        setContentView(R.layout.activity_qr_scanner);
+
+        barcodeView = findViewById(R.id.barcode_scanner);
+        escaneoActivo = true;
+
+        barcodeView.decodeContinuous(new BarcodeCallback() {
+            @Override
+            public void barcodeResult(BarcodeResult result) {
+                if (result != null && result.getText() != null && escaneoActivo) {
+                    escaneoActivo = false;
+                    procesarQRInicio(result.getText());
+                }
             }
 
+            @Override
+            public void possibleResultPoints(List<ResultPoint> resultPoints) {}
+        });
+    }
+
+    private void procesarQRInicio(String contenidoQr) {
+        barcodeView.pause();
+
+        // Extraer el ID de la reserva del QR
+        String idReservaQr = extraerIdReserva(contenidoQr);
+
+        if (idReservaQr == null || !contenidoQr.contains("_inicio_")) {
+            Toast.makeText(this, "❌ QR inválido o no es de inicio", Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
 
-        // 🔹 Si no vino el token, lo buscamos en Firestore (fallback)
+        // Verificar que el QR sea de la reserva correcta
+        if (!idReservaQr.equals(idReserva)) {
+            Toast.makeText(this, "❌ Este QR no corresponde a esta reserva", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // Validar contra Firestore
+        validarYActualizarReserva(contenidoQr);
+    }
+
+    private String extraerIdReserva(String contenidoQr) {
+        // El formato del QR es: "idReserva_tipo_timestamp"
+        if (contenidoQr.contains("_")) {
+            return contenidoQr.split("_")[0];
+        }
+        return null;
+    }
+
+    private void validarYActualizarReserva(String qrEscaneado) {
         db.collection("reservas")
                 .document(idReserva)
                 .get()
                 .addOnSuccessListener(doc -> {
-
                     if (!doc.exists()) {
-                        Toast.makeText(this, "Reserva no encontrada", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "❌ Reserva no encontrada", Toast.LENGTH_SHORT).show();
+                        finish();
                         return;
                     }
 
-                    String tokenInicioDb = doc.getString("tokenInicio");
+                    String tokenInicio = doc.getString("tokenInicio");
 
-                    if (tokenInicioDb == null) {
-                        Toast.makeText(this, "No se encontró token de inicio", Toast.LENGTH_SHORT).show();
+                    if (tokenInicio == null || !tokenInicio.equals(qrEscaneado)) {
+                        Toast.makeText(this, "❌ QR no válido para esta reserva", Toast.LENGTH_SHORT).show();
+                        finish();
                         return;
                     }
 
-                    if (tokenIngresado.equals(tokenInicioDb)) {
+                    // Actualizar estado a "En proceso"
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("status", "En proceso");
+                    updates.put("checkInTime", FieldValue.serverTimestamp());
 
-                        // 🔹 Actualizar estado a "En proceso"
-                        actualizarEstadoReserva();
-
-                    } else {
-                        Toast.makeText(this, "Token incorrecto", Toast.LENGTH_SHORT).show();
-                    }
+                    db.collection("reservas")
+                            .document(idReserva)
+                            .update(updates)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(this, "✅ Check-in exitoso - Tour iniciado", Toast.LENGTH_LONG).show();
+                                abrirMapa();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "❌ Error al registrar check-in", Toast.LENGTH_SHORT).show();
+                                finish();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "❌ Error al verificar QR", Toast.LENGTH_SHORT).show();
+                    finish();
                 });
     }
 
-
     private void abrirMapa() {
-        Toast.makeText(this, "Token validado correctamente ✔", Toast.LENGTH_SHORT).show();
-
         Intent intent = new Intent(this, MapaTourActivity.class);
         intent.putExtra("idReserva", idReserva);
         intent.putExtra("idTour", idTour);
@@ -122,18 +179,34 @@ public class IniciarTourActivity extends AppCompatActivity {
         finish();
     }
 
-    private void actualizarEstadoReserva() {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        db.collection("reservas")
-                .document(idReserva)
-                .update("status", "En proceso")
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Tour iniciado ✔", Toast.LENGTH_SHORT).show();
-                    abrirMapa();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al actualizar estado", Toast.LENGTH_SHORT).show();
-                });
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                iniciarEscanerQR();
+            } else {
+                Toast.makeText(this, "⚠️ Permiso de cámara requerido", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (barcodeView != null && escaneoActivo) {
+            barcodeView.resume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (barcodeView != null) {
+            barcodeView.pause();
+        }
+    }
 }

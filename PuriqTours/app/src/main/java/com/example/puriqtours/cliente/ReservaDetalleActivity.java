@@ -4,15 +4,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.ImageButton;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,12 +24,12 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-public class ReservaDetalleActivity extends AppCompatActivity {
+public class ReservaDetalleActivity extends BaseActivity {
 
-    // ✅ CORREGIDO: Usar los IDs que SÍ existen en el XML
     private TextView tvTitulo, tvEstado, tvFecha, tvPersonas, tvCosto, tvPago;
-    private ImageView imgTour, imgQR;
-    private ImageButton btnBack;
+    private TextView tvQrFinBloqueado;
+    private ImageView imgTour, imgQrInicio, imgQrFin;
+    private LinearLayout layoutQrFin;
 
     private FirebaseFirestore db;
     private String reservaId;
@@ -45,9 +48,18 @@ public class ReservaDetalleActivity extends AppCompatActivity {
             return;
         }
 
-        // ---------- NAVEGACIÓN INFERIOR ----------
+        // ⭐ Usa el toolbar de BaseActivity con foto y menú
+        setupSharedToolbar();
+
+        inicializarVistas();
+        configurarNavegacion();
+        cargarDatos();
+    }
+
+    private void configurarNavegacion() {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
-        bottomNavigation.setSelectedItemId(R.id.nav_tours);
+
+        bottomNavigation.setSelectedItemId(R.id.nav_historial);
 
         bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -55,21 +67,23 @@ public class ReservaDetalleActivity extends AppCompatActivity {
             if (id == R.id.nav_perfil) {
                 startActivity(new Intent(this, ProfileActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
+
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
+
             } else if (id == R.id.nav_historial) {
                 startActivity(new Intent(this, HistorialActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             return false;
         });
-
-        inicializarVistas();
-        cargarDatos();
     }
 
     private void inicializarVistas() {
@@ -77,13 +91,14 @@ public class ReservaDetalleActivity extends AppCompatActivity {
         tvEstado = findViewById(R.id.tvEstado);
         tvFecha = findViewById(R.id.tvFecha);
         tvPersonas = findViewById(R.id.tvPersonas);
-        tvCosto = findViewById(R.id.tvCosto);      // ✅ Cambiado de tvPrecio
+        tvCosto = findViewById(R.id.tvCosto);
         tvPago = findViewById(R.id.tvPago);
         imgTour = findViewById(R.id.imgTour);
-        imgQR = findViewById(R.id.imgQR);
-        btnBack = findViewById(R.id.btnBack);
 
-        btnBack.setOnClickListener(v -> finish());
+        imgQrInicio = findViewById(R.id.imgQrInicio);
+        imgQrFin = findViewById(R.id.imgQrFin);
+        tvQrFinBloqueado = findViewById(R.id.tvQrFinBloqueado);
+        layoutQrFin = findViewById(R.id.layoutQrFin);
     }
 
     private void cargarDatos() {
@@ -106,17 +121,21 @@ public class ReservaDetalleActivity extends AppCompatActivity {
 
         String titulo = doc.getString("titulo");
         String fecha = doc.getString("fecha");
-        String estado = doc.getString("estado");
+        String estado = doc.getString("status");
         String precio = doc.getString("precio");
         String viajeros = doc.getString("viajeros");
         String pago = doc.getString("medioPago");
         String img = doc.getString("imageUrl");
+        String tokenInicio = doc.getString("tokenInicio");
+        String tokenFin = doc.getString("tokenFin");
+
+        if (estado == null) estado = "Desconocido";
 
         tvTitulo.setText(titulo);
         tvEstado.setText("Estado: " + estado);
         tvFecha.setText("Fecha: " + fecha);
         tvPersonas.setText("Personas: " + viajeros);
-        tvCosto.setText("" + precio);  // ✅ Ahora usa tvCosto
+        tvCosto.setText(precio);
         tvPago.setText("Medio de pago: " + (pago != null ? pago : "No registrado"));
 
         Glide.with(this)
@@ -124,18 +143,58 @@ public class ReservaDetalleActivity extends AppCompatActivity {
                 .placeholder(R.drawable.kuelap)
                 .into(imgTour);
 
-        generarQR(reservaId, titulo, fecha, viajeros);
+        // QR Inicio
+        if (tokenInicio != null && !tokenInicio.isEmpty()) {
+            generarYMostrarQR(tokenInicio, imgQrInicio);
+        } else {
+            generarYGuardarToken(reservaId, "inicio");
+        }
+
+        // QR Fin
+        if (estado.equalsIgnoreCase("En proceso")) {
+            tvQrFinBloqueado.setVisibility(View.GONE);
+            layoutQrFin.setVisibility(View.VISIBLE);
+
+            if (tokenFin != null && !tokenFin.isEmpty()) {
+                generarYMostrarQR(tokenFin, imgQrFin);
+            } else {
+                generarYGuardarToken(reservaId, "fin");
+            }
+
+        } else if (estado.equalsIgnoreCase("Finalizado")) {
+            tvQrFinBloqueado.setVisibility(View.GONE);
+            layoutQrFin.setVisibility(View.VISIBLE);
+
+            if (tokenFin != null && !tokenFin.isEmpty()) {
+                generarYMostrarQR(tokenFin, imgQrFin);
+            }
+
+        } else {
+            tvQrFinBloqueado.setVisibility(View.VISIBLE);
+            layoutQrFin.setVisibility(View.GONE);
+        }
     }
 
-    private void generarQR(String id, String titulo, String fecha, String viajeros) {
-        try {
-            String data = "RESERVA:" + id + "\n" +
-                    "TOUR:" + titulo + "\n" +
-                    "FECHA:" + fecha + "\n" +
-                    "VIAJEROS:" + viajeros;
+    private void generarYGuardarToken(String reservaId, String tipo) {
+        String token = reservaId + "_" + tipo + "_" + System.currentTimeMillis();
 
-            BitMatrix matrix = new QRCodeWriter()
-                    .encode(data, BarcodeFormat.QR_CODE, 500, 500);
+        String campo = tipo.equals("inicio") ? "tokenInicio" : "tokenFin";
+        db.collection("reservas")
+                .document(reservaId)
+                .update(campo, token)
+                .addOnSuccessListener(aVoid -> {
+                    ImageView targetImg = tipo.equals("inicio") ? imgQrInicio : imgQrFin;
+                    generarYMostrarQR(token, targetImg);
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error al generar token", Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    private void generarYMostrarQR(String contenido, ImageView imageView) {
+        try {
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix matrix = writer.encode(contenido, BarcodeFormat.QR_CODE, 500, 500);
 
             Bitmap bmp = Bitmap.createBitmap(500, 500, Bitmap.Config.RGB_565);
 
@@ -145,10 +204,11 @@ public class ReservaDetalleActivity extends AppCompatActivity {
                 }
             }
 
-            imgQR.setImageBitmap(bmp);
+            imageView.setImageBitmap(bmp);
 
-        } catch (WriterException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error al generar código QR", Toast.LENGTH_SHORT).show();
         }
     }
 }
+
