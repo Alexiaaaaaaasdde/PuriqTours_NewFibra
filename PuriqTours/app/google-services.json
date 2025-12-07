@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "68499209549-qraubjro24ktof493gdjaolttsue1cgb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.puriqtours",
+            "certificate_hash": "9c6d04557fa55ad2f1cbf64ff3f63e27acb2a081"
+          }
+        },
+        {
           "client_id": "68499209549-jtn9pvm4si0stqo24bpir410hgr5b8qh.apps.googleusercontent.com",
           "client_type": 3
         }
