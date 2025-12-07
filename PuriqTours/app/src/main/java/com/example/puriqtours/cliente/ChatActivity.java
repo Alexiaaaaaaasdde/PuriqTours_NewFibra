@@ -29,8 +29,7 @@ public class ChatActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        // 🔹 Activar navbar con las 3 rayitas (☰)
-        setupDrawer();
+
         enableDrawerIcon(); // 👈 este método lo añadimos en BaseActivity
 
         // 🔹 Inicializar botón back (flecha debajo del toolbar)

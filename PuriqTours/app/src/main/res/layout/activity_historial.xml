@@ -15,16 +15,15 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <!-- 🔹 Toolbar superior -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="0dp"
+            android:fitsSystemWindows="false"
             android:layout_height="?attr/actionBarSize"
             android:background="#009688"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:title="Puriq Tours"
             app:titleCentered="true"
-            app:navigationIcon="@drawable/ic_menu"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -42,6 +41,7 @@
                 app:strokeColor="@android:color/white"
                 app:strokeWidth="2dp"/>
         </com.google.android.material.appbar.MaterialToolbar>
+
 
         <!-- 🔹 Barra de búsqueda -->
         <EditText

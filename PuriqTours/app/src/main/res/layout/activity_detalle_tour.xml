@@ -7,32 +7,35 @@
     android:layout_height="match_parent"
     tools:context=".cliente.DetalleTourActivity">
 
+    <!-- 🔹 TOOLBAR SUPERIOR SIN HIJOS (IMPORTANTE) -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:background="#009688"
+        android:background="@drawable/gradient_toolbar"
+        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:title="Puriq Tours"
         app:titleCentered="true"
-        app:navigationIcon="@drawable/ic_menu"
+        app:titleTextColor="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- 🔹 Icono perfil -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profileIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:scaleType="centerCrop"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/imagen_perfil"
-            app:shapeAppearanceOverlay="@style/RoundedImage"
-            app:strokeColor="@android:color/white"
-            app:strokeWidth="2dp"/>
-    </com.google.android.material.appbar.MaterialToolbar>
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profileIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        android:layout_marginEnd="16dp"
+        android:elevation="10dp"
+        app:shapeAppearanceOverlay="@style/RoundedImage"
+        app:strokeColor="@android:color/white"
+        app:strokeWidth="2dp"
+        app:layout_constraintTop_toTopOf="@id/topAppBar"
+        app:layout_constraintBottom_toBottomOf="@id/topAppBar"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <!-- 🔹 Contenido scrollable -->
     <ScrollView
@@ -65,7 +68,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Ciudadela de Kuélap"
                 android:textColor="#2B746C"
                 android:textSize="35sp"
                 android:textStyle="bold" />
@@ -107,8 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/kuelap" />
+                android:scaleType="centerCrop" />
 
             <!-- 🔹 Precio -->
             <TextView
