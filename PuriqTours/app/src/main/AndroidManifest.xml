@@ -36,13 +36,10 @@
             android:exported="false">
         </activity>
         <activity
-            android:name=".login.LoginLegacyActivity"
+            android:name=".login.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.PuriqTours.Starting" />
-        <activity
-            android:name=".login.LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.PuriqTours.Starting" />
+
         <activity
             android:name=".login.SetupProfileLegacyActivity"
             android:exported="false" />

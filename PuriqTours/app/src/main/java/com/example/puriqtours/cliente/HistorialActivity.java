@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
 import com.example.puriqtours.adapter.HistorialAdapter;
 import com.example.puriqtours.entity.HistorialTour;
-import com.example.puriqtours.login.LoginLegacyActivity;
+import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
@@ -50,7 +49,7 @@ public class HistorialActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         if (mAuth.getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginLegacyActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
@@ -89,7 +88,7 @@ public class HistorialActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.nav_logout) {
                 mAuth.signOut();
-                startActivity(new Intent(this, LoginLegacyActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 finish();
             }
             drawerLayout.closeDrawer(GravityCompat.START);

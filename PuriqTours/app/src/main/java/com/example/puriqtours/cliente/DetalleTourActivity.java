@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
-import com.example.puriqtours.login.LoginLegacyActivity;
+import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -126,7 +126,7 @@ public class DetalleTourActivity extends AppCompatActivity {
                 return true;
 
             } else if (id == R.id.nav_tours) {
-                startActivity(new Intent(this, LoginLegacyActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
 

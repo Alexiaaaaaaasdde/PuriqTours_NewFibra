@@ -19,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.puriqtours.R;
-import com.example.puriqtours.login.LoginLegacyActivity;
+import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -269,7 +269,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void redirigirAlLogin() {
-        Intent i = new Intent(this, LoginLegacyActivity.class);
+        Intent i = new Intent(this, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
