@@ -118,3 +118,4 @@
         app:itemTextColor="@color/nav_item_colors"
         app:itemIconSize="66dp"/>
 </androidx.drawerlayout.widget.DrawerLayout>
+

@@ -6,10 +6,11 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class ReservadoActivity extends AppCompatActivity {
+public class ReservadoActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

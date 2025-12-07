@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
 import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class DetalleTourActivity extends AppCompatActivity {
+public class DetalleTourActivity extends BaseActivity {
 
     private TextView tvTitulo, tvPrecio, tvFecha, tvViajeros, tvSeleccion, tvDesc;
     private ImageView imgTour, btnCalendario;
@@ -50,6 +51,7 @@ public class DetalleTourActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_tour);
+        setupSharedToolbar();
 
         // 🔹 Obtener ID real del tour
         tourId = getIntent().getStringExtra("tourId");
@@ -137,6 +139,7 @@ public class DetalleTourActivity extends AppCompatActivity {
             }
             return false;
         });
+
     }
 
     // 📌 Calendario

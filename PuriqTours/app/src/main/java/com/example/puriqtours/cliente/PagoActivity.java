@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import android.app.PendingIntent;
 
 import com.bumptech.glide.Glide;
+import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PagoActivity extends AppCompatActivity {
+public class PagoActivity extends BaseActivity {
 
     // 🔹 Launcher para pedir permiso de notificaciones
     private ActivityResultLauncher<String> requestPermissionLauncher;
@@ -45,6 +46,7 @@ public class PagoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pago);
+        setupSharedToolbar();
 
         // 🔹 Inicializar launcher de permisos
         requestPermissionLauncher = registerForActivityResult(
@@ -88,7 +90,7 @@ public class PagoActivity extends AppCompatActivity {
         // ------- SETEAR DATOS EN LA UI -------
         if (fecha != null) tvFechaPago.setText("Fecha: " + fecha);
         if (viajeros != null) tvViajerosPago.setText("Viajeros: " + viajeros);
-        if (precio != null) tvPrecioPago.setText("Total: " + precio);
+        if (precio != null) tvPrecioPago.setText("" + precio);
         if (hora != null) tvHoraPago.setText("Hora: " + hora);
 
         // 🔹 Card superior
