@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -53,6 +54,11 @@ public class DetalleTourActivity extends BaseActivity {
     private String tituloTour;
     private float precioTour;
     private String location;
+    private int precioExtras = 0;
+
+    private int cantDesayuno = 0;
+    private int cantCanotaje = 0;
+
 
     // 🔹 HORARIOS DEL TOUR
     private List<String> horariosDisponibles = new ArrayList<>();
@@ -349,6 +355,13 @@ public class DetalleTourActivity extends BaseActivity {
         dialogDisponibilidad.setContentView(R.layout.dialog_disponibilidad);
         dialogDisponibilidad.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        // ⭐ BOTÓN DETALLES dentro del popup de disponibilidad
+        Button btnDetalle = dialogDisponibilidad.findViewById(R.id.btnDetalles);
+        if (btnDetalle != null) {
+            btnDetalle.setOnClickListener(v -> mostrarDialogoDetalles());
+        }
+
+
         TextView tvTituloPopup = dialogDisponibilidad.findViewById(R.id.tvTituloPopup);
         TextView tvFechaSel = dialogDisponibilidad.findViewById(R.id.tvFechaSeleccionada);
         TextView tvViajerosSel = dialogDisponibilidad.findViewById(R.id.tvViajerosSeleccionados);
@@ -432,7 +445,7 @@ public class DetalleTourActivity extends BaseActivity {
         btnReserva.setAlpha(0.5f);
 
         btnReserva.setOnClickListener(v -> {
-            float totalFinal = calcularTotalReserva();
+            float totalFinal = calcularTotalReserva() + precioExtras;
 
             Intent i = new Intent(this, PagoActivity.class);
             i.putExtra("fecha", fechaSeleccionadaGlobal);
@@ -444,8 +457,23 @@ public class DetalleTourActivity extends BaseActivity {
             i.putExtra("ubicacion", location);
             i.putExtra("img", getIntent().getStringExtra("img"));
 
+            // 🔹 EXTRA: enviar detalles de los extras
+            String extrasDetalle = "";
+
+            if (precioExtras > 0) {
+                if (cantDesayuno > 0) extrasDetalle += cantDesayuno + "× Desayuno ";
+                if (cantCanotaje > 0) extrasDetalle += cantCanotaje + "× Canotaje ";
+            } else {
+                extrasDetalle = "Sin extras";
+            }
+
+
+            i.putExtra("extrasDetalle", extrasDetalle);
+            i.putExtra("precioExtras", precioExtras);
+
             startActivity(i);
         });
+
 
         dialogDisponibilidad.show();
     }
@@ -622,4 +650,98 @@ public class DetalleTourActivity extends BaseActivity {
                     // Error al cargar, mantener valores por defecto
                 });
     }
+
+    private void actualizarPrecioConExtras() {
+        if (dialogDisponibilidad == null) return;
+
+        TextView tvPrecioDisp = dialogDisponibilidad.findViewById(R.id.tvPrecio);
+
+        if (tvPrecioDisp != null) {
+            float totalBase = calcularTotalReserva();
+            float totalConExtras = totalBase + precioExtras;
+
+            tvPrecioDisp.setText("Total: S/ " + String.format("%.2f", totalConExtras));
+        }
+    }
+
+
+    private void mostrarDialogoDetalles() {
+
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_detalles);
+        dialog.getWindow().setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        // ================
+        // 🔹 BOTONES EXTRA
+        // ================
+        ImageButton btnMasDesayuno = dialog.findViewById(R.id.btnMasDesayuno);
+        ImageButton btnMenosDesayuno = dialog.findViewById(R.id.btnMenosDesayuno);
+        TextView tvCantidadDesayuno = dialog.findViewById(R.id.tvCantidadDesayuno);
+
+        ImageButton btnMasCanotaje = dialog.findViewById(R.id.btnMasCanotaje);
+        ImageButton btnMenosCanotaje = dialog.findViewById(R.id.btnMenosCanotaje);
+        TextView tvCantidadCanotaje = dialog.findViewById(R.id.tvCantidadCanotaje);
+
+        Button btnAgregarExtras = dialog.findViewById(R.id.btnAgregarExtras);
+        Button btnSalir = dialog.findViewById(R.id.btnSalir);
+
+        // Mostrar cantidades actuales
+        tvCantidadDesayuno.setText(String.valueOf(cantDesayuno));
+        tvCantidadCanotaje.setText(String.valueOf(cantCanotaje));
+
+        // 🔸 SUMAR
+        btnMasDesayuno.setOnClickListener(v -> {
+            cantDesayuno++;
+            tvCantidadDesayuno.setText(String.valueOf(cantDesayuno));
+        });
+
+        btnMasCanotaje.setOnClickListener(v -> {
+            cantCanotaje++;
+            tvCantidadCanotaje.setText(String.valueOf(cantCanotaje));
+        });
+
+        // 🔸 RESTAR
+        btnMenosDesayuno.setOnClickListener(v -> {
+            if (cantDesayuno > 0) cantDesayuno--;
+            tvCantidadDesayuno.setText(String.valueOf(cantDesayuno));
+        });
+
+        btnMenosCanotaje.setOnClickListener(v -> {
+            if (cantCanotaje > 0) cantCanotaje--;
+            tvCantidadCanotaje.setText(String.valueOf(cantCanotaje));
+        });
+
+        // 🔹 GUARDAR EXTRAS
+        btnAgregarExtras.setOnClickListener(v -> {
+
+            precioExtras = (cantDesayuno * 10) + (cantCanotaje * 30);
+
+            Toast.makeText(
+                    this,
+                    "Extras añadidos: S/ " + precioExtras,
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            dialog.dismiss();
+
+            actualizarPrecioConExtras();
+        });
+
+        btnSalir.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+
+
+    // =============================
+        // 🔹 BOTÓN SALIR
+        // =============================
+        btnSalir.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+
 }

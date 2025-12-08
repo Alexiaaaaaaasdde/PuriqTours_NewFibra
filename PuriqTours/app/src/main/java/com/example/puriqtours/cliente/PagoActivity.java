@@ -48,6 +48,9 @@ public class PagoActivity extends BaseActivity {
         setContentView(R.layout.activity_pago);
         setupSharedToolbar();
 
+        TextView tvExtrasDetalle = findViewById(R.id.tvExtrasDetalle);
+
+
         // 🔹 Inicializar launcher de permisos
         requestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
@@ -86,12 +89,22 @@ public class PagoActivity extends BaseActivity {
         String opiniones = getIntent().getStringExtra("opiniones");
         int rating = getIntent().getIntExtra("rating", 5);
         String img = getIntent().getStringExtra("img");
+        String extrasDetalle = getIntent().getStringExtra("extrasDetalle");
+        int precioExtras = getIntent().getIntExtra("precioExtras", 0);
+
 
         // ------- SETEAR DATOS EN LA UI -------
         if (fecha != null) tvFechaPago.setText("Fecha: " + fecha);
         if (viajeros != null) tvViajerosPago.setText("Viajeros: " + viajeros);
         if (precio != null) tvPrecioPago.setText("" + precio);
         if (hora != null) tvHoraPago.setText("Hora: " + hora);
+
+        if (extrasDetalle != null && !extrasDetalle.equals("Sin extras")) {
+            tvExtrasDetalle.setText(extrasDetalle);
+        } else {
+            tvExtrasDetalle.setText("Sin extras");
+        }
+
 
         // 🔹 Card superior
         tvTituloCard.setText(titulo != null ? titulo : "Tour");
