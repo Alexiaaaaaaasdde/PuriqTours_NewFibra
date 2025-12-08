@@ -32,8 +32,8 @@ public class ToursActivity extends BaseActivity {
     private EditText searchBar;
     private RecyclerView recyclerTours;
 
-    private ArrayList<Tour> tourList = new ArrayList<>();
-    private ArrayList<Tour> listaFiltrada = new ArrayList<>();
+    private final ArrayList<Tour> tourList = new ArrayList<>();
+    private final ArrayList<Tour> listaFiltrada = new ArrayList<>();
 
     private TourClienteAdapter adapter;
     private FirebaseFirestore db;
@@ -43,11 +43,7 @@ public class ToursActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tours_cliente);
 
-        // --------------------------------------------------------------------
-        // 🔥 Establecer toolbar de BaseActivity (foto + cerrar sesión)
-        // --------------------------------------------------------------------
-        setupSharedToolbar();
-
+        setupSharedToolbar(); // Toolbar con foto + menú
 
         inicializarVistas();
         inicializarBottomNav();
@@ -59,6 +55,10 @@ public class ToursActivity extends BaseActivity {
         configurarBusqueda();
         configurarFiltroDepartamentos();
     }
+
+    // --------------------------------------------------------------------
+    // INICIALIZACIONES
+    // --------------------------------------------------------------------
 
     private void inicializarVistas() {
         btnFiltrar = findViewById(R.id.btnFiltro);
@@ -75,20 +75,16 @@ public class ToursActivity extends BaseActivity {
         bottomNavigation.setSelectedItemId(R.id.nav_tours);
 
         bottomNavigation.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-            if (item.getItemId() == R.id.nav_perfil) {
+            if (id == R.id.nav_perfil) {
                 startActivity(new Intent(this, ProfileActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             }
 
-            if (item.getItemId() == R.id.nav_historial) {
+            if (id == R.id.nav_historial) {
                 startActivity(new Intent(this, HistorialActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            }
-
-            if (item.getItemId() == R.id.nav_historial) {
                 overridePendingTransition(0, 0);
                 return true;
             }
@@ -97,12 +93,19 @@ public class ToursActivity extends BaseActivity {
         });
     }
 
+    // --------------------------------------------------------------------
+    // CONFIGURAR LISTA Y ADAPTER
+    // --------------------------------------------------------------------
+
     private void configurarAdapter() {
         adapter = new TourClienteAdapter(listaFiltrada, tour -> {
 
+            // 🔥 Asegurarse que SIEMPRE se mande un tourId valido
+            String safeId = tour.getIdTour() != null ? tour.getIdTour() : "";
+
             Intent intent = new Intent(ToursActivity.this, DetalleTourActivity.class);
 
-            intent.putExtra("tourId", tour.getIdTour());
+            intent.putExtra("tourId", safeId);
             intent.putExtra("titulo", tour.getTitle() != null ? tour.getTitle() : "Sin título");
             intent.putExtra("precio", String.valueOf(tour.getPrice() != null ? tour.getPrice() : 0));
             intent.putExtra("desc", tour.getDesc() != null ? tour.getDesc() : "Sin descripción");
@@ -118,6 +121,10 @@ public class ToursActivity extends BaseActivity {
         recyclerTours.setAdapter(adapter);
     }
 
+    // --------------------------------------------------------------------
+    // CARGAR TOURS DESDE FIREBASE
+    // --------------------------------------------------------------------
+
     private void cargarToursDesdeFirebase() {
         db.collection("tours").get()
                 .addOnSuccessListener(query -> {
@@ -127,10 +134,13 @@ public class ToursActivity extends BaseActivity {
                     for (DocumentSnapshot doc : query) {
                         try {
                             Tour t = doc.toObject(Tour.class);
+
                             if (t != null) {
+                                // 🔥 ID REAL de Firestore, JAMÁS null
                                 t.setIdTour(doc.getId());
                                 tourList.add(t);
                             }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -143,12 +153,16 @@ public class ToursActivity extends BaseActivity {
                             "Cargados " + tourList.size() + " tours",
                             Toast.LENGTH_SHORT).show();
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this,
-                            "Error Firebase: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                "Error Firebase: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show()
+                );
     }
+
+    // --------------------------------------------------------------------
+    // BUSQUEDA EN TIEMPO REAL
+    // --------------------------------------------------------------------
 
     private void configurarBusqueda() {
         searchBar.addTextChangedListener(new TextWatcher() {
@@ -183,6 +197,10 @@ public class ToursActivity extends BaseActivity {
 
         adapter.notifyDataSetChanged();
     }
+
+    // --------------------------------------------------------------------
+    // FILTROS POR DEPARTAMENTO
+    // --------------------------------------------------------------------
 
     private void configurarFiltroDepartamentos() {
         btnFiltrar.setOnClickListener(v -> abrirFiltroDepartamentos());
@@ -232,12 +250,9 @@ public class ToursActivity extends BaseActivity {
         listaFiltrada.clear();
 
         for (Tour t : tourList) {
-            try {
-                if (t.getLocation() != null &&
-                        t.getLocation().equalsIgnoreCase(dep)) {
-                    listaFiltrada.add(t);
-                }
-            } catch (Exception ignored) {}
+            if (t.getLocation() != null && t.getLocation().equalsIgnoreCase(dep)) {
+                listaFiltrada.add(t);
+            }
         }
 
         adapter.notifyDataSetChanged();

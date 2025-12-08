@@ -465,49 +465,59 @@ public class DetalleTourActivity extends BaseActivity {
      * Carga las valoraciones del tour desde Firebase
      */
     private void cargarValoracionesDesdeFirebase() {
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("valoraciones")
-                .whereEqualTo("tourId", tourId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .limit(2)
+                .whereEqualTo("tourId", tourId) // 👈 Asegúrate que este campo existe en Firestore
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (querySnapshot.isEmpty()) {
-                        // No hay valoraciones, mantener las de ejemplo
+                .addOnSuccessListener(query -> {
+
+                    LinearLayout contenedor = findViewById(R.id.contenedorOpiniones);
+                    View card1 = findViewById(R.id.cardOpinionEjemplo1);
+                    View card2 = findViewById(R.id.cardOpinionEjemplo2);
+
+                    if (query.isEmpty()) {
+                        // No hay valoraciones → dejamos las de ejemplo
                         return;
                     }
 
-                    // Hay valoraciones, ocultar las de ejemplo
-                    View cardEjemplo1 = findViewById(R.id.cardOpinionEjemplo1);
-                    View cardEjemplo2 = findViewById(R.id.cardOpinionEjemplo2);
+                    // Ocultar ejemplos
+                    if (card1 != null) card1.setVisibility(View.GONE);
+                    if (card2 != null) card2.setVisibility(View.GONE);
 
-                    if (cardEjemplo1 != null) cardEjemplo1.setVisibility(View.GONE);
-                    if (cardEjemplo2 != null) cardEjemplo2.setVisibility(View.GONE);
+                    double suma = 0;
+                    int count = 0;
 
-                    LinearLayout contenedor = findViewById(R.id.contenedorOpiniones);
+                    for (DocumentSnapshot doc : query) {
 
-                    // Agregar las valoraciones reales
-                    for (DocumentSnapshot doc : querySnapshot) {
                         String clienteId = doc.getString("clienteId");
-                        Double ratingPromedio = doc.getDouble("ratingPromedio");
+                        Double rating = doc.getDouble("ratingPromedio");
                         String comentario = doc.getString("comentario");
                         String fecha = doc.getString("fecha");
 
-                        // Cargar nombre del cliente y crear tarjeta
-                        cargarNombreYCrearTarjeta(clienteId, ratingPromedio, comentario,
-                                fecha, contenedor);
+                        if (rating != null)
+                            suma += rating;
+
+                        count++;
+
+                        cargarNombreYCrearTarjeta(clienteId, rating, comentario, fecha, contenedor);
                     }
 
-                    // Actualizar el rating global
-                    actualizarRatingGlobal();
+                    // Actualizar rating promedio
+                    RatingBar ratingBar = findViewById(R.id.ratingBar1);
+                    TextView tvOpiniones = findViewById(R.id.tvOpiniones);
+
+                    float promedio = (float) (suma / count);
+                    ratingBar.setRating(promedio);
+                    tvOpiniones.setText("(" + count + " opiniones)");
+
                 })
                 .addOnFailureListener(e -> {
-                    // Error al cargar, mantener opiniones de ejemplo
-                    Toast.makeText(this, "Error al cargar valoraciones",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error al cargar valoraciones", Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     /**
      * Carga el nombre del cliente y crea la tarjeta de opinión
