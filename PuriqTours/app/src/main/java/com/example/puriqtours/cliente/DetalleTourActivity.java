@@ -525,7 +525,7 @@ public class DetalleTourActivity extends BaseActivity {
                                            String fecha, LinearLayout contenedor) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("usuarios")
+        db.collection("users")   // ← CORREGIDO
                 .document(clienteId)
                 .get()
                 .addOnSuccessListener(doc -> {
@@ -543,14 +543,13 @@ public class DetalleTourActivity extends BaseActivity {
                         }
                     }
 
-                    // Crear la tarjeta de opinión
                     crearTarjetaOpinion(contenedor, nombreCompleto, rating, comentario, fecha);
                 })
                 .addOnFailureListener(e -> {
-                    // Si falla, usar nombre genérico
                     crearTarjetaOpinion(contenedor, "Usuario", rating, comentario, fecha);
                 });
     }
+
 
     /**
      * Crea una tarjeta de opinión dinámicamente
