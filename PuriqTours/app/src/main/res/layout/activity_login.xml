@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Logo central más grande -->
+    <!-- Logo central -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="250dp"
@@ -31,19 +31,6 @@
         app:layout_constraintBottom_toTopOf="@id/loginCard"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="16dp" />
-
-    <!-- Logo y nombre de la app -->
-    <LinearLayout
-        android:id="@+id/logoContainer"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp">
-    </LinearLayout>
 
     <!-- Contenedor del login -->
     <LinearLayout
@@ -61,26 +48,85 @@
         android:layout_marginBottom="40dp">
 
         <!-- Campo Email -->
-        <EditText
-            android:id="@+id/email"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_marginBottom="12dp"
-            android:background="@drawable/bg_input"
-            android:drawableStart="@android:drawable/ic_dialog_email"
-            android:hint="Ingresa tu correo electrónico"
-            android:inputType="textEmailAddress" />
+            android:background="@drawable/bg_input">
+
+            <ImageView
+                android:id="@+id/iconEmail"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:src="@android:drawable/ic_dialog_email"
+                android:contentDescription="Email icon"
+                android:tint="@color/teal_dark" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/iconEmail"
+                android:background="@android:color/transparent"
+                android:paddingStart="12dp"
+                android:paddingEnd="16dp"
+                android:hint="Ingresa tu correo electrónico"
+                android:textColorHint="#80000000"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+        </RelativeLayout>
 
         <!-- Campo Contraseña -->
-        <EditText
-            android:id="@+id/password"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="56dp"
             android:layout_marginBottom="12dp"
-            android:background="@drawable/bg_input"
-            android:drawableStart="@android:drawable/ic_lock_lock"
-            android:hint="Ingresa tu contraseña"
-            android:inputType="textPassword" />
+            android:background="@drawable/bg_input">
+
+            <ImageView
+                android:id="@+id/iconPassword"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:src="@android:drawable/ic_lock_lock"
+                android:contentDescription="Password icon"
+                android:tint="@color/teal_dark" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/iconPassword"
+                android:layout_toStartOf="@id/btnTogglePassword"
+                android:background="@android:color/transparent"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:hint="Ingresa tu contraseña"
+                android:textColorHint="#80000000"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+
+            <ImageView
+                android:id="@+id/btnTogglePassword"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_eye_closed"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Mostrar contraseña"
+                android:scaleType="fitCenter" />
+        </RelativeLayout>
 
         <!-- Texto enlaces -->
         <TextView
@@ -90,7 +136,8 @@
             android:layout_marginBottom="8dp"
             android:text="Registrarse"
             android:textColor="@color/teal_dark"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tvForgotPassword"
@@ -98,16 +145,40 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="¿Olvidaste tu contraseña?"
-            android:textColor="@color/teal_dark" />
+            android:textColor="@color/teal_dark"
+            android:textSize="14sp" />
 
         <!-- Botón Login -->
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:background="@drawable/bg_button"
             android:text="Iniciar Sesión"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:elevation="2dp" />
+
+        <!-- Botón Google -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_google"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="CONTINUAR CON GOOGLE"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:backgroundTint="@color/white"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp"
+            app:icon="@drawable/ic_google"
+            app:iconTint="@null"
+            app:iconPadding="8dp"
+            app:iconGravity="textStart"
+            android:elevation="1dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

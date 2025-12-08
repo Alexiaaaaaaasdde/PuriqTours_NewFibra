@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_login_legacy);
+        setContentView(R.layout.activity_login);
 
         db = FirebaseFirestore.getInstance();
 
@@ -62,6 +62,30 @@ public class LoginActivity extends AppCompatActivity {
         btnGoogle = findViewById(R.id.btn_google);
         tvRegister = findViewById(R.id.tvRegister);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
+
+        ImageView btnTogglePassword = findViewById(R.id.btnTogglePassword);
+
+        btnTogglePassword.setOnClickListener(v -> {
+            if (etPassword.getInputType() ==
+                    (android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+
+                // Mostrar contraseña
+                etPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                        android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.ic_eye_open);
+
+            } else {
+
+                // Ocultar contraseña
+                etPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                        android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.ic_eye_closed);
+            }
+
+            // Mover el cursor al final para que no salte al inicio
+            etPassword.setSelection(etPassword.getText().length());
+        });
+
 
         btnLogin.setOnClickListener(v -> loginUser());
         tvRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
