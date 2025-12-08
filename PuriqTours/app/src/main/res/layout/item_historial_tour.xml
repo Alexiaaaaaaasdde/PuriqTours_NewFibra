@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <!-- Imagen del Tour -->
+        <ImageView
+            android:id="@+id/imgTourHistorial"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/kuelap"
+            android:contentDescription="Imagen del tour" />
+
+        <!-- Información del Tour -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <!-- Título -->
+            <TextView
+                android:id="@+id/tvTourTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tour título"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#2B746C"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <!-- Fecha -->
+            <TextView
+                android:id="@+id/tvTourDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fecha"
+                android:textSize="14sp"
+                android:textColor="#666"
+                android:layout_marginTop="4dp"
+                android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                android:drawablePadding="8dp"
+                android:drawableTint="#666"/>
+
+            <!-- Estado -->
+            <TextView
+                android:id="@+id/tvTourStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Estado"
+                android:textSize="12sp"
+                android:padding="6dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/teal_700"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <!-- Botón Valorar -->
+            <Button
+                android:id="@+id/btnValorar"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:text="⭐ Valorar"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/teal_700"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

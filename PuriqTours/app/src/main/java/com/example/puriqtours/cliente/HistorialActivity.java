@@ -37,11 +37,7 @@ public class HistorialActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historial);
 
-        // ---------------------------------------------------------
-        // 🔥 Toolbar unificado (foto + cerrar sesión)
-        // ---------------------------------------------------------
         setupSharedToolbar();
-
         enableDrawerIcon();
 
         auth = FirebaseAuth.getInstance();
@@ -61,12 +57,18 @@ public class HistorialActivity extends BaseActivity {
         cargarHistorialDesdeFirebase();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 🔥 Recargar cuando volvemos de ValoracionActivity
+        cargarHistorialDesdeFirebase();
+    }
+
     private void inicializarBottomNav() {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.setSelectedItemId(R.id.nav_historial);
 
         bottomNavigation.setOnItemSelectedListener(item -> {
-
             int id = item.getItemId();
 
             if (id == R.id.nav_perfil) {
@@ -131,23 +133,42 @@ public class HistorialActivity extends BaseActivity {
                 .whereEqualTo("idCliente", idCliente)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-
                     listaTours.clear();
 
                     for (var doc : querySnapshot.getDocuments()) {
 
+                        String idReserva = doc.getId();
+
+                        // 🔥 CAMPOS COMO ESTÁN EN FIRESTORE
                         String idTour = doc.getString("idTour");
+                        String idGuia = doc.getString("idGuia");
+
                         String titulo = doc.getString("titulo");
                         String fecha = doc.getString("fecha");
                         String hora = doc.getString("hora");
                         String estado = doc.getString("estado");
-                        String precio = doc.getString("precio");
-                        String viajeros = doc.getString("viajeros");
+                        String precio = doc.getString("precio");      // "Total: S/. 610"
+                        String viajeros = doc.getString("viajeros");  // "5 adultos, 1 niños"
                         String imageUrl = doc.getString("imageUrl");
 
-                        int imagen = R.drawable.kuelap;
+                        // 🔥 Manejo seguro en caso de nulos
+                        if (titulo == null) titulo = "Sin título";
+                        if (fecha == null) fecha = "Fecha no registrada";
+                        if (hora == null) hora = "--:--";
+                        if (estado == null) estado = "Sin estado";
+                        if (precio == null) precio = "S/ 0.00";
+                        if (viajeros == null) viajeros = "No especificado";
+                        if (imageUrl == null) imageUrl = "";
+
+                        // 🔥 Valoración
+                        Boolean valorada = doc.getBoolean("valorada");
+                        boolean yaValorado = valorada != null && valorada;
+
+                        // Imagen default + rating por defecto
+                        int imagenDefault = R.drawable.kuelap;
                         float rating = 4.5f;
 
+                        // Crear objeto
                         HistorialTour ht = new HistorialTour(
                                 idTour,
                                 titulo,
@@ -156,12 +177,15 @@ public class HistorialActivity extends BaseActivity {
                                 estado,
                                 precio,
                                 viajeros,
-                                imagen,
+                                imagenDefault,
                                 rating,
                                 imageUrl
                         );
 
-                        ht.setIdReserva(doc.getId());
+                        ht.setIdReserva(idReserva);
+                        ht.setIdGuia(idGuia);
+                        ht.setValorada(yaValorado);
+
                         listaTours.add(ht);
                     }
 
@@ -173,4 +197,5 @@ public class HistorialActivity extends BaseActivity {
                                 Toast.LENGTH_SHORT).show()
                 );
     }
+
 }

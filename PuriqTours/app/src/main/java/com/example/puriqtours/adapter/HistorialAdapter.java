@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
 import com.example.puriqtours.cliente.ChatActivity;
 import com.example.puriqtours.cliente.ReservaDetalleActivity;
+import com.example.puriqtours.cliente.ValoracionActivity;
 import com.example.puriqtours.entity.HistorialTour;
 
 import java.util.ArrayList;
@@ -69,6 +70,23 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         holder.layoutOpciones.setVisibility(View.VISIBLE);
         holder.btnChat.setVisibility(View.VISIBLE);
         holder.btnDetalles.setVisibility(View.VISIBLE);
+
+        // 🔥 MOSTRAR BOTÓN "VALORAR" SOLO SI ESTÁ FINALIZADO Y NO VALORADO
+        boolean estaFinalizado = "Finalizado".equalsIgnoreCase(tour.getEstado());
+        boolean yaValorado = tour.isValorada();
+
+        if (estaFinalizado && !yaValorado) {
+            holder.btnValorar.setVisibility(View.VISIBLE);
+            holder.btnValorar.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ValoracionActivity.class);
+                intent.putExtra("reservaId", tour.getIdReserva());
+                intent.putExtra("tourId", tour.getIdTour());
+                intent.putExtra("guiaId", tour.getIdGuia());
+                context.startActivity(intent);
+            });
+        } else {
+            holder.btnValorar.setVisibility(View.GONE);
+        }
 
         // ✅ Click en botón Detalles
         holder.btnDetalles.setOnClickListener(v -> {
@@ -137,7 +155,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         RatingBar ratingBar;
         ImageView imgTour;
         LinearLayout layoutOpciones;
-        Button btnChat, btnDetalles;
+        Button btnChat, btnDetalles, btnValorar;  // 🔥 NUEVO
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -151,6 +169,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
             layoutOpciones = itemView.findViewById(R.id.layoutOpciones);
             btnChat = itemView.findViewById(R.id.btnChat);
             btnDetalles = itemView.findViewById(R.id.btnDetalles);
+            btnValorar = itemView.findViewById(R.id.btnValorar);  // 🔥 NUEVO
         }
     }
 }

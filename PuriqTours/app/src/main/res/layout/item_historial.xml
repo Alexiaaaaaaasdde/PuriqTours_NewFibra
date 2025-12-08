@@ -89,14 +89,14 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 🔹 Opciones ocultas -->
+        <!-- 🔹 Opciones (Chat y Detalles) -->
         <LinearLayout
             android:id="@+id/layoutOpciones"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:visibility="gone"
+            android:visibility="visible"
             android:paddingTop="8dp">
 
             <Button
@@ -104,6 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_weight="1"
+                android:layout_marginEnd="4dp"
                 android:text="Chat"
                 android:textColor="@android:color/white"
                 android:backgroundTint="#00796B"
@@ -114,10 +115,23 @@
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_weight="1"
+                android:layout_marginStart="4dp"
                 android:text="Detalles"
                 android:textColor="@android:color/white"
                 android:backgroundTint="#2E7D32" />
-
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnValorar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Valorar Tour"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/teal_700"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:visibility="gone" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

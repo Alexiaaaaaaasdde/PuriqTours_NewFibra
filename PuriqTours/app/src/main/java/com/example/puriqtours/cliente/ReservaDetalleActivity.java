@@ -121,15 +121,34 @@ public class ReservaDetalleActivity extends BaseActivity {
 
         String titulo = doc.getString("titulo");
         String fecha = doc.getString("fecha");
-        String estado = doc.getString("status");
+        String estado = doc.getString("estado");
         String precio = doc.getString("precio");
         String viajeros = doc.getString("viajeros");
-        String pago = doc.getString("medioPago");
+        String pago = doc.getString("metodoPago");
         String img = doc.getString("imageUrl");
         String tokenInicio = doc.getString("tokenInicio");
         String tokenFin = doc.getString("tokenFin");
 
         if (estado == null) estado = "Desconocido";
+
+        //Si el tour ya finalizó → NO mostrar QR de inicio
+        if (estado.equalsIgnoreCase("Finalizado")) {
+            imgQrInicio.setImageAlpha(50); // semitransparente o desactivado
+        }
+
+        //Si el tour está Finalizado → QR FINAL debe mostrarse SIEMPRE
+        if (estado.equalsIgnoreCase("Finalizado")) {
+            tvQrFinBloqueado.setVisibility(View.GONE);
+            layoutQrFin.setVisibility(View.VISIBLE);
+
+            // si hay token de fin → mostrar QR final
+            if (tokenFin != null && !tokenFin.isEmpty()) {
+                generarYMostrarQR(tokenFin, imgQrFin);
+            } else {
+                generarYGuardarToken(reservaId, "fin");
+            }
+        }
+
 
         tvTitulo.setText(titulo);
         tvEstado.setText("Estado: " + estado);

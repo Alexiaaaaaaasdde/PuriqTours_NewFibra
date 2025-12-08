@@ -3,6 +3,7 @@ package com.example.puriqtours.entity;
 public class HistorialTour {
     private String idReserva;
     private String idTour;
+    private String idGuia;
     private String titulo;
     private String fecha;
     private String hora;
@@ -12,6 +13,7 @@ public class HistorialTour {
     private int imagen;
     private float rating;
     private String imageUrl;
+    private boolean valorada;
 
     public HistorialTour(String idTour, String titulo, String fecha, String hora,
                          String estado, String precio, String viajeros, int imagen,
@@ -26,9 +28,10 @@ public class HistorialTour {
         this.imagen = imagen;
         this.rating = rating;
         this.imageUrl = imageUrl;
+        this.valorada = false;  // Por defecto no está valorada
     }
 
-    // Getters y Setters
+    // Getters y Setters existentes
     public String getIdReserva() {
         return idReserva;
     }
@@ -115,5 +118,25 @@ public class HistorialTour {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getIdGuia() {
+        return idGuia;
+    }
+
+    public void setIdGuia(String idGuia) {
+        this.idGuia = idGuia;
+    }
+
+    public boolean isValorada() {
+        return valorada;
+    }
+
+    public void setValorada(boolean valorada) {
+        this.valorada = valorada;
+    }
+
+    public boolean isFinalizadoYNoValorado() {
+        return "Finalizado".equalsIgnoreCase(estado) && !valorada;
     }
 }

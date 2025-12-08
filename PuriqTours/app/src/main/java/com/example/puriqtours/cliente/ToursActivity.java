@@ -109,6 +109,7 @@ public class ToursActivity extends BaseActivity {
             intent.putExtra("img", tour.getImageUrl() != null ? tour.getImageUrl() : "");
             intent.putExtra("rating", tour.getRating() != null ? tour.getRating() : 0);
             intent.putExtra("location", tour.getLocation() != null ? tour.getLocation() : "Sin ubicación");
+            intent.putExtra("idEmpresa", tour.getIdEmpresa());
 
             startActivity(intent);
         });

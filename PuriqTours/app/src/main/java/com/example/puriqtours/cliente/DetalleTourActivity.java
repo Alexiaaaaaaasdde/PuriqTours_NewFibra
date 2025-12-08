@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,7 +18,9 @@ import com.bumptech.glide.Glide;
 import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,6 +75,12 @@ public class DetalleTourActivity extends BaseActivity {
         imgTour = findViewById(R.id.imgTour);
         btnCalendario = findViewById(R.id.btnCalendario);
 
+        ImageView imgEmpresaLogo = findViewById(R.id.imgEmpresaLogo);
+        TextView tvEmpresaTelefono = findViewById(R.id.tvEmpresaTelefono);
+        TextView tvEmpresaEmail = findViewById(R.id.tvEmpresaEmail);
+        TextView tvEmpresaRuc = findViewById(R.id.tvEmpresaRuc);
+
+
         RatingBar ratingBar = findViewById(R.id.ratingBar1);
         Button btnDisponibilidad = findViewById(R.id.btnDisponibilidad);
 
@@ -81,12 +90,73 @@ public class DetalleTourActivity extends BaseActivity {
 
         try {
             precioTour = Float.parseFloat(precioStr);
-        } catch (Exception e) { precioTour = 0; }
+        } catch (Exception e) {
+            precioTour = 0;
+        }
 
         precioAdulto = precioTour;
         precioNino = precioTour * 0.80f;
 
         String desc = getIntent().getStringExtra("desc");
+
+        // 🔥 MOSTRAR EMPRESA DEL TOUR
+        String idEmpresa = getIntent().getStringExtra("idEmpresa");
+        TextView tvEmpresa = findViewById(R.id.tvEmpresa);
+
+        if (idEmpresa != null && !idEmpresa.isEmpty()) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("empresas")
+                    .document(idEmpresa)
+                    .get()
+                    .addOnSuccessListener(doc -> {
+                        if (doc.exists()) {
+                            String nombreEmpresa = doc.getString("name");
+                            tvEmpresa.setText("Ofrecido por: " + nombreEmpresa);
+                        } else {
+                            tvEmpresa.setText("Empresa no disponible");
+                        }
+                    })
+                    .addOnFailureListener(e -> tvEmpresa.setText("Empresa no disponible"));
+        } else {
+            tvEmpresa.setText("Empresa no asignada");
+        }
+
+        if (idEmpresa != null && !idEmpresa.isEmpty()) {
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("empresas")
+                    .document(idEmpresa)
+                    .get()
+                    .addOnSuccessListener(doc -> {
+                        if (doc.exists()) {
+
+                            String phone = doc.getString("phone");
+                            String email = doc.getString("email");
+                            String ruc = doc.getString("ruc");
+                            String logoUrl = doc.getString("imageUrl");
+
+                            tvEmpresaTelefono.setText("Teléfono: " + phone);
+                            tvEmpresaEmail.setText("Email: " + email);
+                            tvEmpresaRuc.setText("RUC: " + ruc);
+
+                            if (logoUrl != null && !logoUrl.isEmpty()) {
+                                imgEmpresaLogo.setVisibility(View.VISIBLE);
+                                Glide.with(this)
+                                        .load(logoUrl)
+                                        .placeholder(R.drawable.kuelap)
+                                        .into(imgEmpresaLogo);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        tvEmpresaTelefono.setText("Teléfono: No disponible");
+                        tvEmpresaEmail.setText("Email: No disponible");
+                        tvEmpresaRuc.setText("RUC: No disponible");
+                    });
+        }
+
+
+
         String img = getIntent().getStringExtra("img");
         location = getIntent().getStringExtra("location");
         int rating = getIntent().getIntExtra("rating", 5);
@@ -130,6 +200,9 @@ public class DetalleTourActivity extends BaseActivity {
             }
             return false;
         });
+
+        // 🔥 CARGAR VALORACIONES DESDE FIREBASE
+        cargarValoracionesDesdeFirebase();
     }
 
     // 🔹 CARGAR HORARIOS DESDE FIRESTORE
@@ -382,5 +455,163 @@ public class DetalleTourActivity extends BaseActivity {
         total += adultos * precioAdulto;
         total += ninos * precioNino;
         return total;
+    }
+
+    // ===============================
+    // 🔥 MÉTODOS PARA VALORACIONES
+    // ===============================
+
+    /**
+     * Carga las valoraciones del tour desde Firebase
+     */
+    private void cargarValoracionesDesdeFirebase() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("valoraciones")
+                .whereEqualTo("tourId", tourId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(2)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (querySnapshot.isEmpty()) {
+                        // No hay valoraciones, mantener las de ejemplo
+                        return;
+                    }
+
+                    // Hay valoraciones, ocultar las de ejemplo
+                    View cardEjemplo1 = findViewById(R.id.cardOpinionEjemplo1);
+                    View cardEjemplo2 = findViewById(R.id.cardOpinionEjemplo2);
+
+                    if (cardEjemplo1 != null) cardEjemplo1.setVisibility(View.GONE);
+                    if (cardEjemplo2 != null) cardEjemplo2.setVisibility(View.GONE);
+
+                    LinearLayout contenedor = findViewById(R.id.contenedorOpiniones);
+
+                    // Agregar las valoraciones reales
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        String clienteId = doc.getString("clienteId");
+                        Double ratingPromedio = doc.getDouble("ratingPromedio");
+                        String comentario = doc.getString("comentario");
+                        String fecha = doc.getString("fecha");
+
+                        // Cargar nombre del cliente y crear tarjeta
+                        cargarNombreYCrearTarjeta(clienteId, ratingPromedio, comentario,
+                                fecha, contenedor);
+                    }
+
+                    // Actualizar el rating global
+                    actualizarRatingGlobal();
+                })
+                .addOnFailureListener(e -> {
+                    // Error al cargar, mantener opiniones de ejemplo
+                    Toast.makeText(this, "Error al cargar valoraciones",
+                            Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    /**
+     * Carga el nombre del cliente y crea la tarjeta de opinión
+     */
+    private void cargarNombreYCrearTarjeta(String clienteId, Double rating, String comentario,
+                                           String fecha, LinearLayout contenedor) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("usuarios")
+                .document(clienteId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    String nombreCompleto = "Usuario";
+
+                    if (doc.exists()) {
+                        String name = doc.getString("name");
+                        String lastName = doc.getString("last_name");
+
+                        if (name != null && !name.isEmpty()) {
+                            nombreCompleto = name;
+                            if (lastName != null && !lastName.isEmpty()) {
+                                nombreCompleto += " " + lastName.charAt(0) + ".";
+                            }
+                        }
+                    }
+
+                    // Crear la tarjeta de opinión
+                    crearTarjetaOpinion(contenedor, nombreCompleto, rating, comentario, fecha);
+                })
+                .addOnFailureListener(e -> {
+                    // Si falla, usar nombre genérico
+                    crearTarjetaOpinion(contenedor, "Usuario", rating, comentario, fecha);
+                });
+    }
+
+    /**
+     * Crea una tarjeta de opinión dinámicamente
+     */
+    private void crearTarjetaOpinion(LinearLayout contenedor, String nombre, Double rating,
+                                     String comentario, String fecha) {
+        // Inflar el layout
+        View cardView = LayoutInflater.from(this)
+                .inflate(R.layout.item_opinion, contenedor, false);
+
+        // Configurar los datos
+        TextView tvNombre = cardView.findViewById(R.id.tvNombreOpinion);
+        RatingBar ratingBar = cardView.findViewById(R.id.ratingBarOpinion);
+        TextView tvFecha = cardView.findViewById(R.id.tvFechaOpinion);
+        TextView tvComentario = cardView.findViewById(R.id.tvComentarioOpinion);
+
+        tvNombre.setText(nombre);
+        ratingBar.setRating(rating != null ? rating.floatValue() : 0);
+
+        // Formatear fecha (solo la parte de la fecha, no la hora)
+        if (fecha != null && fecha.length() >= 10) {
+            tvFecha.setText("Escrito el " + fecha.substring(0, 10));
+        } else {
+            tvFecha.setText("Fecha no disponible");
+        }
+
+        // Mostrar comentario o mensaje por defecto
+        if (comentario != null && !comentario.trim().isEmpty()) {
+            tvComentario.setText(comentario);
+        } else {
+            tvComentario.setText("Sin comentario adicional");
+        }
+
+        // Agregar al contenedor
+        contenedor.addView(cardView);
+    }
+
+    /**
+     * Actualiza el rating global del tour
+     */
+    private void actualizarRatingGlobal() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("valoraciones")
+                .whereEqualTo("tourId", tourId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (querySnapshot.isEmpty()) return;
+
+                    double sumaRatings = 0;
+                    int contador = querySnapshot.size();
+
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        Double rating = doc.getDouble("ratingPromedio");
+                        if (rating != null) {
+                            sumaRatings += rating;
+                        }
+                    }
+
+                    float promedioFinal = (float) (sumaRatings / contador);
+
+                    // Actualizar el RatingBar y el contador
+                    RatingBar ratingBar = findViewById(R.id.ratingBar1);
+                    TextView tvOpiniones = findViewById(R.id.tvOpiniones);
+
+                    ratingBar.setRating(promedioFinal);
+                    tvOpiniones.setText("(" + contador + " opiniones)");
+                })
+                .addOnFailureListener(e -> {
+                    // Error al cargar, mantener valores por defecto
+                });
     }
 }
