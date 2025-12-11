@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,23 +13,23 @@
         android:background="#F8F9FA"
         android:fitsSystemWindows="true"
         android:layout_marginBottom="70dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         tools:context=".superadmin.MainActivity">
 
         <!-- TopAppBar personalizada -->
-        <include layout="@layout/top_app_bar_superadmin"/>
+        <include
+            android:id="@+id/topAppBar"
+            layout="@layout/top_app_bar_superadmin" />
 
         <!-- Contenido scrollable -->
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollContent"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/topAppBar" 
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@id/topAppBar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:fillViewport="true">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,7 +37,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="16dp">
 
-                <!-- Hey, Superadmin (fuera de cualquier card) -->
+                <!-- Hey Superadmin -->
                 <TextView
                     android:id="@+id/tvHeySuperadmin"
                     android:layout_width="wrap_content"
@@ -48,103 +50,65 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="16dp"/>
 
-                <!-- KPIs: Usuarios activos, Empresas, Guías -->
+                <!-- KPIs -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:layout_marginBottom="16dp">
 
-                    <!-- Fila superior: Usuarios activos y Guías habilitados -->
+                    <!-- Columna Izquierda -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="0dp">
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
 
-                        <!-- Usuarios activos (izquierda) -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:layout_width="96dp"
-                                android:layout_height="96dp"
-                                android:src="@drawable/avatar"
-                                android:contentDescription="Usuarios activos"
-                                android:scaleType="centerInside"/>
-                            <TextView
-                                android:id="@+id/tvActiveUsersCount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="125"
-                                android:textStyle="bold"
-                                android:textSize="22sp"
-                                android:textColor="#009688"
-                                android:gravity="center"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Usuarios activos"
-                                android:textSize="16sp"
-                                android:textColor="#009688"
-                                android:gravity="center"/>
-                        </LinearLayout>
-
-                        <!-- Guías habilitados (derecha) -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:layout_width="96dp"
-                                android:layout_height="96dp"
-                                android:src="@drawable/ic_guide_superadmin"
-                                android:contentDescription="Guías habilitados"
-                                android:scaleType="centerInside"/>
-                            <TextView
-                                android:id="@+id/tvEnabledGuidesCount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="120"
-                                android:textStyle="bold"
-                                android:textSize="22sp"
-                                android:textColor="#009688"
-                                android:gravity="center"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Guías habilitados"
-                                android:textSize="16sp"
-                                android:textColor="#009688"
-                                android:gravity="center"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Fila inferior: Empresas registradas (centrado) -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginTop="0dp">
+                        <!-- Usuarios activos -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:src="@drawable/avatar"
+                                android:scaleType="centerInside"/>
+
+                            <TextView
+                                android:id="@+id/tvActiveUsersCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:textColor="#009688"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Usuarios activos"
+                                android:textColor="#009688"/>
+                        </LinearLayout>
+
+                        <!-- Empresas registradas -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginTop="24dp">
+
                             <ImageView
                                 android:layout_width="96dp"
                                 android:layout_height="96dp"
                                 android:src="@drawable/ic_company_superadmin"
-                                android:contentDescription="Empresas registradas"
                                 android:scaleType="centerInside"/>
+
                             <TextView
                                 android:id="@+id/tvRegisteredCompaniesCount"
                                 android:layout_width="wrap_content"
@@ -152,142 +116,186 @@
                                 android:text="--"
                                 android:textStyle="bold"
                                 android:textSize="22sp"
-                                android:textColor="#009688"
-                                android:gravity="center"/>
+                                android:textColor="#009688"/>
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Empresas registradas"
-                                android:textSize="16sp"
-                                android:textColor="#26A69A"
-                                android:gravity="center"/>
+                                android:textColor="#009688"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Columna Derecha -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <!-- Guías habilitados -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:src="@drawable/ic_guide_superadmin"
+                                android:scaleType="centerInside"/>
+
+                            <TextView
+                                android:id="@+id/tvEnabledGuidesCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:textColor="#009688"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Guías habilitados"
+                                android:textColor="#009688"/>
+                        </LinearLayout>
+
+                        <!-- Guías NO habilitados -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginTop="24dp">
+
+                            <ImageView
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:src="@drawable/ic_guide_superadmin"
+                                android:scaleType="centerInside"/>
+
+                            <TextView
+                                android:id="@+id/tvDisabledGuidesCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:textColor="#009688"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Guías no habilitados"
+                                android:textColor="#009688"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Sección Usuarios -->
-                <TextView
-                    android:id="@+id/tvUsuarios"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tours más visitados"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#009688"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"/>
-                <HorizontalScrollView
+                <!-- GRID 2×2 -->
+                <!-- GRID 2×2 -->
+                <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:fillViewport="true">
-                    <LinearLayout
-                        android:id="@+id/llToursBarsContainer"
-                        android:layout_width="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="2"
+                    android:padding="16dp"
+                    android:alignmentMode="alignMargins"
+                    android:useDefaultMargins="true">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardTours"
+                        android:layout_width="150dp"
                         android:layout_height="140dp"
-                        android:orientation="horizontal"
-                        android:gravity="bottom">
-                        <!-- Barras de ejemplo (más de 6 para scroll) -->
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="80dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 1" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="60dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 2" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="100dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 3" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="90dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 4" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="70dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 5" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="40dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Otros" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <!-- Más barras para scroll -->
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="110dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 6" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="50dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 7" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="60dp" android:layout_height="match_parent" android:orientation="vertical" android:gravity="bottom|center_horizontal">
-                            <View android:layout_width="24dp" android:layout_height="95dp" android:background="#B2DFDB"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tour 8" android:textSize="12sp" android:gravity="center"/>
-                        </LinearLayout>
-                    </LinearLayout>
-                </HorizontalScrollView>
+                        android:layout_margin="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="6dp"
+                        app:cardBackgroundColor="#EAF6F9"
+                        android:foreground="?attr/selectableItemBackground">
 
-                <!-- Solicitud de Guías de Turismo -->
-                <TextView
-                    android:id="@+id/tvSolicitudes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Guias más solicitados"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#009688"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="8dp"/>
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <!-- ✅ IMAGEN OCUPA TODO EL CARD -->
+                            <ImageView
+                                android:id="@+id/imgTopTours"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/tourguia"
+                                android:scaleType="centerCrop"/>
+
+                            <!-- ✅ TEXTO FLOTANTE ARRIBA (NO PEGADO AL BORDE) -->
+                            <TextView
+                                android:id="@+id/tvTituloCardTours"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top|center_horizontal"
+                                android:layout_marginTop="2.5dp"
+                                android:text="Rankings"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#459494"/>
+
+                        </FrameLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardIdiomas"
+                        android:layout_width="150dp"
+                        android:layout_height="140dp"
+                        android:layout_margin="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="6dp"
+                        app:cardBackgroundColor="#EAF6F9"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <!-- IMAGEN -->
+                            <ImageView
+                                android:id="@+id/imgIdiomas"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/idiomas"
+                                android:scaleType="centerCrop"/>
+
+                            <!-- TEXTO -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top|center_horizontal"
+                                android:layout_marginTop="10dp"
+                                android:text="Idiomas"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#459494"/>
+
+                        </FrameLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </GridLayout>
+
+                <!-- AQUI SÍ VA EL RECYCLERVIEW (FUERA DEL GRID) -->
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvGuiasHorizontal"
+                    android:id="@+id/rvTopTours"
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:clipToPadding="false"
-                    android:overScrollMode="always"
-                    android:scrollbars="horizontal"/>
-
-                <!-- Empresas registradas -->
-                <TextView
-                    android:id="@+id/tvEmpresas"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Empresas registradas"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#009688"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:padding="16dp"/>
 
 
-                <!-- Gráfico de líneas para Empresas registradas -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardLineChart"
-                    android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    android:backgroundTint="#FFFFFF">
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/lineChartEmpresas"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent"/>
-                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Barra de navegación inferior -->
+    <!-- Barra inferior -->
     <include layout="@layout/navigation_bottombar_superadmin"/>
+
 </FrameLayout>

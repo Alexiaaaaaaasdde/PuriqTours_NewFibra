@@ -66,6 +66,7 @@ public class UsuariosTodosFragment extends Fragment {
                         u.setAddress(doc.getString("address"));
                         u.setRol(doc.getString("rol"));
                         u.setStatus(doc.getString("status"));
+                        u.setProfile_image(doc.getString("profile_image"));
 
                         list.add(u);
                     }

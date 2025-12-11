@@ -150,6 +150,9 @@
         <activity android:name=".superadmin.UsuariosActivity" />
         <activity android:name=".superadmin.LogsActivity" />
         <activity android:name=".superadmin.ReportesActivity" />
+        <activity android:name=".superadmin.TopToursActivity" />
+        <activity android:name=".superadmin.IdiomasActivity" />
+
         <activity
             android:name=".superadmin.MainSuperAdminActivity"
             android:exported="true" />

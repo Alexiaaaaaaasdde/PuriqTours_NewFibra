@@ -50,7 +50,7 @@
             android:text="+ Crear usuario"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:paddingStart="20dp"
+            android:paddingStart="2dp"
             android:paddingEnd="20dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
