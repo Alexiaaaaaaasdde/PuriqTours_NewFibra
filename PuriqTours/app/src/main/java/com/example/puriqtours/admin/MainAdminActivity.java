@@ -90,7 +90,7 @@ public class MainAdminActivity extends AppCompatActivity {
 
         // 🔹 Navegación a vista de tours
         TextView tvLatestTours = findViewById(R.id.tvLatestTours);
-        TextView tvViewMore = findViewById(R.id.tvViewMore);
+        ImageView ivViewMoreTours = findViewById(R.id.tvViewMore);
 
         if (tvLatestTours != null) {
             tvLatestTours.setOnClickListener(v -> {
@@ -99,8 +99,8 @@ public class MainAdminActivity extends AppCompatActivity {
             });
         }
 
-        if (tvViewMore != null) {
-            tvViewMore.setOnClickListener(v -> {
+        if (ivViewMoreTours != null) {
+            ivViewMoreTours.setOnClickListener(v -> {
                 Intent intent = new Intent(MainAdminActivity.this, ToursAdminActivity.class);
                 startActivity(intent);
             });
@@ -108,8 +108,17 @@ public class MainAdminActivity extends AppCompatActivity {
 
         // 🔹 Navegación a vista de guías
         TextView tvGuidesList = findViewById(R.id.tvGuidesList);
+        ImageView ivViewMoreGuides = findViewById(R.id.ivViewMoreGuides);
+        
         if (tvGuidesList != null) {
             tvGuidesList.setOnClickListener(v -> {
+                Intent intent = new Intent(MainAdminActivity.this, GuidesActivity.class);
+                startActivity(intent);
+            });
+        }
+        
+        if (ivViewMoreGuides != null) {
+            ivViewMoreGuides.setOnClickListener(v -> {
                 Intent intent = new Intent(MainAdminActivity.this, GuidesActivity.class);
                 startActivity(intent);
             });
@@ -245,13 +254,23 @@ public class MainAdminActivity extends AppCompatActivity {
         params.setMargins(8, 0, 8, 0);
         guideLayout.setLayoutParams(params);
         
+        // CardView para imagen circular
+        androidx.cardview.widget.CardView cardView = new androidx.cardview.widget.CardView(this);
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+            (int) (70 * getResources().getDisplayMetrics().density),
+            (int) (70 * getResources().getDisplayMetrics().density)
+        );
+        cardParams.setMargins(0, 0, 0, 12);
+        cardView.setLayoutParams(cardParams);
+        cardView.setRadius(35 * getResources().getDisplayMetrics().density);
+        cardView.setCardElevation(4 * getResources().getDisplayMetrics().density);
+        
         // ImageView para la foto del guía
         ImageView imageView = new ImageView(this);
         LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-            (int) (60 * getResources().getDisplayMetrics().density),
-            (int) (60 * getResources().getDisplayMetrics().density)
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
         );
-        imageParams.setMargins(0, 0, 0, 8);
         imageView.setLayoutParams(imageParams);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         
@@ -263,42 +282,58 @@ public class MainAdminActivity extends AppCompatActivity {
                 .error(R.drawable.imagen_perfil)
                 .into(imageView);
         } else {
-            imageView.setImageResource(R.drawable.imagen_perfil); // Imagen por defecto
+            imageView.setImageResource(R.drawable.imagen_perfil);
         }
+        
+        cardView.addView(imageView);
         
         // TextView para el nombre
         TextView nameText = new TextView(this);
         nameText.setText(guide.getName());
-        nameText.setTextSize(12);
+        nameText.setTextSize(13);
         nameText.setTextColor(getResources().getColor(android.R.color.black, null));
         nameText.setGravity(android.view.Gravity.CENTER);
+        nameText.setMaxLines(1);
+        nameText.setEllipsize(android.text.TextUtils.TruncateAt.END);
         LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        textParams.setMargins(0, 0, 0, 4);
+        textParams.setMargins(0, 0, 0, 8);
         nameText.setLayoutParams(textParams);
         
-        // View para el indicador de disponibilidad
+        // View circular para el indicador de disponibilidad
         View indicator = new View(this);
         LinearLayout.LayoutParams indicatorParams = new LinearLayout.LayoutParams(
-            (int) (12 * getResources().getDisplayMetrics().density),
-            (int) (12 * getResources().getDisplayMetrics().density)
+            (int) (14 * getResources().getDisplayMetrics().density),
+            (int) (14 * getResources().getDisplayMetrics().density)
         );
-        indicatorParams.setMargins(0, 4, 0, 0);
         indicator.setLayoutParams(indicatorParams);
         
-        // Color según disponibilidad
+        // Color según disponibilidad con forma circular
+        android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
+        shape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
         if (guide.isAvailable()) {
-            indicator.setBackgroundColor(getResources().getColor(R.color.teal_700, null));
+            shape.setColor(getResources().getColor(R.color.teal_700, null));
         } else {
-            indicator.setBackgroundColor(getResources().getColor(R.color.gray_medium, null));
+            shape.setColor(getResources().getColor(R.color.gray_medium, null));
         }
+        indicator.setBackground(shape);
         
         // Agregar vistas al layout
-        guideLayout.addView(imageView);
+        guideLayout.addView(cardView);
         guideLayout.addView(nameText);
         guideLayout.addView(indicator);
+        
+        // Click listener para ir a detalles del guía
+        guideLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(MainAdminActivity.this, GuideDetailActivity.class);
+            intent.putExtra("guide_uid", guide.getUid());
+            intent.putExtra("guide_name", guide.getName());
+            intent.putExtra("guide_available", guide.isAvailable());
+            intent.putExtra("profileImageUrl", guide.getProfileImageUrl());
+            startActivity(intent);
+        });
         
         // Agregar al contenedor principal
         guidesContainer.addView(guideLayout);

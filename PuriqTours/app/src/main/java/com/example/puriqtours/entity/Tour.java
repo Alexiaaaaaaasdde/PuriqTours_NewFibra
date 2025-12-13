@@ -16,6 +16,7 @@ public class Tour implements Serializable {
     private String startTime;   // Guardar como String (HH:mm)
     private String endTime;     // Guardar como String (HH:mm)
     private String idEmpresa;   // UID del admin/empresa que creó el tour
+    private String idGuia;      // UID del guía asignado al tour (vacío si no tiene)
     private String imageUrl;    // URL de la imagen en Firebase Storage
     private Integer rating;
     
@@ -217,6 +218,14 @@ public class Tour implements Serializable {
 
     public void setIdEmpresa(String idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    public String getIdGuia() {
+        return idGuia;
+    }
+
+    public void setIdGuia(String idGuia) {
+        this.idGuia = idGuia;
     }
 
     public void setImageUrl(String imageUrl) {

@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Proponer Reserva"
+        android:text="Proponer Tour"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="@color/teal_700"

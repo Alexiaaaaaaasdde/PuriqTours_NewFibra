@@ -107,7 +107,7 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
         // 🔹 Botón Detalles
         // --------------------------
         holder.btnDetalles.setOnClickListener(v -> {
-            DetallesBottomSheet sheet = new DetallesBottomSheet(solicitud.getIdReserva(), solicitud.getPay());
+            DetallesBottomSheet sheet = new DetallesBottomSheet(solicitud.getIdTour(), solicitud.getPay());
             sheet.show(fragmentManager, "DetallesTour");
         });
 
@@ -143,8 +143,8 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
                         .addOnSuccessListener(aVoid -> {
 
                             // 2️⃣ Agregar idGuia al documento de reservas/{idReserva}
-                            db.collection("reservas")
-                                    .document(solicitud.getIdReserva())
+                            db.collection("tours")
+                                    .document(solicitud.getIdTour())
                                     .update("idGuia", solicitud.getIdGuia())
                                     .addOnSuccessListener(x -> {
                                         Toast.makeText(v.getContext(),

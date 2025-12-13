@@ -354,6 +354,48 @@ public class FirestoreHelper {
     }
     
     /**
+     * Cargar tours sin guía asignado (idGuia vacío o null)
+     * Estos son tours disponibles para asignar un guía
+     */
+    public void loadToursWithoutGuide(OnToursLoadedListener listener) {
+        db.collection(COLLECTION_TOURS)
+            .whereEqualTo("idGuia", "")
+            .get()
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                List<Tour> tours = new ArrayList<>();
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    Tour tour = documentToTour(document);
+                    if (tour != null) {
+                        tours.add(tour);
+                    }
+                }
+                
+                // También buscar tours donde idGuia sea null
+                db.collection(COLLECTION_TOURS)
+                    .whereEqualTo("idGuia", null)
+                    .get()
+                    .addOnSuccessListener(nullGuideSnapshots -> {
+                        for (QueryDocumentSnapshot document : nullGuideSnapshots) {
+                            Tour tour = documentToTour(document);
+                            if (tour != null && !tours.contains(tour)) {
+                                tours.add(tour);
+                            }
+                        }
+                        Log.d(TAG, "Tours sin guía cargados: " + tours.size());
+                        listener.onToursLoaded(tours);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w(TAG, "Error buscando tours con idGuia null, usando solo los vacíos", e);
+                        listener.onToursLoaded(tours);
+                    });
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "Error al cargar tours sin guía", e);
+                listener.onToursLoaded(new ArrayList<>());
+            });
+    }
+    
+    /**
      * Cargar reservas sin guía asignado (solicitudes para guías)
      * Estas son reservas con idGuia vacío o null
      */
@@ -717,6 +759,24 @@ public class FirestoreHelper {
     }
     
     // ==================== SOLICITUDES ====================
+    
+    /**
+     * Asignar guía a un tour (actualizar idGuia en tour)
+     * Se llama cuando el guía acepta la solicitud
+     */
+    public void assignGuideToTour(String tourId, String guideUid, OnSuccessListener listener) {
+        db.collection(COLLECTION_TOURS)
+            .document(tourId)
+            .update("idGuia", guideUid)
+            .addOnSuccessListener(aVoid -> {
+                Log.d(TAG, "Guía asignado a tour: " + tourId);
+                listener.onSuccess(true);
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "Error al asignar guía a tour", e);
+                listener.onSuccess(false);
+            });
+    }
     
     /**
      * Crear una nueva solicitud en Firestore

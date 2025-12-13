@@ -21,6 +21,7 @@ import com.example.puriqtours.MainActivity;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Reserva;
 import com.example.puriqtours.entity.Solicitud;
+import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.helper.FirestoreHelper;
 import com.example.puriqtours.helper.UserSessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -46,7 +47,7 @@ public class GuideDetailActivity extends AppCompatActivity {
     
     private FirestoreHelper firestoreHelper;
     private UserSessionManager sessionManager;
-    private Reserva reservaSeleccionada;
+    private Tour tourSeleccionado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +144,7 @@ public class GuideDetailActivity extends AppCompatActivity {
         // Configurar botón según disponibilidad (guide_status)
         if (guideAvailable) {
             btnAsignarTour.setEnabled(true);
-            btnAsignarTour.setText("Proponer Reserva");
+            btnAsignarTour.setText("Proponer Tour");
             btnAsignarTour.setBackgroundTintList(getColorStateList(R.color.teal_700));
         } else {
             btnAsignarTour.setEnabled(false);
@@ -163,45 +164,45 @@ public class GuideDetailActivity extends AppCompatActivity {
     }
 
     private void showToursDisponiblesDialog() {
-        // Cargar reservas sin guía asignado desde Firestore
+        // Cargar tours sin guía asignado desde Firestore
         AlertDialog loadingDialog = new AlertDialog.Builder(this)
-                .setMessage("Cargando reservas disponibles...")
+                .setMessage("Cargando tours disponibles...")
                 .setCancelable(false)
                 .create();
         loadingDialog.show();
         
-        firestoreHelper.loadReservasWithoutGuide(reservas -> {
+        firestoreHelper.loadToursWithoutGuide(tours -> {
             loadingDialog.dismiss();
             
-            if (reservas == null || reservas.isEmpty()) {
-                Toast.makeText(this, "No hay reservas disponibles sin guía asignado", Toast.LENGTH_SHORT).show();
+            if (tours == null || tours.isEmpty()) {
+                Toast.makeText(this, "No hay tours disponibles sin guía asignado", Toast.LENGTH_SHORT).show();
                 return;
             }
             
-            // Crear dialog con lista de reservas
+            // Crear dialog con lista de tours
             View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_lista_reservas, null);
             
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(dialogView);
             AlertDialog dialog = builder.create();
             
-            // Configurar el contenedor de reservas
+            // Configurar el contenedor de tours
             LinearLayout containerReservas = dialogView.findViewById(R.id.containerReservas);
             
             if (containerReservas != null) {
-                for (Reserva reserva : reservas) {
+                for (Tour tour : tours) {
                     View itemView = LayoutInflater.from(this).inflate(R.layout.item_reserva_simple, containerReservas, false);
                     
                     TextView tvTitulo = itemView.findViewById(R.id.tvReservaTitle);
                     TextView tvFecha = itemView.findViewById(R.id.tvReservaDate);
                     TextView tvPrecio = itemView.findViewById(R.id.tvReservaPrice);
                     
-                    if (tvTitulo != null) tvTitulo.setText(reserva.getTitle() != null ? reserva.getTitle() : "Reserva sin título");
-                    if (tvFecha != null) tvFecha.setText(reserva.getDate() + " - " + reserva.getHour());
-                    if (tvPrecio != null) tvPrecio.setText("S/. " + (reserva.getPrice() != null ? reserva.getPrice() : "0.00"));
+                    if (tvTitulo != null) tvTitulo.setText(tour.getTitle() != null ? tour.getTitle() : "Tour sin título");
+                    if (tvFecha != null) tvFecha.setText(tour.getLocation() + " - " + tour.getRegion());
+                    if (tvPrecio != null) tvPrecio.setText("S/. " + (tour.getPrice() != null ? tour.getPrice() : "0.00"));
                     
                     itemView.setOnClickListener(v -> {
-                        reservaSeleccionada = reserva;
+                        tourSeleccionado = tour;
                         dialog.dismiss();
                         showFormularioSolicitudDialog();
                     });
@@ -220,8 +221,8 @@ public class GuideDetailActivity extends AppCompatActivity {
     }
 
     private void showFormularioSolicitudDialog() {
-        if (reservaSeleccionada == null) {
-            Toast.makeText(this, "Error: No se seleccionó ninguna reserva", Toast.LENGTH_SHORT).show();
+        if (tourSeleccionado == null) {
+            Toast.makeText(this, "Error: No se seleccionó ningún tour", Toast.LENGTH_SHORT).show();
             return;
         }
         
@@ -240,9 +241,9 @@ public class GuideDetailActivity extends AppCompatActivity {
         Button btnEnviar = dialogView.findViewById(R.id.btnEnviarSolicitud);
         Button btnCancelar = dialogView.findViewById(R.id.btnCancelar);
 
-        // Mostrar información de la reserva seleccionada
+        // Mostrar información del tour seleccionado
         if (tvReservaInfo != null) {
-            String info = "Reserva: " + reservaSeleccionada.getTitle() + " - " + reservaSeleccionada.getDate();
+            String info = "Tour: " + tourSeleccionado.getTitle() + " - " + tourSeleccionado.getLocation();
             tvReservaInfo.setText(info);
         }
 
@@ -304,7 +305,7 @@ public class GuideDetailActivity extends AppCompatActivity {
         solicitud.setPay(pago);
         solicitud.setIdGuia(guideUid);
         solicitud.setIdEmpresa(adminUid);
-        solicitud.setIdReserva(reservaSeleccionada.getIdReserva());
+        solicitud.setIdTour(tourSeleccionado.getIdTour());
         solicitud.setStatus("Pendiente");
 
         // Guardar en Firestore

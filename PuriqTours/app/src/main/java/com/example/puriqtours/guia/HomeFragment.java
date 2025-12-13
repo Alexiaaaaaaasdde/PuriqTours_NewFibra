@@ -132,17 +132,17 @@ public class HomeFragment extends Fragment {
 
                         if (solicitud == null) continue;
 
-                        String idReserva = solicitud.getIdReserva();
-                        Log.d("FIRESTORE", "Id de la reserva: " + idReserva);
+                        String idTour = solicitud.getIdTour();
+                        Log.d("FIRESTORE", "Id del tour: " + idTour);
 
-                        // 🔹 Obtener imagen desde el documento reserva
-                        db.collection("reservas")
-                                .document(idReserva)
+                        // 🔹 Obtener imagen desde el documento tour
+                        db.collection("tours")
+                                .document(idTour)
                                 .get()
-                                .addOnSuccessListener(reservaDoc -> {
+                                .addOnSuccessListener(tourDoc -> {
 
-                                    if (reservaDoc.exists()) {
-                                        String url = reservaDoc.getString("imageUrl");
+                                    if (tourDoc.exists()) {
+                                        String url = tourDoc.getString("imageUrl");
                                         solicitud.setImageUrl(url);
                                     }
 
@@ -151,7 +151,7 @@ public class HomeFragment extends Fragment {
                                 })
                                 .addOnFailureListener(e ->
                                         Log.e("FIRESTORE",
-                                                "Error obteniendo imagen del tour " + idReserva, e)
+                                                "Error obteniendo imagen del tour " + idTour, e)
                                 );
                     }
                 });

@@ -64,7 +64,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- Reporte de venta por servicio -->
+            <!-- Reporte de ingresos por tour específico -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Reporte de venta por servicio"
+                    android:text="Ingresos por tour específico"
                     android:textSize="16sp"
                     android:textColor="#009688"/>
 
@@ -87,10 +87,10 @@
                     app:tint="#009688"/>
             </LinearLayout>
 
-            <!-- Gráfico de líneas (simulado) -->
+            <!-- Gráfico de ingresos -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
@@ -98,50 +98,53 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:background="@android:color/white">
 
-                    <!-- Líneas del gráfico (simuladas con vistas) -->
+                    <!-- Loading indicator -->
+                    <ProgressBar
+                        android:id="@+id/progressIngresos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="visible"/>
+
+                    <!-- Container dinámico para barras de ingresos -->
                     <LinearLayout
+                        android:id="@+id/containerIngresosBarras"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="200dp"
                         android:orientation="horizontal"
                         android:gravity="bottom"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone"/>
 
-                        <!-- Puntos del gráfico -->
-                        <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="60dp" android:background="#E0E0E0" android:layout_marginEnd="4dp"/>
-                        <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="80dp" android:background="#E0E0E0" android:layout_marginEnd="4dp"/>
-                        <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="40dp" android:background="#E0E0E0" android:layout_marginEnd="4dp"/>
-                        <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="100dp" android:background="#E0E0E0" android:layout_marginEnd="4dp"/>
-                        <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="70dp" android:background="#E0E0E0" android:layout_marginEnd="4dp"/>
-                        <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="50dp" android:background="#E0E0E0"/>
-
-                    </LinearLayout>
-
-                    <!-- Etiquetas de meses -->
+                    <!-- Etiquetas de tours -->
                     <LinearLayout
+                        android:id="@+id/containerIngresosLabels"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone"/>
 
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Ene" android:textSize="12sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Feb" android:textSize="12sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Mar" android:textSize="12sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Abr" android:textSize="12sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="May" android:textSize="12sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Jun" android:textSize="12sp" android:gravity="center" android:textColor="#666"/>
-
-                    </LinearLayout>
+                    <!-- Mensaje si no hay datos -->
+                    <TextView
+                        android:id="@+id/tvNoDataIngresos"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:text="No hay datos disponibles"
+                        android:gravity="center"
+                        android:textColor="#999"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Reporte de ventas por tour -->
+            <!-- Reporte de tours más demandados -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,7 +156,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Reporte de ventas por tour"
+                    android:text="Tours más demandados"
                     android:textSize="16sp"
                     android:textColor="#009688"/>
 
@@ -164,10 +167,10 @@
                     app:tint="#009688"/>
             </LinearLayout>
 
-            <!-- Gráfico de barras -->
+            <!-- Gráfico de demanda -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
@@ -175,74 +178,47 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:background="@android:color/white">
 
-                    <!-- Barras del gráfico -->
+                    <!-- Loading indicator -->
+                    <ProgressBar
+                        android:id="@+id/progressDemanda"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="visible"/>
+
+                    <!-- Container dinámico para barras de demanda -->
                     <LinearLayout
+                        android:id="@+id/containerDemandaBarras"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="250dp"
                         android:orientation="horizontal"
                         android:gravity="bottom"
-                        android:layout_marginBottom="8dp">
-
-                        <!-- Barras con diferentes alturas -->
-                        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="4dp">
-                            <View android:layout_width="40dp" android:layout_height="60dp" android:background="#BDBDBD"/>
-                        </LinearLayout>
-
-                        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="4dp">
-                            <View android:layout_width="40dp" android:layout_height="80dp" android:background="#BDBDBD"/>
-                        </LinearLayout>
-
-                        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="4dp">
-                            <View android:layout_width="40dp" android:layout_height="100dp" android:background="#BDBDBD"/>
-                        </LinearLayout>
-
-                        <!-- Barra con Max - mejorada para alineamiento -->
-                        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="4dp">
-                            <!-- Etiqueta Max encima de la barra -->
-                            <TextView 
-                                android:layout_width="wrap_content" 
-                                android:layout_height="wrap_content" 
-                                android:text="Max" 
-                                android:textSize="10sp" 
-                                android:textColor="@android:color/white"
-                                android:background="#009688" 
-                                android:paddingHorizontal="6dp"
-                                android:paddingVertical="2dp"
-                                android:layout_marginBottom="4dp"/>
-                            <!-- Barra del gráfico -->
-                            <View android:layout_width="40dp" android:layout_height="140dp" android:background="#009688"/>
-                        </LinearLayout>
-
-                        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" android:layout_marginEnd="4dp">
-                            <View android:layout_width="40dp" android:layout_height="90dp" android:background="#BDBDBD"/>
-                        </LinearLayout>
-
-                        <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center">
-                            <View android:layout_width="40dp" android:layout_height="50dp" android:background="#BDBDBD"/>
-                        </LinearLayout>
-
-                    </LinearLayout>
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone"/>
 
                     <!-- Etiquetas de tours -->
                     <LinearLayout
+                        android:id="@+id/containerDemandaLabels"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone"/>
 
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tour 1" android:textSize="11sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tour 2" android:textSize="11sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tour 3" android:textSize="11sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tour 4" android:textSize="11sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tour 5" android:textSize="11sp" android:gravity="center" android:textColor="#666"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Otros" android:textSize="11sp" android:gravity="center" android:textColor="#666"/>
-
-                    </LinearLayout>
+                    <!-- Mensaje si no hay datos -->
+                    <TextView
+                        android:id="@+id/tvNoDataDemanda"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:text="No hay datos disponibles"
+                        android:gravity="center"
+                        android:textColor="#999"
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

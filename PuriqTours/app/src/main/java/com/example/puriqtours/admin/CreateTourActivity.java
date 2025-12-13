@@ -382,6 +382,7 @@ public class CreateTourActivity extends AppCompatActivity {
             nuevoTour.setPrice(precio);
             nuevoTour.setStatus("Disponible");
             nuevoTour.setIdEmpresa(idEmpresa);
+            nuevoTour.setIdGuia(""); // Inicialmente sin guía asignado
             nuevoTour.setImageUrl(""); // Se actualizará al subir la imagen
             nuevoTour.setRating(5); // Rating inicial
             
