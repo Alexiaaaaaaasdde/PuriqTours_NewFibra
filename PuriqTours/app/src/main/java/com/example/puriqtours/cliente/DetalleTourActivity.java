@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Tour;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,8 +27,10 @@ import com.google.firebase.firestore.Query;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class DetalleTourActivity extends BaseActivity {
 
@@ -58,6 +61,9 @@ public class DetalleTourActivity extends BaseActivity {
 
     private int cantDesayuno = 0;
     private int cantCanotaje = 0;
+
+    private List<Tour.ServicioExtra> extrasDisponibles = new ArrayList<>();
+    private Map<String, Integer> cantidadesExtras = new HashMap<>();
 
 
     // 🔹 HORARIOS DEL TOUR
@@ -206,6 +212,19 @@ public class DetalleTourActivity extends BaseActivity {
             }
             return false;
         });
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tours")
+                .document(tourId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    Tour tour = doc.toObject(Tour.class);
+                    if (tour != null && tour.getServiciosExtras() != null) {
+                        extrasDisponibles = tour.getServiciosExtras();
+                    }
+                });
+
 
         // 🔥 CARGAR VALORACIONES DESDE FIREBASE
         cargarValoracionesDesdeFirebase();

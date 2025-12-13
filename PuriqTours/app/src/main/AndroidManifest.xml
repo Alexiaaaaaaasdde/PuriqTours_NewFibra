@@ -20,15 +20,45 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.PuriqTours">
+
+        <!-- 🔹 Splash Activity - Primera pantalla al abrir la app -->
         <activity
             android:name=".SplashActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PuriqTours">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- 🔹 Welcome Activity - Pantalla de bienvenida (nueva) -->
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PuriqTours" />
+
+        <!-- 🔹 Login Activity - Pantalla de inicio de sesión -->
+        <activity
+            android:name=".login.LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PuriqTours.Starting" />
+
+        <!-- 🔹 Actividades de Registro -->
+        <activity
+            android:name=".login.RegisterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".login.RegisterLegacyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- 🔹 Resto de actividades existentes -->
         <activity
             android:name=".guia.FinalizarTourActivity"
             android:exported="false"
@@ -36,130 +66,217 @@
 
         <activity
             android:name=".login.SetPasswordActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-        </activity>
-        <activity
-            android:name=".login.LoginActivity"
             android:exported="false"
-            android:theme="@style/Theme.PuriqTours.Starting" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".login.SetupProfileLegacyActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".login.SetupProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".login.SetPasswordLegacyActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:parentActivityName=".login.RegisterLegacyActivity" />
+
         <activity
             android:name=".onboarding.InterestsOnboardingActivity"
-            android:exported="false" />
-        <activity android:name=".onboarding.RegionsActivity" />
-        <activity android:name=".onboarding.ActivitiesActivity" />
-        <activity android:name=".login.RegisterLegacyActivity" />
-        <activity android:name=".login.RegisterActivity" />
-        <activity android:name=".login.ForgotPasswordActivity" />
-        <activity android:name=".login.TempPasswordActivity" />
-        <activity android:name=".login.ResetPasswordActivity" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".onboarding.RegionsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".onboarding.ActivitiesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".login.ForgotPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".login.TempPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".login.ResetPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.ProfileActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PuriqTours" />
+
         <activity
             android:name=".guia.MainGuiaActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".guia.MapaTourActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".guia.IniciarTourActivity"
             android:exported="true"
             android:label="Iniciar Tour"
-            android:theme="@style/Theme.PuriqTours" /> <!-- 🔹 Navegación principal -->
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PuriqTours" />
+
         <activity
             android:name=".cliente.ToursActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.HistorialActivity"
-            android:exported="false" /> <!-- 🔹 Pantalla de login/entrada -->
-        <!-- 🔹 Flujo de tour -->
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.DetalleTourActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.PagoActivity"
-            android:exported="false" /> <!-- 🔹 Estados de tour -->
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.ReservadoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.EnProcesoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.FinalizadoActivity"
-            android:exported="false" />
-        <activity android:name=".cliente.ChatActivity" /> <!-- 🔹 Valoración -->
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".cliente.ChatActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cliente.ValoracionActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.ReportsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.ProfileAdminActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.MainAdminActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.ToursAdminActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.CreateTourActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.TourDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.ReservaDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.EditTourActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.GuidesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.GuideDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.ChatListActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".admin.ChatAdminActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
-        <!-- 🔹 Nueva pantalla unificada de detalles de reserva -->
         <activity
             android:name=".cliente.ReservaDetalleActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".superadmin.UsuariosActivity" />
-        <activity android:name=".superadmin.LogsActivity" />
-        <activity android:name=".superadmin.ReportesActivity" />
+        <activity
+            android:name=".superadmin.UsuariosActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".superadmin.LogsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".superadmin.ReportesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".superadmin.MainSuperAdminActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqg-o8eDsbrz09nCNj1nHezO4TSu8PgwA" />
