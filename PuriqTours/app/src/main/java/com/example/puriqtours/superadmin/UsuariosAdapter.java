@@ -73,14 +73,13 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
     }
 
     public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNombre, txtCiudad;
+        TextView txtNombre;
         ImageView imgAvatar; // 🔹 agregado
         LinearLayout layoutBotones;
 
         public UsuarioViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNombre = itemView.findViewById(R.id.txtNombre);
-            txtCiudad = itemView.findViewById(R.id.txtCiudad);
             imgAvatar = itemView.findViewById(R.id.imgAvatar); // 🔹 agregado
             layoutBotones = itemView.findViewById(R.id.layoutBotones);
         }
@@ -93,7 +92,6 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         Usuario usuario = listaUsuarios.get(position);
 
         holder.txtNombre.setText(usuario.getName());
-        holder.txtCiudad.setText(usuario.getAddress());
 
 // 🟢 NUEVO BLOQUE — carga la imagen de perfil del usuario
         if (usuario.getProfile_image() != null && !usuario.getProfile_image().isEmpty()) {

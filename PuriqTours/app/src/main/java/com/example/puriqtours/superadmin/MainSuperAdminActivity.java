@@ -4,7 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +36,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -58,65 +59,75 @@ public class MainSuperAdminActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private ListenerRegistration usersListener;
     private GuiasHorizontalAdapter guiasAdapter;
+    // 🧠 Últimos valores para evitar re-animaciones innecesarias
+    private int lastActiveUsers = -1;
+    private int lastEnabledGuides = -1;
+    private int lastAdminCount = -1;
 
     private void setupUsersListener() {
+
+        // 🔁 Remover listener previo si existe
         if (usersListener != null) {
             usersListener.remove();
+            usersListener = null;
         }
 
-        db.collection("users")
-                .get(com.google.firebase.firestore.Source.SERVER)
-                .addOnSuccessListener(snapshot -> {
+        usersListener = db.collection("users")
+                .addSnapshotListener((snapshot, error) -> {
+
+                    if (error != null || snapshot == null) {
+                        Log.e("MainSuperAdmin", "Listener error: ", error);
+                        return;
+                    }
 
                     int activeUsers = 0;
                     int enabledGuides = 0;
+                    int adminCount = 0;
 
                     for (QueryDocumentSnapshot doc : snapshot) {
                         String rol = doc.getString("rol");
                         String status = doc.getString("status");
 
-                        // Usuario activo = cualquier usuario excepto SuperAdmin
-                        if (rol == null || !"SuperAdmin".equalsIgnoreCase(rol)) {
+                        // 🟢 USUARIOS ACTIVOS (NO SuperAdmin + Activo)
+                        if (
+                                rol != null &&
+                                        !"SuperAdmin".equalsIgnoreCase(rol) &&
+                                        "Activo".equalsIgnoreCase(status)
+                        ) {
                             activeUsers++;
                         }
 
-                        // Guía habilitado = rol Guia + status Activo
-                        if ("Guia".equalsIgnoreCase(rol) && "Activo".equalsIgnoreCase(status)) {
+                        // 🧭 GUÍAS HABILITADOS
+                        if ("Guia".equalsIgnoreCase(rol)
+                                && "Activo".equalsIgnoreCase(status)) {
                             enabledGuides++;
                         }
-                    }
 
-                    // Mostrar valores en UI
-                    if (tvActiveUsersCount != null)
-                        animateCounter(tvActiveUsersCount, activeUsers);
-
-                    if (tvEnabledGuidesCount != null)
-                        animateCounter(tvEnabledGuidesCount, enabledGuides);
-
-                    // Empresas registradas
-                    // Contar administradores activos → Empresas registradas
-                    int adminCount = 0;
-                    for (QueryDocumentSnapshot doc : snapshot) {
-                        String rol = doc.getString("rol");
-                        String status = doc.getString("status");
-
-                        if ("Admin".equalsIgnoreCase(rol) && "Activo".equalsIgnoreCase(status)) {
+                        // 🏢 EMPRESAS REGISTRADAS (Admins activos)
+                        if ("Admin".equalsIgnoreCase(rol)
+                                && "Activo".equalsIgnoreCase(status)) {
                             adminCount++;
                         }
                     }
 
-                    if (tvRegisteredCompaniesCount != null) {
-                        animateCounter(tvRegisteredCompaniesCount, adminCount);
+                    // 🔄 ACTUALIZAR UI EN TIEMPO REAL
+                    if (activeUsers != lastActiveUsers) {
+                        animateCounter(tvActiveUsersCount, activeUsers);
+                        lastActiveUsers = activeUsers;
+                    }
+                    if (enabledGuides != lastEnabledGuides) {
+                        animateCounter(tvEnabledGuidesCount, enabledGuides);
+                        lastEnabledGuides = enabledGuides;
                     }
 
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("MainSuperAdmin", "Error al obtener usuarios: " + e.getMessage());
+                    if (adminCount != lastAdminCount) {
+                        animateCounter(tvRegisteredCompaniesCount, adminCount);
+                        lastAdminCount = adminCount;
+                    }
 
-                    if (tvActiveUsersCount != null) tvActiveUsersCount.setText("--");
-                    if (tvEnabledGuidesCount != null) tvEnabledGuidesCount.setText("--");
                 });
     }
+
 
 
     // Cargar empresas y agregar conteo por mes (últimos 6 meses) al LineChart
@@ -398,89 +409,71 @@ public class MainSuperAdminActivity extends AppCompatActivity {
 
 
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Vinculamos el layout activity_superadmin_home.xml
         setContentView(R.layout.activity_superadmin_home);
+
+        // 🔹 Firestore
         db = FirebaseFirestore.getInstance();
 
-
-        // Status bar blanco y iconos oscuros (solo método moderno, sin warning)
+        // 🔹 Status bar
         getWindow().setStatusBarColor(Color.WHITE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             getWindow().getInsetsController().setSystemBarsAppearance(
-                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }
-        // Cambiar color del TopAppBar al mismo que otras secciones
-        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
+        // 🔹 Toolbar
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
             toolbar.setBackgroundColor(Color.parseColor("#009688"));
-            // 🔹 Click para ir al Top 10 de tours
-            findViewById(R.id.cardTours).setOnClickListener(v -> {
-                Intent intent = new Intent(MainSuperAdminActivity.this, TopToursActivity.class);
-                startActivity(intent);
-            });
-
-            findViewById(R.id.cardIdiomas).setOnClickListener(v -> {
-                Intent intent = new Intent(MainSuperAdminActivity.this, IdiomasActivity.class);
-                startActivity(intent);
-            });
-
-// Cambiar de #1DE9B6 a #009688
         }
-        // Navegación al hacer click en el botón Usuarios
-        findViewById(R.id.btnUsuarios).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.UsuariosActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-            }
-        });
 
-        // Navegación al hacer click en el botón Logs
-        findViewById(R.id.btnLogs).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.LogsActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-            }
-        });
-        // Inicializar gráfico de líneas de empresas registradas usando datos reales
+        // 🔹 Cards (NO CAMBIADAS)
+        findViewById(R.id.cardRankings).setOnClickListener(v ->
+                startActivity(new Intent(this, TopToursActivity.class))
+        );
 
+        findViewById(R.id.cardPreferencias).setOnClickListener(v ->
+                startActivity(new Intent(this, IdiomasActivity.class))
+        );
 
-        // Inicializar RecyclerView horizontal de guías (adapter vacío, se llenará desde Firestore)
+        findViewById(R.id.cardActividad).setOnClickListener(v ->
+                startActivity(new Intent(this, ActividadSistemaActivity.class))
+        );
 
+        findViewById(R.id.cardCrecimiento).setOnClickListener(v ->
+                startActivity(new Intent(this, CrecimientoActivity.class))
+        );
 
+        // 🔹 Footer
+        findViewById(R.id.btnUsuarios).setOnClickListener(v ->
+                startActivity(new Intent(this, UsuariosActivity.class))
+        );
 
-        // TextViews para mostrar estadísticas
+        findViewById(R.id.btnLogs).setOnClickListener(v ->
+                startActivity(new Intent(this, LogsActivity.class))
+        );
+
+        // 🔹 TextViews (NO CAMBIADOS)
         tvActiveUsersCount = findViewById(R.id.tvActiveUsersCount);
         tvEnabledGuidesCount = findViewById(R.id.tvEnabledGuidesCount);
         tvRegisteredCompaniesCount = findViewById(R.id.tvRegisteredCompaniesCount);
         tvDisabledGuidesCount = findViewById(R.id.tvDisabledGuidesCount);
 
-        // Inicializar Firestore
 
-        // Verificar conectividad primero
-        db.enableNetwork()
-            .addOnSuccessListener(aVoid -> {
-                Log.d("MainSuperAdmin", "Red habilitada exitosamente");
-                // Solo después de confirmar la conectividad, consultamos los usuarios
-                setupUsersListener();
-                // Cargar guías deshabilitados para la sección de solicitudes
-                loadDisabledGuides();
-            })
-            .addOnFailureListener(e -> {
-                Log.e("MainSuperAdmin", "Error al habilitar la red: " + e.getMessage(), e);
-                if (tvActiveUsersCount != null) {
-                    tvActiveUsersCount.setText("--");
-                }
-            });
+    }
 
-        Log.d("MainSuperAdmin", "Iniciando conexión a Firestore...");
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // 🔄 Siempre se ejecuta al volver a esta pantalla
+        setupUsersListener();
+        loadDisabledGuides();
     }
 
     @Override

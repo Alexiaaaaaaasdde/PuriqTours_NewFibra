@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class TopToursActivity extends AppCompatActivity {
 
     private RecyclerView rvTopTours;
+    private TextView tvTituloRanking;
 
     private MaterialButton btnFiltroTours, btnFiltroGuias;
 
@@ -31,14 +33,12 @@ public class TopToursActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_tours);
+        tvTituloRanking = findViewById(R.id.tvTituloRanking);
 
         // 🔹 Toolbar SIN flecha (flecha manual)
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setTitle("");
-        }
+
 
         // Flecha personalizada
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
@@ -61,15 +61,21 @@ public class TopToursActivity extends AppCompatActivity {
             btnFiltroTours.setSelected(true);
             btnFiltroGuias.setSelected(false);
             actualizarBotones();
+            tvTituloRanking.setText("Ranking de Tours Más Visitados");
+
             cargarTopTours(rvTopTours);
         });
-
         btnFiltroGuias.setOnClickListener(v -> {
             btnFiltroTours.setSelected(false);
             btnFiltroGuias.setSelected(true);
             actualizarBotones();
+
+            tvTituloRanking.setText("Ranking de los Guías Más Solicitados");
+
             cargarTopGuias(rvTopTours);
         });
+
+
 
         // Footer
         findViewById(R.id.btnPrincipal).setOnClickListener(v -> {

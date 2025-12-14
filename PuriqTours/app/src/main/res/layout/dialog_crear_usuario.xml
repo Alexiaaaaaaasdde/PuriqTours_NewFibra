@@ -13,41 +13,75 @@
         android:padding="24dp"
         android:layout_margin="16dp">
 
-        <!-- Título -->
+        <!-- TÍTULO -->
         <TextView
             android:id="@+id/tvTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Crear nuevo usuario"
             android:textColor="#009688"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:gravity="center"/>
 
-        <!-- Selector de rol -->
-        <Spinner
-            android:id="@+id/spinnerRol"
-            android:layout_width="match_parent"
+        <!-- SUBTÍTULO ROL FIJO -->
+        <TextView
+            android:id="@+id/tvRolFijo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Rol: Administrador"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="6dp"
+            android:background="@drawable/bg_role_badge"
+            android:layout_gravity="center"
             android:layout_marginTop="12dp"/>
 
-        <!-- Contenedor de campos generados dinámicamente -->
+        <!-- FOTO DE PERFIL -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:src="@drawable/avatar1"
+                android:background="@drawable/bg_avatar_circle"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/btnAgregarFoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agregar foto"
+                android:textColor="#009688"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+        <!-- CAMPOS DINÁMICOS -->
         <LinearLayout
             android:id="@+id/contenedorCampos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="20dp"/>
 
-        <!-- Botón Crear -->
+        <!-- BOTÓN CREAR -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCrear"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="54dp"
             android:text="Crear usuario"
+            android:textStyle="bold"
             android:textColor="@android:color/white"
             android:backgroundTint="#009688"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="24dp"/>
 
     </LinearLayout>
 </ScrollView>

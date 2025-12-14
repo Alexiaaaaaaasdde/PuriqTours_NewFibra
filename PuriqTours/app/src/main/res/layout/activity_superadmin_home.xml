@@ -195,8 +195,6 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- GRID 2×2 -->
-                <!-- GRID 2×2 -->
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -206,11 +204,12 @@
                     android:alignmentMode="alignMargins"
                     android:useDefaultMargins="true">
 
+                    <!-- CARD 1: Rankings -->
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardTours"
+                        android:id="@+id/cardRankings"
                         android:layout_width="150dp"
-                        android:layout_height="140dp"
-                        android:layout_margin="8dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="start"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="6dp"
                         app:cardBackgroundColor="#EAF6F9"
@@ -220,34 +219,23 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <!-- ✅ IMAGEN OCUPA TODO EL CARD -->
                             <ImageView
-                                android:id="@+id/imgTopTours"
+                                android:id="@+id/imgCard"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/tourguia"
-                                android:scaleType="centerCrop"/>
-
-                            <!-- ✅ TEXTO FLOTANTE ARRIBA (NO PEGADO AL BORDE) -->
-                            <TextView
-                                android:id="@+id/tvTituloCardTours"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="top|center_horizontal"
-                                android:layout_marginTop="2.5dp"
-                                android:text="Rankings"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:textColor="#459494"/>
+                                android:scaleType="centerInside"
+                                android:src="@drawable/rankings"/>
 
                         </FrameLayout>
-
                     </com.google.android.material.card.MaterialCardView>
+
+                    <!-- CARD 2: Preferencias -->
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardIdiomas"
+                        android:id="@+id/cardPreferencias"
                         android:layout_width="150dp"
-                        android:layout_height="140dp"
-                        android:layout_margin="8dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="end"
+
                         app:cardCornerRadius="16dp"
                         app:cardElevation="6dp"
                         app:cardBackgroundColor="#EAF6F9"
@@ -257,30 +245,67 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <!-- IMAGEN -->
                             <ImageView
-                                android:id="@+id/imgIdiomas"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/idiomas"
+                                android:src="@drawable/preferencias"
                                 android:scaleType="centerCrop"/>
+                        </FrameLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                            <!-- TEXTO -->
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="top|center_horizontal"
-                                android:layout_marginTop="10dp"
-                                android:text="Idiomas"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:textColor="#459494"/>
+                    <!-- CARD 3: Actividad -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardActividad"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="start"
+
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="6dp"
+                        app:cardBackgroundColor="#EAF6F9"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/actividad"
+                                android:scaleType="centerCrop"/>
 
                         </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- CARD 4: Crecimiento -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardCrecimiento"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="end"
+
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="6dp"
+                        app:cardBackgroundColor="#EAF6F9"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/crecimiento  "
+                                android:scaleType="centerCrop"/>
+
+
+                        </FrameLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
                 </GridLayout>
+
 
                 <!-- AQUI SÍ VA EL RECYCLERVIEW (FUERA DEL GRID) -->
                 <androidx.recyclerview.widget.RecyclerView

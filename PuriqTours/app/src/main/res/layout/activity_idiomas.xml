@@ -57,6 +57,24 @@
             android:id="@+id/pieChartIdiomas"
             android:layout_width="300dp"
             android:layout_height="300dp"/>
+        <!-- ✅ TÍTULO REGIONES -->
+        <!-- ✅ TÍTULO REGIONES -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Servicios extras más elegidos"
+            android:textColor="#009688"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="start"/>
+
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barChartServicios"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"/>
 
     </LinearLayout>
 

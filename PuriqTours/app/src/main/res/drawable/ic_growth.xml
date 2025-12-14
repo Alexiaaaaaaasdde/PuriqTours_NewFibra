@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Fondo transparente -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M0,0h24v24H0z"/>
+
+    <!-- Barras de crecimiento -->
+    <path
+        android:fillColor="#459494"
+        android:pathData="
+            M5,20h3V10H5v10z
+            M10.5,20h3V6h-3v14z
+            M16,20h3V3h-3v17z"/>
+</vector>

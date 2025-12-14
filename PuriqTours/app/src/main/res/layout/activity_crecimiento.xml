@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_superadmin">
+
+    <!-- TOP BAR -->
+    <include
+        layout="@layout/top_app_bar_superadmin"/>
+
+    <!-- CONTENIDO -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="70dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 🔙 Flecha + Título -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@drawable/ic_arrow_back"
+                    android:padding="4dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Crecimiento del sistema"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#009688"/>
+            </LinearLayout>
+
+            <!-- ================= USUARIOS ACTIVOS VS INACTIVOS ================= -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usuarios activos vs inactivos"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#009688"
+                android:layout_marginTop="12dp"/>
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieUsuariosEstado"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
+
+
+            <!-- ================= USUARIOS POR ROL ================= -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usuarios por rol"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#009688"
+                android:layout_marginTop="24dp"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barUsuariosRol"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- FOOTER -->
+    <include
+        layout="@layout/navigation_bottombar_superadmin"
+        android:layout_gravity="bottom"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

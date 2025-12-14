@@ -33,8 +33,8 @@ import java.util.Map;
 
 public class CrearUsuarioDialog extends AppCompatDialogFragment {
 
-    private Spinner spinnerRol;
     private LinearLayout contenedorCampos;
+    private TextView tvRolFijo;
 
     // Listas separadas
     private ArrayList<TextInputLayout> listaCamposTexto = new ArrayList<>();
@@ -46,30 +46,19 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
+        // Inflar la vista después de la declaración
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.dialog_crear_usuario, null);
 
-        spinnerRol = view.findViewById(R.id.spinnerRol);
+        // Inicializar la vista tvRolFijo después de inflar
+        tvRolFijo = view.findViewById(R.id.tvRolFijo);
         contenedorCampos = view.findViewById(R.id.contenedorCampos);
 
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        // Rol fijo
+        tvRolFijo.setText("Rol: Administrador");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                new String[]{"Administrador"}
-        );
-        spinnerRol.setAdapter(adapter);
-
-
-        spinnerRol.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int pos, long id) {
-                dibujarCampos();
-            }
-            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
-        });
+        // Dibujar campos directamente
+        dibujarCampos();
 
         MaterialButton btnCrear = view.findViewById(R.id.btnCrear);
         btnCrear.setOnClickListener(v -> crearUsuario());
@@ -90,22 +79,21 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
     // =====================================================
 
     private void dibujarCampos() {
+
         contenedorCampos.removeAllViews();
         listaCamposTexto.clear();
         listaSpinners.clear();
 
-        String rol = spinnerRol.getSelectedItem().toString();
-
+        // Campos comunes
         agregarCampoTexto("Nombre");
         agregarCampoTexto("Apellido");
         agregarCampoTexto("Email");
         agregarCampoTexto("Password", InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-
-        if (rol.equals("Administrador") || rol.equals("Admin")) {
-            agregarCampoSpinner("Idioma", new String[]{"Español", "Inglés", "Aymara"});
-        }
+        // Campos exclusivos para Admin
+        agregarCampoSpinner("Idioma", new String[]{"Español", "Inglés", "Aymara"});
     }
+
 
     // =====================================================
     // CAMPOS

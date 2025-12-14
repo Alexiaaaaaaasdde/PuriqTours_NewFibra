@@ -47,8 +47,6 @@ public class TopGuiasAdapter extends RecyclerView.Adapter<TopGuiasAdapter.GuiaVi
         int total = conteoGuias.get(guia.getUid());
         holder.tvSolicitudes.setText("Tours atendidos: " + total);
 
-        holder.tvEmail.setText(guia.getEmail());
-
         // Rating dinámico
         double rating = guia.getRating(); // ⭐ YA NO ES HARDCODEADO
         holder.tvRating.setText(String.format("%.1f", rating));
@@ -68,7 +66,7 @@ public class TopGuiasAdapter extends RecyclerView.Adapter<TopGuiasAdapter.GuiaVi
 
     public static class GuiaViewHolder extends RecyclerView.ViewHolder {
         ImageView imgGuia;
-        TextView tvNombre, tvSolicitudes, tvEmail, tvRating;
+        TextView tvNombre, tvSolicitudes, tvRating;
 
         public GuiaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,7 +74,6 @@ public class TopGuiasAdapter extends RecyclerView.Adapter<TopGuiasAdapter.GuiaVi
             imgGuia = itemView.findViewById(R.id.imgGuia);
             tvNombre = itemView.findViewById(R.id.tvGuiaNombre);
             tvSolicitudes = itemView.findViewById(R.id.tvGuiaSolicitudes);
-            tvEmail = itemView.findViewById(R.id.tvGuiaEmail);
             tvRating = itemView.findViewById(R.id.tvGuiaRating); // ⭐ ¡NUEVO!
         }
     }
