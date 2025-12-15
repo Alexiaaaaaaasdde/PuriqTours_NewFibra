@@ -15,35 +15,66 @@
         android:text="Finalizar Tour"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
         android:textColor="@color/black"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="8dp" />
 
     <!-- 🔹 Indicación -->
     <TextView
         android:id="@+id/tvIndicacionFinalizar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Escanee el código QR para finalizar su tourLegacy"
+        android:text="Escanee el código QR de cada cliente para finalizar el tour"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="@color/teal_700"
         android:gravity="center"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="16dp" />
+
+    <!-- 🔹 Apartado progreso clientes -->
+    <LinearLayout
+        android:id="@+id/layoutProgresoClientes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="@drawable/bg_card_light"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/tvClientesFinalizadoContador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0/0"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/black" />
+    </LinearLayout>
 
     <!-- 🔹 Ícono central -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgCamaraFinalizar"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:src="@drawable/ic_camera_alt"
         android:background="@color/teal_700"
         android:padding="32dp"
         android:scaleType="centerInside"
         android:tint="@android:color/black"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="24dp" />
 
-    <!-- 🔹 Botón escanear -->
+    <!-- 🔹 Botón escanear QR finalizar -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnEscanearFinalizar"
+        android:id="@+id/btnEscanearQRFinalizar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Escanear QR de Finalización"
+        style="@style/Widget.Material3.Button"
+        app:cornerRadius="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- 🔹 Botón finalizar tour (cuando todos estén listos) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnFinalizarTour"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Finalizar Tour"

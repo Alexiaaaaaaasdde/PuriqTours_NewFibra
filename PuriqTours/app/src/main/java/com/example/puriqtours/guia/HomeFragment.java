@@ -133,16 +133,21 @@ public class HomeFragment extends Fragment {
                         if (solicitud == null) continue;
 
                         String idTour = solicitud.getIdTour();
-                        Log.d("FIRESTORE", "Id del tour: " + idTour);
+                        if (idTour == null || idTour.isEmpty()) {
+                            Log.e("FIRESTORE",
+                                    "Solicitud SIN idTour. solicitudId=" + doc.getId());
+                            continue; // ⛔ no sigas con este doc
+                        }
+                        Log.d("FIRESTORE", "Id del Tour: " + idTour);
 
-                        // 🔹 Obtener imagen desde el documento tour
+                        // 🔹 Obtener imagen desde el documento reserva
                         db.collection("tours")
                                 .document(idTour)
                                 .get()
-                                .addOnSuccessListener(tourDoc -> {
+                                .addOnSuccessListener(reservaDoc -> {
 
-                                    if (tourDoc.exists()) {
-                                        String url = tourDoc.getString("imageUrl");
+                                    if (reservaDoc.exists()) {
+                                        String url = reservaDoc.getString("imageUrl");
                                         solicitud.setImageUrl(url);
                                     }
 

@@ -7,71 +7,116 @@
     android:padding="16dp">
 
     <!-- 🔹 Título -->
-
-    <!-- 🔹 Indicación -->
-
-    <!-- 🔹 Icono de cámara -->
-
-    <!-- 🔹 Botón escanear -->
-
     <TextView
         android:id="@+id/tvTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="64dp"
         android:text="Iniciar Tour"
         android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
         android:textColor="@color/black"
         android:textSize="40sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 🔹 Indicación -->
     <TextView
         android:id="@+id/tvIndicacion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Escanee este código QR para iniciar el tourLegacy"
+        android:text="Escanee el código QR de cada cliente para validarlo"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
         android:textColor="@color/teal_700"
-        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/tvTitulo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitulo" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 🔹 Estado de clientes -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardClientes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/tvIndicacion"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvClientesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clientes validados"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvClientesContador"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 / 0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/teal_700"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 🔹 Icono de cámara -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgCamara"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_marginTop="24dp"
         android:background="@color/teal_700"
         android:padding="36dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_camera_alt"
         android:tint="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
+        app:layout_constraintTop_toBottomOf="@id/cardClientes"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvIndicacion"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 🔹 Botón escanear -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnEscanear"
-        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
-        android:text="Escanear el código"
+        android:text="Escanear QR"
+        android:layout_marginTop="16dp"
         app:cornerRadius="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgCamara"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 🔹 Botón iniciar tour -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnIniciarTour"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Iniciar Tour"
+        android:enabled="false"
+        android:layout_marginTop="12dp"
+        app:cornerRadius="12dp"
+        app:layout_constraintTop_toBottomOf="@id/btnEscanear"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

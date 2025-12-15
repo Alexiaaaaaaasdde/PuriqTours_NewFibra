@@ -34,7 +34,6 @@ public class TourGuiaAdapter extends RecyclerView.Adapter<TourGuiaAdapter.ViewHo
     private List<TourGuia> tourList;
     private OnTourActionListener listener;
     private String estadoFiltro = "Todos";
-    TextView tvDescripcionCompleta;
 
 
     // 🔹 Interfaz para el botón “Iniciar tour”

@@ -142,7 +142,7 @@ public class SolicitudAdapter extends RecyclerView.Adapter<SolicitudAdapter.Soli
                         .update("status", "Aceptado")
                         .addOnSuccessListener(aVoid -> {
 
-                            // 2️⃣ Agregar idGuia al documento de reservas/{idReserva}
+                            // 2️⃣ Agregar idGuia al documento de tours/{idTour}
                             db.collection("tours")
                                     .document(solicitud.getIdTour())
                                     .update("idGuia", solicitud.getIdGuia())

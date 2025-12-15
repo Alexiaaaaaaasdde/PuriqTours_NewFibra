@@ -2,6 +2,7 @@ package com.example.puriqtours.guia;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,17 +13,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.CheckpointReserva;
+import com.example.puriqtours.entity.ReservaIndividual;
 import com.google.android.gms.location.*;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.*;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +40,8 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
 
-    private String idReserva, idTour, tokenFin;
+    private String idReserva;
     private FirebaseFirestore db;
-
     private List<CheckpointReserva> checkpointList = new ArrayList<>();
     private CheckpointReserva checkpointActual;
 
@@ -53,7 +60,6 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
 
         // Obtener datos de intent
         idReserva = getIntent().getStringExtra("idReserva");
-        idTour = getIntent().getStringExtra("idTour");
 
         db = FirebaseFirestore.getInstance();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -71,13 +77,15 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Firestore
-        cargarTokenFin();
         cargarCheckpoints();
 
         // Botones
         btnMarcar.setOnClickListener(v -> marcarCheckpoint());
-        btnFinalizar.setOnClickListener(v -> dialogFinalizar());
+        btnFinalizar.setOnClickListener(v -> {
+            FinalizarTourBottomSheet bottomSheet = FinalizarTourBottomSheet.newInstance(idReserva);
+            bottomSheet.show(getSupportFragmentManager(), "FinalizarTourBottomSheet");
+        });
+
     }
 
     // ============================================================================
@@ -123,15 +131,6 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
                 },
                 getMainLooper()
         );
-    }
-
-    // ============================================================================
-    // TOKEN FIN
-    // ============================================================================
-    private void cargarTokenFin() {
-        db.collection("reservas").document(idReserva)
-                .get()
-                .addOnSuccessListener(doc -> tokenFin = doc.getString("qrEnd"));
     }
 
     // ============================================================================
@@ -319,37 +318,6 @@ public class MapaTourActivity extends AppCompatActivity implements OnMapReadyCal
         Toast.makeText(this, "Todos los checkpoints visitados", Toast.LENGTH_LONG).show();
     }
 
-    // ============================================================================
-    // FINALIZAR TOUR
-    // ============================================================================
-    private void dialogFinalizar() {
 
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle("Finalizar Tour");
-        b.setMessage("Ingrese el token de finalización:");
 
-        EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        b.setView(input);
-
-        b.setPositiveButton("Validar", (d, w) -> {
-
-            String token = input.getText().toString().trim();
-
-            if (!token.equals(tokenFin)) {
-                Toast.makeText(this, "Token incorrecto ❌", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            db.collection("reservas")
-                    .document(idReserva)
-                    .update("status", "Finalizado");
-
-            Toast.makeText(this, "Tour finalizado ✔", Toast.LENGTH_LONG).show();
-            finish();
-        });
-
-        b.setNegativeButton("Cancelar", (d, w) -> d.cancel());
-        b.show();
-    }
 }
