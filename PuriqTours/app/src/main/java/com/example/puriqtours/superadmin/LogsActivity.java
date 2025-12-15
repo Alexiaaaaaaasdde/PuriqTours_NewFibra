@@ -135,6 +135,11 @@ public class LogsActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
+                if (id == R.id.nav_solicitudes) {
+                    startActivity(new Intent(this, SolicitudesActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
 
                 if (id == R.id.nav_logs) {
                     // ya estás aquí

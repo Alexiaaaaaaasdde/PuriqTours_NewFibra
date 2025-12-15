@@ -47,7 +47,7 @@
             android:layout_marginTop="20dp">
 
             <ImageView
-                android:id="@+id/imgProfile"
+                android:id="@+id/imgFotoUsuario"
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:src="@drawable/avatar1"
@@ -61,7 +61,11 @@
                 android:text="Agregar foto"
                 android:textColor="#009688"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"/>
+
         </LinearLayout>
 
         <!-- CAMPOS DINÁMICOS -->

@@ -1,33 +1,37 @@
 package com.example.puriqtours.superadmin;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDialogFragment;
-
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.example.puriqtours.R;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.content.FileProvider;
+
+import com.example.puriqtours.R;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,32 +39,59 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
 
     private LinearLayout contenedorCampos;
     private TextView tvRolFijo;
+    private ImageView imgFotoUsuario;
+    private TextView btnAgregarFoto;
 
-    // Listas separadas
     private ArrayList<TextInputLayout> listaCamposTexto = new ArrayList<>();
     private ArrayList<Spinner> listaSpinners = new ArrayList<>();
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+    private StorageReference storageRef;
+    private Uri imagenSeleccionadaUri = null;
 
+    // =====================================================
+    // CREAR DIÁLOGO
+    // =====================================================
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        // Inflar la vista después de la declaración
         View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.dialog_crear_usuario, null);
 
-        // Inicializar la vista tvRolFijo después de inflar
+        // Inicializar vistas
         tvRolFijo = view.findViewById(R.id.tvRolFijo);
         contenedorCampos = view.findViewById(R.id.contenedorCampos);
+        imgFotoUsuario = view.findViewById(R.id.imgFotoUsuario);
+        btnAgregarFoto = view.findViewById(R.id.btnAgregarFoto);
+        MaterialButton btnCrear = view.findViewById(R.id.btnCrear);
+
+        // Inicializar Firebase
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        storageRef = FirebaseStorage.getInstance().getReference("profile_images");
 
         // Rol fijo
         tvRolFijo.setText("Rol: Administrador");
 
-        // Dibujar campos directamente
+        // Dibujar campos
         dibujarCampos();
 
-        MaterialButton btnCrear = view.findViewById(R.id.btnCrear);
+        // 🔹 Selector de cámara o galería
+        btnAgregarFoto.setOnClickListener(v -> {
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Seleccionar foto")
+                    .setItems(new CharSequence[]{"Tomar foto", "Elegir de galería"}, (dialog, which) -> {
+                        if (which == 0) {
+                            abrirCamara();
+                        } else {
+                            seleccionarImagenLauncher.launch("image/*");
+                        }
+                    })
+                    .show();
+        });
+
+        // Botón crear
         btnCrear.setOnClickListener(v -> crearUsuario());
 
         Dialog dialog = new Dialog(requireContext());
@@ -77,9 +108,7 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
     // =====================================================
     // DIBUJAR CAMPOS
     // =====================================================
-
     private void dibujarCampos() {
-
         contenedorCampos.removeAllViews();
         listaCamposTexto.clear();
         listaSpinners.clear();
@@ -94,11 +123,9 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
         agregarCampoSpinner("Idioma", new String[]{"Español", "Inglés", "Aymara"});
     }
 
-
     // =====================================================
     // CAMPOS
     // =====================================================
-
     private void agregarCampoTexto(String hint) {
         agregarCampoTexto(hint, InputType.TYPE_CLASS_TEXT);
     }
@@ -145,13 +172,10 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
     // =====================================================
     // CREAR USUARIO
     // =====================================================
-
     private void crearUsuario() {
-
         String rol = "Admin";
 
         int i = 0;
-
         String nombre = getTexto(i++);
         String apellido = getTexto(i++);
         String email = getTexto(i++);
@@ -168,18 +192,14 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
         data.put("email", email);
         data.put("rol", rol);
         data.put("status", "Activo");
-// ✅ Guardar idioma del administrador
+
         String idioma = listaSpinners.get(0).getSelectedItem().toString();
         data.put("language", idioma);
-
-
-
 
         Toast.makeText(getContext(), "Creando usuario...", Toast.LENGTH_SHORT).show();
 
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-
                     String uid = authResult.getUser().getUid();
                     data.put("uid", uid);
 
@@ -202,8 +222,39 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
     // =====================================================
     // HELPERS
     // =====================================================
-
     private String getTexto(int index) {
         return listaCamposTexto.get(index).getEditText().getText().toString();
+    }
+
+    // =====================================================
+    // GALERÍA Y CÁMARA
+    // =====================================================
+    private final ActivityResultLauncher<String> seleccionarImagenLauncher =
+            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+                if (uri != null) {
+                    imagenSeleccionadaUri = uri;
+                    imgFotoUsuario.setImageURI(uri);
+                }
+            });
+
+    private final ActivityResultLauncher<Uri> tomarFotoLauncher =
+            registerForActivityResult(new ActivityResultContracts.TakePicture(), success -> {
+                if (success && imagenSeleccionadaUri != null) {
+                    imgFotoUsuario.setImageURI(imagenSeleccionadaUri);
+                }
+            });
+
+    private void abrirCamara() {
+        try {
+            File tempFile = File.createTempFile("temp_foto_", ".jpg", requireContext().getCacheDir());
+            imagenSeleccionadaUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    requireContext().getPackageName() + ".provider",
+                    tempFile
+            );
+            tomarFotoLauncher.launch(imagenSeleccionadaUri);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Error al abrir cámara: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

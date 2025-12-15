@@ -65,7 +65,11 @@ public class UsuariosActivity extends AppCompatActivity {
                 if (id == R.id.nav_usuarios) {
                     return true;
                 }
-
+                if (id == R.id.nav_solicitudes) {
+                    startActivity(new Intent(this, SolicitudesActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
                 if (id == R.id.nav_logs) {
                     startActivity(new Intent(this, LogsActivity.class));
                     overridePendingTransition(0, 0);
