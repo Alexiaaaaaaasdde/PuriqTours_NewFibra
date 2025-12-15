@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -29,7 +30,6 @@ public class SolicitudesActivity extends AppCompatActivity {
     private List<DocumentSnapshot> solicitudList;
     private FirebaseFirestore db;
 
-    // Botones filtro
     private MaterialButton btnPendientes, btnRechazados, btnHabilitados, btnTodos;
 
     @Override
@@ -37,6 +37,7 @@ public class SolicitudesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solicitudes);
 
+        // 🔹 Bottom Navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
         if (bottomNav != null) {
             bottomNav.setSelectedItemId(R.id.nav_solicitudes);
@@ -74,46 +75,42 @@ public class SolicitudesActivity extends AppCompatActivity {
         btnHabilitados = findViewById(R.id.btnHabilitados);
         btnTodos = findViewById(R.id.btnTodosSolicitudes);
 
+        // 🔹 Carga inicial
         cargarSolicitudes("No habilitado");
-        actualizarSeleccion(btnPendientes);
+        highlightFilter(R.id.btnPendientes);
 
+        // 🔹 Buscador
         TextInputEditText etSearch = findViewById(R.id.etSearchSolicitudes);
         etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                 filtrarSolicitudes(s.toString());
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
+        // 🔹 Filtros (ahora cada uno resalta el suyo)
         btnPendientes.setOnClickListener(v -> {
             cargarSolicitudes("No habilitado");
-            actualizarSeleccion(btnPendientes);
+            highlightFilter(R.id.btnPendientes);
         });
 
         btnHabilitados.setOnClickListener(v -> {
             cargarSolicitudes("Habilitado");
-            actualizarSeleccion(btnHabilitados);
+            highlightFilter(R.id.btnHabilitados);
         });
 
         btnRechazados.setOnClickListener(v -> {
             cargarSolicitudes("Rechazado");
-            actualizarSeleccion(btnRechazados);
+            highlightFilter(R.id.btnRechazados);
         });
 
         btnTodos.setOnClickListener(v -> {
             cargarSolicitudes(null);
-            actualizarSeleccion(btnTodos);
+            highlightFilter(R.id.btnTodosSolicitudes);
         });
 
-        // ==============================
-        // 🔽 ORDENAR (debajo de los chips)
-        // ==============================
+        // 🔹 Ordenar
         LinearLayout ordenarLayout = findViewById(R.id.ordenarLayoutSolicitudes);
         ordenarLayout.setOnClickListener(v -> {
             ordenarPorNombre();
@@ -121,10 +118,9 @@ public class SolicitudesActivity extends AppCompatActivity {
         });
     }
 
-
-    // ==============================
-    // CARGAR SOLICITUDES DESDE FIRESTORE
-    // ==============================
+    // =====================================================
+    // 🔹 CARGAR SOLICITUDES DESDE FIRESTORE
+    // =====================================================
     private void cargarSolicitudes(String estado) {
         var query = db.collection("users").whereEqualTo("rol", "Guia");
 
@@ -138,11 +134,7 @@ public class SolicitudesActivity extends AppCompatActivity {
                 solicitudList.add(doc);
             }
 
-            boolean mostrarBotones = true;
-            if ("Habilitado".equals(estado)) {
-                mostrarBotones = false;
-            }
-
+            boolean mostrarBotones = !"Habilitado".equals(estado);
             adapter = new SolicitudesAdapter(this, solicitudList, mostrarBotones);
             rvSolicitudes.setAdapter(adapter);
 
@@ -150,9 +142,9 @@ public class SolicitudesActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error al cargar solicitudes.", Toast.LENGTH_SHORT).show());
     }
 
-    // ==============================
-    // ACTUALIZAR ESTILO DE BOTONES
-    // ==============================
+    // =====================================================
+    // 🔹 BUSCADOR
+    // =====================================================
     private void filtrarSolicitudes(String texto) {
         if (adapter == null) return;
 
@@ -169,11 +161,13 @@ public class SolicitudesActivity extends AppCompatActivity {
             }
         }
 
-        adapter = new SolicitudesAdapter(this, filtradas,
-                !esHabilitadoSeleccionado());
+        adapter = new SolicitudesAdapter(this, filtradas, true);
         rvSolicitudes.setAdapter(adapter);
     }
 
+    // =====================================================
+    // 🔹 ORDENAR
+    // =====================================================
     private void ordenarPorNombre() {
         if (solicitudList == null || solicitudList.isEmpty()) return;
 
@@ -187,25 +181,15 @@ public class SolicitudesActivity extends AppCompatActivity {
     }
 
     // =====================================================
-// ✅ Helper para saber si el filtro actual es Habilitado
-// =====================================================
-    private boolean esHabilitadoSeleccionado() {
-        return btnHabilitados.isPressed() ||
-                (btnHabilitados.getBackgroundTintList() != null &&
-                        btnHabilitados.getBackgroundTintList().getDefaultColor() == getColor(R.color.teal_700));
-    }
-
-    private void actualizarSeleccion(MaterialButton seleccionado) {
-        MaterialButton[] botones = {btnPendientes, btnHabilitados, btnRechazados, btnTodos};
-        for (MaterialButton btn : botones) {
-            if (btn == seleccionado) {
-                btn.setBackgroundTintList(getColorStateList(R.color.teal_700));
-                btn.setTextColor(getColor(android.R.color.white));
-            } else {
-                btn.setBackgroundTintList(getColorStateList(android.R.color.white));
-                btn.setTextColor(getColor(R.color.teal_700));
+    // ✅ SOMBREADO IGUAL A USUARIOS
+    // =====================================================
+    private void highlightFilter(int selectedId) {
+        int[] ids = {R.id.btnPendientes, R.id.btnRechazados, R.id.btnHabilitados, R.id.btnTodosSolicitudes};
+        for (int id : ids) {
+            View btn = findViewById(id);
+            if (btn != null) {
+                btn.setBackgroundColor(getResources().getColor(id == selectedId ? R.color.teal_50 : android.R.color.white));
             }
         }
     }
-
 }
