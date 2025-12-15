@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import android.graphics.Color;
 
 public class DetalleTourActivity extends BaseActivity {
 
@@ -700,6 +711,10 @@ public class DetalleTourActivity extends BaseActivity {
         RecyclerView rvExtras = dialogView.findViewById(R.id.rvServiciosExtras);
         Button btnAgregarExtras = dialogView.findViewById(R.id.btnAgregarExtras);
         Button btnSalir = dialogView.findViewById(R.id.btnSalir);
+        Button btnVerMapa = dialogView.findViewById(R.id.btnVerMapa);
+        ImageView imgMapaPreview = dialogView.findViewById(R.id.imgMapaPreview); // ✅ NUEVO
+        View overlayMapa = dialogView.findViewById(R.id.overlayMapa); // ✅ NUEVO
+        LinearLayout containerRuta = dialogView.findViewById(R.id.containerRuta);
 
         String horarioActual = horariosDisponibles.isEmpty() ? "9:00am" : horariosDisponibles.get(0);
         tvHoraInicio.setText(horarioActual);
@@ -710,16 +725,22 @@ public class DetalleTourActivity extends BaseActivity {
         rvExtras.setLayoutManager(new LinearLayoutManager(this));
         rvExtras.setNestedScrollingEnabled(false);
 
-        // ✅ PASAR LAS CANTIDADES ACTUALES AL ADAPTER
         ServicioExtraAdapter adapter = new ServicioExtraAdapter(extrasDisponibles, cantidadesExtras);
         rvExtras.setAdapter(adapter);
 
+        // 🗺️ CARGAR VISTA PREVIA DEL MAPA Y LISTA DE UBICACIONES
+        cargarRutaYVistaPrevia(imgMapaPreview, containerRuta);
+
+        // 🗺️ CLICK EN LA IMAGEN PARA ABRIR MAPA COMPLETO
+        overlayMapa.setOnClickListener(v -> abrirMapaCompleto());
+
+        // 🗺️ BOTÓN PARA ABRIR MAPA COMPLETO
+        btnVerMapa.setOnClickListener(v -> abrirMapaCompleto());
+
         btnAgregarExtras.setOnClickListener(v -> {
-            // ✅ ACTUALIZAR cantidadesExtras con lo seleccionado
             cantidadesExtras.clear();
             cantidadesExtras.putAll(adapter.getCantidadesSeleccionadas());
 
-            // ✅ CALCULAR PRECIO TOTAL
             precioExtras = Math.round(adapter.getPrecioTotalExtras());
 
             actualizarPrecioConExtras();
@@ -731,7 +752,223 @@ public class DetalleTourActivity extends BaseActivity {
         dialog.show();
     }
 
+    // 🗺️ MÉTODO PARA ABRIR EL MAPA COMPLETO
 
+    private void abrirMapaCompleto() {
+        if (tourId == null || tourId.isEmpty()) {
+            Toast.makeText(this, "Error: ID del tour no disponible", Toast.LENGTH_SHORT).show();
+            Log.e("DetalleTour", "tourId es null o vacío");
+            return;
+        }
+
+        Log.d("DetalleTour", "Abriendo mapa para tourId: " + tourId);
+        Log.d("DetalleTour", "Título del tour: " + tituloTour);
+
+        Intent intent = new Intent(this, RutaTourActivity.class);
+        intent.putExtra("tourId", tourId);
+        intent.putExtra("titulo", tituloTour);
+
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e("DetalleTour", "Error al abrir RutaTourActivity", e);
+            Toast.makeText(this, "Error al abrir el mapa: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // 🗺️ CARGAR RUTA Y GENERAR VISTA PREVIA DEL MAPA
+    private void cargarRutaYVistaPrevia(ImageView imgMapaPreview, LinearLayout containerRuta) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tours")
+                .document(tourId)
+                .collection("locations")
+                .orderBy("order")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    containerRuta.removeAllViews();
+
+                    if (querySnapshot.isEmpty()) {
+                        TextView tvSinRuta = new TextView(this);
+                        tvSinRuta.setText("No hay ruta disponible");
+                        tvSinRuta.setTextColor(getResources().getColor(R.color.teal_700));
+                        containerRuta.addView(tvSinRuta);
+                        return;
+                    }
+
+                    List<String> coordenadas = new ArrayList<>();
+
+                    int index = 1;
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        String title = doc.getString("title");
+                        Double lat = doc.getDouble("lat");
+                        Double lng = doc.getDouble("lng");
+
+                        if (lat != null && lng != null && lat != 0.0 && lng != 0.0) {
+                            coordenadas.add(lat + "," + lng);
+
+                            // 📝 Agregar a la lista de puntos
+                            TextView tvPunto = new TextView(this);
+                            tvPunto.setText(index + ". " + title);
+                            tvPunto.setTextColor(getResources().getColor(R.color.teal_700));
+                            tvPunto.setTextSize(14);
+                            tvPunto.setPadding(0, 8, 0, 8);
+                            containerRuta.addView(tvPunto);
+
+                            index++;
+                        }
+                    }
+
+                    // 🗺️ GENERAR Y CARGAR IMAGEN DE VISTA PREVIA
+                    if (!coordenadas.isEmpty()) {
+                        String mapaUrl = generarUrlMapaEstatico(coordenadas);
+
+                        Glide.with(this)
+                                .load(mapaUrl)
+                                .placeholder(R.drawable.ruta)
+                                .error(R.drawable.ruta)
+                                .into(imgMapaPreview);
+                    }
+
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al cargar ruta", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // 🗺️ GENERAR URL DE GOOGLE MAPS STATIC API
+    private String generarUrlMapaEstatico(List<String> coordenadas) {
+
+        String apiKey = "AIzaSyDXdIlSVSfX4SeQGa3vYHKv9EXICQmScq8";
+
+        StringBuilder url = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?");
+        url.append("size=600x300");
+        url.append("&maptype=roadmap");
+
+        // 🗺️ Agregar marcadores numerados
+        for (int i = 0; i < coordenadas.size(); i++) {
+            url.append("&markers=color:red%7Clabel:").append(i + 1).append("%7C").append(coordenadas.get(i));
+        }
+
+        // 🗺️ Agregar línea de ruta
+        url.append("&path=color:0x2B746CFF%7Cweight:5");
+        for (String coord : coordenadas) {
+            url.append("%7C").append(coord);
+        }
+
+        url.append("&key=").append(apiKey);
+
+        return url.toString();
+    }
+
+    // 🗺️ CARGAR SOLO LA LISTA DE UBICACIONES
+    private void cargarListaRuta(LinearLayout containerRuta) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tours")
+                .document(tourId)
+                .collection("locations")
+                .orderBy("order")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    containerRuta.removeAllViews();
+
+                    if (querySnapshot.isEmpty()) {
+                        TextView tvSinRuta = new TextView(this);
+                        tvSinRuta.setText("No hay ruta disponible");
+                        tvSinRuta.setTextColor(getResources().getColor(R.color.teal_700));
+                        containerRuta.addView(tvSinRuta);
+                        return;
+                    }
+
+                    int index = 1;
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        String title = doc.getString("title");
+
+                        TextView tvPunto = new TextView(this);
+                        tvPunto.setText(index + ". " + title);
+                        tvPunto.setTextColor(getResources().getColor(R.color.teal_700));
+                        tvPunto.setTextSize(14);
+                        tvPunto.setPadding(0, 8, 0, 8);
+                        containerRuta.addView(tvPunto);
+
+                        index++;
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al cargar ruta", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // 🗺️ MÉTODO PARA CARGAR LA RUTA DESDE FIRESTORE
+    private void cargarRutaDelTour(GoogleMap googleMap, LinearLayout containerRuta) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tours")
+                .document(tourId)
+                .collection("locations")
+                .orderBy("order")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (querySnapshot.isEmpty()) {
+                        Toast.makeText(this, "No hay ruta disponible", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    List<LatLng> rutaPuntos = new ArrayList<>();
+                    LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+
+                    // 🗺️ LIMPIAR CONTENEDOR DE RUTA
+                    containerRuta.removeAllViews();
+
+                    int index = 1;
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        String title = doc.getString("title");
+                        Double lat = doc.getDouble("lat");
+                        Double lng = doc.getDouble("lng");
+
+                        if (lat != null && lng != null && lat != 0.0 && lng != 0.0) {
+                            LatLng punto = new LatLng(lat, lng);
+                            rutaPuntos.add(punto);
+                            boundsBuilder.include(punto);
+
+                            // 🗺️ AGREGAR MARCADOR
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(punto)
+                                    .title(index + ". " + title));
+
+                            // 📝 AGREGAR A LA LISTA DE PUNTOS
+                            TextView tvPunto = new TextView(this);
+                            tvPunto.setText(index + ". " + title);
+                            tvPunto.setTextColor(getResources().getColor(R.color.teal_700));
+                            tvPunto.setTextSize(14);
+                            tvPunto.setPadding(0, 8, 0, 8);
+                            containerRuta.addView(tvPunto);
+
+                            index++;
+                        }
+                    }
+
+                    // 🗺️ DIBUJAR LÍNEA DE LA RUTA
+                    if (rutaPuntos.size() > 1) {
+                        PolylineOptions polylineOptions = new PolylineOptions()
+                                .addAll(rutaPuntos)
+                                .width(8f)
+                                .color(Color.parseColor("#2B746C"))
+                                .geodesic(true);
+
+                        googleMap.addPolyline(polylineOptions);
+
+                        // 🗺️ AJUSTAR CÁMARA PARA MOSTRAR TODA LA RUTA
+                        LatLngBounds bounds = boundsBuilder.build();
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+                    }
+
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al cargar ruta", Toast.LENGTH_SHORT).show();
+                });
+    }
     private void cargarExtrasDesdeFirestore() {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

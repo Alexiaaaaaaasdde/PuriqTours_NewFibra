@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true">
@@ -19,7 +20,7 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="#2B746C"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp" />
 
         <!-- HORA -->
         <LinearLayout
@@ -35,14 +36,14 @@
                 android:layout_height="wrap_content"
                 android:text="Hora de inicio:"
                 android:textStyle="bold"
-                android:textColor="#2B746C"/>
+                android:textColor="#2B746C" />
 
             <TextView
                 android:id="@+id/tvHoraInicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="8:00 AM"
-                android:textColor="#2B746C"/>
+                android:textColor="#2B746C" />
         </LinearLayout>
 
         <!-- IDIOMAS -->
@@ -59,14 +60,14 @@
                 android:layout_height="wrap_content"
                 android:text="Idiomas ofrecidos:"
                 android:textStyle="bold"
-                android:textColor="#2B746C"/>
+                android:textColor="#2B746C" />
 
             <TextView
                 android:id="@+id/tvIdiomas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Español - Inglés"
-                android:textColor="#2B746C"/>
+                android:textColor="#2B746C" />
         </LinearLayout>
 
         <!-- FECHA -->
@@ -83,14 +84,14 @@
                 android:layout_height="wrap_content"
                 android:text="Fecha del Tour:"
                 android:textStyle="bold"
-                android:textColor="#2B746C"/>
+                android:textColor="#2B746C" />
 
             <TextView
                 android:id="@+id/tvFechaTour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Marzo 15, 2025"
-                android:textColor="#2B746C"/>
+                android:textColor="#2B746C" />
         </LinearLayout>
 
         <!-- RUTA -->
@@ -109,16 +110,56 @@
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:textColor="#2B746C"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp" />
 
-            <ImageView
-                android:id="@+id/imgMapaRuta"
+            <!-- 🗺️ VISTA PREVIA DEL MAPA (IMAGEN ESTÁTICA) -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ruta"
+                android:layout_height="150dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/imgMapaPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="#F5F5F5"
+                    android:src="@drawable/ruta" />
+
+                <!-- OVERLAY PARA HACER CLICK -->
+                <View
+                    android:id="@+id/overlayMapa"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <!-- ÍCONO DE AMPLIAR -->
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="8dp"
+                    android:src="@android:drawable/ic_menu_zoom"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="#80000000"
+                    android:padding="8dp"
+                    app:tint="@android:color/white" />
+            </RelativeLayout>
+
+            <!-- BOTÓN PARA VER MAPA COMPLETO -->
+            <Button
+                android:id="@+id/btnVerMapa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📍 Ver Mapa Completo de la Ruta"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/teal_700"
                 android:layout_marginBottom="8dp"/>
 
+            <!-- LISTA DE PUNTOS DE LA RUTA -->
             <LinearLayout
                 android:id="@+id/containerRuta"
                 android:layout_width="match_parent"
@@ -144,7 +185,6 @@
                 android:textColor="#2B746C"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- 🔥 RecyclerView ÚNICO -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvServiciosExtras"
                 android:layout_width="match_parent"
@@ -152,7 +192,6 @@
                 android:maxHeight="200dp"
                 android:nestedScrollingEnabled="false"/>
 
-            <!-- Botones ÚNICOS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
