@@ -188,9 +188,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvServiciosExtras"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxHeight="200dp"
-                android:nestedScrollingEnabled="false"/>
+                android:layout_height="200dp"
+                android:nestedScrollingEnabled="true"
+                android:overScrollMode="always"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

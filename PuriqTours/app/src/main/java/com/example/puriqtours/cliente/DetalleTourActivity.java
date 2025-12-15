@@ -78,7 +78,7 @@ public class DetalleTourActivity extends BaseActivity {
 
     private List<Tour.ServicioExtra> extrasDisponibles = new ArrayList<>();
     private Map<String, Integer> cantidadesExtras = new HashMap<>();
-
+    private boolean extrasYaCargados = false;
 
     // 🔹 HORARIOS DEL TOUR
     private List<String> horariosDisponibles = new ArrayList<>();
@@ -228,7 +228,7 @@ public class DetalleTourActivity extends BaseActivity {
         });
 
 
-        cargarExtrasDesdeFirestore();
+
 
 
 
@@ -380,10 +380,27 @@ public class DetalleTourActivity extends BaseActivity {
         dialogDisponibilidad.setContentView(R.layout.dialog_disponibilidad);
         dialogDisponibilidad.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        // ⭐ BOTÓN DETALLES dentro del popup de disponibilidad
         Button btnDetalle = dialogDisponibilidad.findViewById(R.id.btnDetalles);
         if (btnDetalle != null) {
-            btnDetalle.setOnClickListener(v -> mostrarDialogoDetalles());
+            btnDetalle.setOnClickListener(v -> {
+
+                btnDetalle.setEnabled(false);
+                btnDetalle.setText("Cargando...");
+
+                // Si ya están cargados, abrir directo
+                if (extrasYaCargados && !extrasDisponibles.isEmpty()) {
+                    btnDetalle.setEnabled(true);
+                    btnDetalle.setText("Detalles");
+                    mostrarDialogoDetalles();
+                } else {
+                    // Si no, cargar primero
+                    cargarExtrasDesdeFirestore(() -> {
+                        btnDetalle.setEnabled(true);
+                        btnDetalle.setText("Detalles");
+                        mostrarDialogoDetalles();
+                    });
+                }
+            });
         }
 
 
@@ -694,8 +711,11 @@ public class DetalleTourActivity extends BaseActivity {
 
     private void mostrarDialogoDetalles() {
 
+        Log.d("DEBUG_DETALLES", "=== Abriendo diálogo ===");
+        Log.d("DEBUG_DETALLES", "Extras disponibles: " + extrasDisponibles.size());
+
         if (extrasDisponibles == null || extrasDisponibles.isEmpty()) {
-            Toast.makeText(this, "Cargando servicios extra…", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No hay servicios extra disponibles", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -712,8 +732,8 @@ public class DetalleTourActivity extends BaseActivity {
         Button btnAgregarExtras = dialogView.findViewById(R.id.btnAgregarExtras);
         Button btnSalir = dialogView.findViewById(R.id.btnSalir);
         Button btnVerMapa = dialogView.findViewById(R.id.btnVerMapa);
-        ImageView imgMapaPreview = dialogView.findViewById(R.id.imgMapaPreview); // ✅ NUEVO
-        View overlayMapa = dialogView.findViewById(R.id.overlayMapa); // ✅ NUEVO
+        ImageView imgMapaPreview = dialogView.findViewById(R.id.imgMapaPreview);
+        View overlayMapa = dialogView.findViewById(R.id.overlayMapa);
         LinearLayout containerRuta = dialogView.findViewById(R.id.containerRuta);
 
         String horarioActual = horariosDisponibles.isEmpty() ? "9:00am" : horariosDisponibles.get(0);
@@ -723,18 +743,17 @@ public class DetalleTourActivity extends BaseActivity {
 
         // ✅ Configurar RecyclerView
         rvExtras.setLayoutManager(new LinearLayoutManager(this));
-        rvExtras.setNestedScrollingEnabled(false);
+        rvExtras.setNestedScrollingEnabled(true);
 
+        // CREAR ADAPTER CON LOS DATOS YA CARGADOS
         ServicioExtraAdapter adapter = new ServicioExtraAdapter(extrasDisponibles, cantidadesExtras);
         rvExtras.setAdapter(adapter);
 
-        // 🗺️ CARGAR VISTA PREVIA DEL MAPA Y LISTA DE UBICACIONES
+        Log.d("DEBUG_DETALLES", "Adapter creado con " + adapter.getItemCount() + " items");
+
+        // 🗺️ Cargar mapa y ruta
         cargarRutaYVistaPrevia(imgMapaPreview, containerRuta);
-
-        // 🗺️ CLICK EN LA IMAGEN PARA ABRIR MAPA COMPLETO
         overlayMapa.setOnClickListener(v -> abrirMapaCompleto());
-
-        // 🗺️ BOTÓN PARA ABRIR MAPA COMPLETO
         btnVerMapa.setOnClickListener(v -> abrirMapaCompleto());
 
         btnAgregarExtras.setOnClickListener(v -> {
@@ -742,6 +761,8 @@ public class DetalleTourActivity extends BaseActivity {
             cantidadesExtras.putAll(adapter.getCantidadesSeleccionadas());
 
             precioExtras = Math.round(adapter.getPrecioTotalExtras());
+
+            Log.d("DEBUG_DETALLES", "Extras agregados. Precio: " + precioExtras);
 
             actualizarPrecioConExtras();
             dialog.dismiss();
@@ -971,7 +992,8 @@ public class DetalleTourActivity extends BaseActivity {
                     Toast.makeText(this, "Error al cargar ruta", Toast.LENGTH_SHORT).show();
                 });
     }
-    private void cargarExtrasDesdeFirestore() {
+
+    private void cargarExtrasDesdeFirestore(Runnable onFinish) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -981,18 +1003,32 @@ public class DetalleTourActivity extends BaseActivity {
                 .get()
                 .addOnSuccessListener(query -> {
 
-                    extrasDisponibles.clear();
+                    extrasDisponibles.clear(); // 👈 CLAVE
 
                     for (DocumentSnapshot doc : query) {
-                        Tour.ServicioExtra extra = doc.toObject(Tour.ServicioExtra.class);
-                        if (extra != null) {
-                            extrasDisponibles.add(extra);
-                        }
+
+                        String title = doc.getString("title");
+                        String imageUrl = doc.getString("imageUrl");
+
+                        Double priceDouble = doc.getDouble("price");
+                        Float price = priceDouble != null ? priceDouble.floatValue() : 0f;
+
+                        Tour.ServicioExtra extra = new Tour.ServicioExtra();
+                        extra.setTitle(title);
+                        extra.setImageUrl(imageUrl);
+                        extra.setPrice(price);
+
+                        extrasDisponibles.add(extra);
                     }
+
+                    extrasYaCargados = true;
+
+                    if (onFinish != null) onFinish.run();
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al cargar extras", Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error al cargar extras", Toast.LENGTH_SHORT).show();
+                });
     }
+
 
 }
