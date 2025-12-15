@@ -97,7 +97,6 @@ public class ToursFragment extends Fragment {
                     Intent i1 = new Intent(getContext(), IniciarTourActivity.class);
                     i1.putExtra("idReserva", t.getIdReserva());
                     i1.putExtra("idTour", t.getIdTour());
-                    i1.putExtra("tokenInicio", t.getTokenInicio());
                     startActivity(i1);
                     break;
 
@@ -154,11 +153,10 @@ public class ToursFragment extends Fragment {
 
                         String idReserva = reservaDoc.getId();
                         String idTour = reservaDoc.getString("idTour");
-
-                        String idCliente = reservaDoc.getString("idCliente");
                         String status = reservaDoc.getString("status");
-                        String tokenInicio = reservaDoc.getString("qrStart");
-                        String tokenFin = reservaDoc.getString("qrEnd");
+                        String date = reservaDoc.getString("date");
+                        Long totalClients = reservaDoc.getLong("totalClients");
+                        Long verfiedClients = reservaDoc.getLong("verifiedClients");
 
                         List<String> addedServices = (List<String>) reservaDoc.get("addedServices");
 
@@ -171,22 +169,18 @@ public class ToursFragment extends Fragment {
                                     TourGuia tg = new TourGuia(
                                             idReserva,
                                             idTour,
-                                            idCliente,
                                             uidGuia,
                                             status,
-                                            tokenInicio,
-                                            tokenFin,
+                                            date,
+                                            totalClients,
+                                            verfiedClients,
                                             tourDoc.getString("title"),
                                             tourDoc.getString("desc"),
                                             tourDoc.getString("location"),
-                                            tourDoc.getString("date"),
                                             tourDoc.getString("startTime"),
                                             tourDoc.getString("endTime"),
-                                            tourDoc.getString("imageUrl"),
-                                            tourDoc.getDouble("price")
+                                            tourDoc.getString("imageUrl")
                                     );
-
-                                    tg.setAddedServices(addedServices);
 
                                     tourList.add(tg);
                                     adapter.notifyDataSetChanged();

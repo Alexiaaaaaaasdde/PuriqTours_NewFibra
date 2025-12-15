@@ -9,17 +9,26 @@ import com.example.puriqtours.R;
 
 import android.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.example.puriqtours.entity.ReservaIndividual;
+import com.example.puriqtours.entity.TourGuia;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 public class IniciarTourActivity extends AppCompatActivity {
 
     private String idReserva;
     private String idTour;
-    private String tokenInicioEsperado;
+    private Long clientesTotales;
+    private Long clientesVerificados;
+    private List<ReservaIndividual> listaReservas;
 
     private FirebaseFirestore db;
 
@@ -33,39 +42,14 @@ public class IniciarTourActivity extends AppCompatActivity {
         // 🔹 Recibir datos desde ToursFragment
         idReserva = getIntent().getStringExtra("idReserva");
         idTour = getIntent().getStringExtra("idTour");
-        tokenInicioEsperado = getIntent().getStringExtra("tokenInicio");
+
+        cargarInformacionReserva();
 
         // Mostrar el diálogo para ingresar el token
         mostrarDialogToken();
     }
 
-    private void mostrarDialogToken() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Verificar Token de Inicio");
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setHint("Ingrese el token");
-        builder.setView(input);
-
-        builder.setPositiveButton("Validar", (dialog, which) -> {
-            String tokenIngresado = input.getText().toString().trim();
-
-            if (tokenIngresado.isEmpty()) {
-                Toast.makeText(this, "Debe ingresar un token.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            validarToken(tokenIngresado);
-        });
-
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
-
-    private void validarToken(String tokenIngresado) {
+    private void validarToken() {
 
         // Si ya enviamos el token desde el fragment, esta verificación es inmediata
         if (tokenInicioEsperado != null) {
@@ -133,6 +117,35 @@ public class IniciarTourActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error al actualizar estado", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void cargarInformacionReserva(){
+        db.collection("reservas")
+                .document(idReserva)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    clientesTotales = doc.getLong("totalClients");
+                    clientesVerificados = doc.getLong("clientesVerificados");
+                });
+        cargarInformacionReservasIndividuales();
+    }
+    private void cargarInformacionReservasIndividuales(){
+        db.collection("reservas")
+                .document(idReserva)
+                .collection("reservaIndividual")
+                .get()
+                .addOnSuccessListener(reservaDoc -> {
+
+                    listaReservas.clear();
+
+                    for (DocumentSnapshot doc : reservaDoc){
+                        ReservaIndividual ri = doc.toObject(ReservaIndividual.class);
+                        listaReservas.add(ri);
+                    }
+                })
+                .addOnFailureListener(e ->{
+                    Log.e("FIREBASE", "Error cargando las reservas individuales");
                 });
     }
 

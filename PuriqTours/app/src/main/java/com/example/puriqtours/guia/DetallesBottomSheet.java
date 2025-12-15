@@ -20,7 +20,7 @@ import java.util.List;
 
 public class DetallesBottomSheet extends BottomSheetDialogFragment implements OnMapReadyCallback {
 
-    private String idReserva;
+    private String idTour;
 
     private double pago;
 
@@ -37,8 +37,8 @@ public class DetallesBottomSheet extends BottomSheetDialogFragment implements On
 
     private String fecha;
 
-    public DetallesBottomSheet(String idReserva, double pago) {
-        this.idReserva = idReserva;
+    public DetallesBottomSheet(String idTour, double pago) {
+        this.idTour = idTour;
         this.pago = pago;
     }
 
@@ -57,26 +57,13 @@ public class DetallesBottomSheet extends BottomSheetDialogFragment implements On
         tvServiciosExtra = v.findViewById(R.id.tvServiciosExtra);
         tvHorarioFecha = v.findViewById(R.id.tvHorarioFecha);
 
-        cargarDatosReserva();
-
         return v;
     }
 
     private void cargarDatosReserva() {
-        db.collection("reservas").document(idReserva)
-                .get()
-                .addOnSuccessListener(reserva -> {
-                    if (!reserva.exists()) return;
-
-                    String idTour = reserva.getString("idTour");
-
-                    fecha  = reserva.getString("date");
-
-
-                    cargarDatosTour(idTour);
-                    cargarActividades();
-                    cargarCheckpoints();
-                });
+        cargarDatosTour(idTour);
+        cargarActividades();
+        cargarCheckpoints();
     }
 
     private void cargarDatosTour(String idTour) {
@@ -88,6 +75,7 @@ public class DetallesBottomSheet extends BottomSheetDialogFragment implements On
                     tvActividades.setText(tour.getString("desc")); // descripción del tour
                     String inicio = tour.getString("startTime");
                     String fin = tour.getString("endTime");
+                    fecha = tour.getString("date");
                     int hInicio = Integer.parseInt(inicio.split(":")[0]);
                     int hFin = Integer.parseInt(fin.split(":")[0]);
                     int duracion = hFin - hInicio;
@@ -98,9 +86,9 @@ public class DetallesBottomSheet extends BottomSheetDialogFragment implements On
     }
 
     private void cargarCheckpoints() {
-        db.collection("reservas")
-                .document(idReserva)
-                .collection("checkpoints")
+        db.collection("tours")
+                .document(idTour)
+                .collection("locations")
                 .get()
                 .addOnSuccessListener(result -> {
                     checkpointList.clear();
@@ -120,9 +108,9 @@ public class DetallesBottomSheet extends BottomSheetDialogFragment implements On
     }
 
     private void cargarActividades(){
-        db.collection("reservas")
-                .document(idReserva)
-                .collection("addedServices")
+        db.collection("tours")
+                .document(idTour)
+                .collection("extraService")
                 .get()
                 .addOnSuccessListener(result -> {
                     activitiesList.clear();
@@ -162,6 +150,8 @@ public class DetallesBottomSheet extends BottomSheetDialogFragment implements On
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
+
+        cargarDatosReserva();
 
         if (!checkpointList.isEmpty()) {
             dibujarRuta();

@@ -11,7 +11,7 @@ public class Solicitud {
     private double pay;        // paga del guía
     private String idGuia;     // guía que recibirá la solicitud
     private String idEmpresa;  // empresa que envía la solicitud
-    private String idReserva;     // tour asociado
+    private String idTour;     // tour asociado
     private String status;     // Pendiente, Aceptado, Rechazado
     private String imageUrl;
 
@@ -22,7 +22,7 @@ public class Solicitud {
 
     // 🔹 Constructor completo
     public Solicitud(String idSolicitud, String title, String desc, double pay,
-                     String idGuia, String idEmpresa, String idReserva,
+                     String idGuia, String idEmpresa, String idTour,
                      String status) {
         this.setIdSolicitud(idSolicitud);
         this.title = title;
@@ -30,7 +30,7 @@ public class Solicitud {
         this.pay = pay;
         this.idGuia = idGuia;
         this.idEmpresa = idEmpresa;
-        this.idReserva = idReserva;
+        this.idTour = idTour;
         this.status = status;
     }
 
@@ -53,8 +53,8 @@ public class Solicitud {
     public String getIdEmpresa() { return idEmpresa; }
     public void setIdEmpresa(String idEmpresa) { this.idEmpresa = idEmpresa; }
 
-    public String getIdReserva() { return idReserva; }
-    public void setIdReserva(String idTour) { this.idReserva = idTour; }
+    public String getIdTour() { return idTour; }
+    public void setIdTour(String idTour) { this.idTour = idTour; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
@@ -73,7 +73,7 @@ public class Solicitud {
         map.put("pay", pay);
         map.put("idGuia", idGuia);
         map.put("idEmpresa", idEmpresa);
-        map.put("idReserva", idReserva);
+        map.put("idTour", idTour);
         map.put("status", status);
         return map;
     }

@@ -7,40 +7,34 @@ public class TourGuia {
     // 🔹 Datos de la reserva
     private String idReserva;
     private String idTour;
-    private String idCliente;
     private String idGuia;
     private String status;
-    private String tokenInicio;
-    private String tokenFin;
-
+    private String date;
+    private Long totalClients;
+    private Long verifiedClients;
+    private List<CheckpointReserva> checkpoints;
+    private List<ReservaIndividual> reservaIndividual;
+    private boolean expandido;
     // 🔹 Datos del tour (vienen de /tours)
     private String name;
     private String desc;
     private String location;
-    private String date;
     private String startTime;
     private String endTime;
     private String img;
-    private Double price;
-    private List<String> addedServices;
-    private List<CheckpointReserva> checkpoints;
-    private boolean expandido;
+
 
     public TourGuia() {}
 
-    public TourGuia(String idReserva, String idTour, String idCliente, String idGuia,
-                    String status, String tokenInicio, String tokenFin,
-                    String name, String desc, String location, String date,
-                    String startTime, String endTime, String img, Double price) {
+    public TourGuia(String idReserva, String idTour, String idGuia, String status,
+                    String date, Long totalClients, Long verifiedClients,
+                    String name, String desc, String location,
+                    String startTime, String endTime, String img) {
 
         this.idReserva = idReserva;
         this.idTour = idTour;
-        this.idCliente = idCliente;
         this.idGuia = idGuia;
         this.status = status;
-        this.tokenInicio = tokenInicio;
-        this.tokenFin = tokenFin;
-
         this.name = name;
         this.desc = desc;
         this.location = location;
@@ -48,17 +42,16 @@ public class TourGuia {
         this.startTime = startTime;
         this.endTime = endTime;
         this.img = img;
-        this.price = price;
+        this.totalClients = totalClients;
+        this.verifiedClients = verifiedClients;
     }
+
 
     // Getters
     public String getIdReserva() { return idReserva; }
     public String getIdTour() { return idTour; }
-    public String getIdCliente() { return idCliente; }
     public String getIdGuia() { return idGuia; }
     public String getStatus() { return status; }
-    public String getTokenInicio() { return tokenInicio; }
-    public String getTokenFin() { return tokenFin; }
 
     public String getName() { return name; }
     public String getDesc() { return desc; }
@@ -67,15 +60,6 @@ public class TourGuia {
     public String getStartTime() { return startTime; }
     public String getEndTime() { return endTime; }
     public String getImg() { return img; }
-    public Double getPrice() { return price; }
-
-    public List<String> getAddedServices() {
-        return addedServices;
-    }
-
-    public void setAddedServices(List<String> addedServices) {
-        this.addedServices = addedServices;
-    }
 
     public List<CheckpointReserva> getCheckpoints() { return checkpoints; }
     public void setCheckpoints(List<CheckpointReserva> checkpoints) { this.checkpoints = checkpoints; }
@@ -86,5 +70,29 @@ public class TourGuia {
 
     public void setExpandido(boolean expandido) {
         this.expandido = expandido;
+    }
+
+    public Long getTotalClients() {
+        return totalClients;
+    }
+
+    public void setTotalClients(Long totalClients) {
+        this.totalClients = totalClients;
+    }
+
+    public Long getVerifiedClients() {
+        return verifiedClients;
+    }
+
+    public void setVerifiedClients(Long verifiedClients) {
+        this.verifiedClients = verifiedClients;
+    }
+
+    public List<ReservaIndividual> getReservaIndividual() {
+        return reservaIndividual;
+    }
+
+    public void setReservaIndividual(List<ReservaIndividual> reservaIndividual) {
+        this.reservaIndividual = reservaIndividual;
     }
 }

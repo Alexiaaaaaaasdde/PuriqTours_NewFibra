@@ -32,7 +32,7 @@ public class DetallesReservaBottomSheet extends BottomSheetDialogFragment {
 
         MaterialTextView tvDescripcion = view.findViewById(R.id.tvDescripcion);
         MaterialTextView tvDuracion = view.findViewById(R.id.tvDuracion);
-        MaterialTextView tvAddedServices = view.findViewById(R.id.tvAddedServices);
+        MaterialTextView tvTotalClients = view.findViewById(R.id.tvTotalClients);
         MaterialTextView tvHorarioFecha = view.findViewById(R.id.tvHorarioFecha);
 
         // 🔹 Descripción
@@ -47,15 +47,7 @@ public class DetallesReservaBottomSheet extends BottomSheetDialogFragment {
         int duracion = hFin - hInicio;
 
         tvDuracion.setText("Duración total: " + duracion + "h");
-
-        // 🔹 Added services (de la reserva)
-        List<String> servicios = tour.getAddedServices();
-        if (servicios != null && !servicios.isEmpty()) {
-            tvAddedServices.setText(String.join(", ", servicios));
-        } else {
-            tvAddedServices.setText("Sin servicios adicionales");
-        }
-
+        tvTotalClients.setText("Clientes totales: " + tour.getTotalClients());
         // 🔹 Fecha + horas
         tvHorarioFecha.setText(
                 "Inicio: " + inicio +
