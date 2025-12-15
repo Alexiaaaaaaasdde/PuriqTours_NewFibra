@@ -1,5 +1,6 @@
 package com.example.puriqtours.superadmin;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -36,6 +38,47 @@ public class IdiomasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_idiomas);
 
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
+
+        if (bottomNav != null) {
+
+            // Esta vista viene desde Principal → se marca Principal
+            bottomNav.setSelectedItemId(R.id.nav_principal);
+
+            bottomNav.setOnItemSelectedListener(item -> {
+
+                int id = item.getItemId();
+
+                if (id == R.id.nav_principal) {
+                    // Volver al dashboard principal
+                    finish();
+                    return true;
+                }
+
+                if (id == R.id.nav_usuarios) {
+                    startActivity(new Intent(this, UsuariosActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                }
+
+                if (id == R.id.nav_solicitudes) {
+                    startActivity(new Intent(this, SolicitudesActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                }
+
+                if (id == R.id.nav_logs) {
+                    startActivity(new Intent(this, LogsActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                }
+
+                return false;
+            });
+        }
         pieChart = findViewById(R.id.pieChartIdiomas);
         barChartRegiones = findViewById(R.id.barChartServicios); // 🔥 IMPORTANTE
         db = FirebaseFirestore.getInstance();

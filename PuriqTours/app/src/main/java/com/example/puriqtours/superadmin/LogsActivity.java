@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.puriqtours.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -113,27 +114,36 @@ public class LogsActivity extends AppCompatActivity {
             }
         );
 
-        // BottomBar navegación universal: listeners seguros
-        View vBtnPrincipal = findViewById(R.id.btnPrincipal);
-        if (vBtnPrincipal != null) vBtnPrincipal.setOnClickListener(v -> {
-            Intent intent = new Intent(LogsActivity.this, MainSuperAdminActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        });
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
 
-        View vBtnUsuariosNav = findViewById(R.id.btnUsuarios);
-        if (vBtnUsuariosNav != null) vBtnUsuariosNav.setOnClickListener(v -> {
-            Intent intent = new Intent(LogsActivity.this, UsuariosActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        });
+        if (bottomNav != null) {
 
+            bottomNav.setSelectedItemId(R.id.nav_logs);
 
+            bottomNav.setOnItemSelectedListener(item -> {
 
-        View vBtnLogsNav = findViewById(R.id.btnLogs);
-        if (vBtnLogsNav != null) vBtnLogsNav.setOnClickListener(v -> {
-            // ya estás en Logs
-        });
+                int id = item.getItemId();
+
+                if (id == R.id.nav_principal) {
+                    startActivity(new Intent(this, MainSuperAdminActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                if (id == R.id.nav_usuarios) {
+                    startActivity(new Intent(this, UsuariosActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                if (id == R.id.nav_logs) {
+                    // ya estás aquí
+                    return true;
+                }
+
+                return false;
+            });
+        }
 
         // RecyclerView y adapter
         rvLogs = findViewById(R.id.rvLogs);
@@ -488,7 +498,7 @@ public class LogsActivity extends AppCompatActivity {
     }
 
     private void highlightFilter(int selectedId) {
-        int[] candidateIds = {R.id.btnGeneral, R.id.btnUsuariosFiltro, R.id.btnUsuarios, R.id.btnPagos, R.id.btnGuias, R.id.btnEmpresas};
+        int[] candidateIds = {R.id.btnGeneral, R.id.btnUsuariosFiltro, R.id.btnPagos, R.id.btnGuias, R.id.btnEmpresas};
         for (int id : candidateIds) {
             View btn = findViewById(id);
             if (btn != null) {

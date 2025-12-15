@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Tour;
@@ -76,22 +77,39 @@ public class TopToursActivity extends AppCompatActivity {
         });
 
 
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
 
-        // Footer
-        findViewById(R.id.btnPrincipal).setOnClickListener(v -> {
-            startActivity(new Intent(this, MainSuperAdminActivity.class));
-            finish();
-        });
+        if (bottomNav != null) {
 
-        findViewById(R.id.btnUsuarios).setOnClickListener(v -> {
-            startActivity(new Intent(this, UsuariosActivity.class));
-            finish();
-        });
+            // Estamos en Rankings
+            bottomNav.setSelectedItemId(R.id.nav_principal);
 
-        findViewById(R.id.btnLogs).setOnClickListener(v -> {
-            startActivity(new Intent(this, LogsActivity.class));
-            finish();
-        });
+            bottomNav.setOnItemSelectedListener(item -> {
+
+                int id = item.getItemId();
+
+                if (id == R.id.nav_principal) {
+                    startActivity(new Intent(this, MainSuperAdminActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                if (id == R.id.nav_usuarios) {
+                    startActivity(new Intent(this, UsuariosActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                if (id == R.id.nav_logs) {
+                    startActivity(new Intent(this, LogsActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                return false;
+            });
+        }
+
     }
 
     // 🔹 Cambia el color de los botones según selección

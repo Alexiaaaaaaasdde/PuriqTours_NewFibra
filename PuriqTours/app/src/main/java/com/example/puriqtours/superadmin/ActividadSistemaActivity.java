@@ -1,5 +1,6 @@
 package com.example.puriqtours.superadmin;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -37,6 +39,49 @@ public class ActividadSistemaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actividad_sistema);
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
+
+        if (bottomNav != null) {
+
+            // ESTA VISTA VIENE DESDE "Principal" → NO es un tab del footer
+            // pero lo correcto es dejar seleccionado Principal
+            bottomNav.setSelectedItemId(R.id.nav_principal);
+
+            bottomNav.setOnItemSelectedListener(item -> {
+
+                int id = item.getItemId();
+
+                if (id == R.id.nav_principal) {
+                    // ya estamos relacionados a Principal
+                    finish();
+                    return true;
+                }
+
+                if (id == R.id.nav_usuarios) {
+                    startActivity(new Intent(this, UsuariosActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                }
+
+                if (id == R.id.nav_solicitudes) {
+                    startActivity(new Intent(this, SolicitudesActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                }
+
+                if (id == R.id.nav_logs) {
+                    startActivity(new Intent(this, LogsActivity.class));
+                    overridePendingTransition(0, 0);
+                    finish();
+                    return true;
+                }
+
+                return false;
+            });
+        }
+
         findViewById(R.id.btnBack).setOnClickListener(v -> {
             finish(); // vuelve a la vista anterior
         });

@@ -37,6 +37,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -449,14 +450,40 @@ public class MainSuperAdminActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CrecimientoActivity.class))
         );
 
-        // 🔹 Footer
-        findViewById(R.id.btnUsuarios).setOnClickListener(v ->
-                startActivity(new Intent(this, UsuariosActivity.class))
-        );
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
 
-        findViewById(R.id.btnLogs).setOnClickListener(v ->
-                startActivity(new Intent(this, LogsActivity.class))
-        );
+// Marca "Principal" como activo
+        bottomNav.setSelectedItemId(R.id.nav_principal);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            int id = item.getItemId();
+
+            if (id == R.id.nav_principal) {
+                // Ya estás en Home
+                return true;
+            }
+            if (id == R.id.nav_solicitudes) {
+                startActivity(new Intent(this, SolicitudesActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+
+
+            if (id == R.id.nav_usuarios) {
+                startActivity(new Intent(this, UsuariosActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+
+            if (id == R.id.nav_logs) {
+                startActivity(new Intent(this, LogsActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+
+            return false;
+        });
 
         // 🔹 TextViews (NO CAMBIADOS)
         tvActiveUsersCount = findViewById(R.id.tvActiveUsersCount);
