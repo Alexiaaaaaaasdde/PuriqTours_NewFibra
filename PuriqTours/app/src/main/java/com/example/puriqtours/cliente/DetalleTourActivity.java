@@ -1,5 +1,6 @@
 package com.example.puriqtours.cliente;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -15,11 +16,16 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
+import com.example.puriqtours.adapter.ServicioExtraAdapter;
 import com.example.puriqtours.entity.Tour;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -58,9 +64,6 @@ public class DetalleTourActivity extends BaseActivity {
     private float precioTour;
     private String location;
     private int precioExtras = 0;
-
-    private int cantDesayuno = 0;
-    private int cantCanotaje = 0;
 
     private List<Tour.ServicioExtra> extrasDisponibles = new ArrayList<>();
     private Map<String, Integer> cantidadesExtras = new HashMap<>();
@@ -213,17 +216,9 @@ public class DetalleTourActivity extends BaseActivity {
             return false;
         });
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("tours")
-                .document(tourId)
-                .get()
-                .addOnSuccessListener(doc -> {
-                    Tour tour = doc.toObject(Tour.class);
-                    if (tour != null && tour.getServiciosExtras() != null) {
-                        extrasDisponibles = tour.getServiciosExtras();
-                    }
-                });
+        cargarExtrasDesdeFirestore();
+
 
 
         // 🔥 CARGAR VALORACIONES DESDE FIREBASE
@@ -476,18 +471,21 @@ public class DetalleTourActivity extends BaseActivity {
             i.putExtra("ubicacion", location);
             i.putExtra("img", getIntent().getStringExtra("img"));
 
-            // 🔹 EXTRA: enviar detalles de los extras
-            String extrasDetalle = "";
-
-            if (precioExtras > 0) {
-                if (cantDesayuno > 0) extrasDetalle += cantDesayuno + "× Desayuno ";
-                if (cantCanotaje > 0) extrasDetalle += cantCanotaje + "× Canotaje ";
-            } else {
-                extrasDetalle = "Sin extras";
+            // ✅ CONSTRUIR LISTA DE EXTRAS
+            ArrayList<String> extrasDetalle = new ArrayList<>();
+            for (Tour.ServicioExtra extra : extrasDisponibles) {
+                int cant = cantidadesExtras.getOrDefault(extra.getTitle(), 0);
+                if (cant > 0) {
+                    extrasDetalle.add(cant + "× " + extra.getTitle());
+                }
             }
 
+            if (extrasDetalle.isEmpty()) {
+                extrasDetalle.add("Sin extras");
+            }
 
-            i.putExtra("extrasDetalle", extrasDetalle);
+            // ✅ ENVIAR COMO ARRAYLIST (NO COMO STRING)
+            i.putStringArrayListExtra("extrasDetalle", extrasDetalle);
             i.putExtra("precioExtras", precioExtras);
 
             startActivity(i);
@@ -517,7 +515,6 @@ public class DetalleTourActivity extends BaseActivity {
 
         db.collection("valoraciones")
                 .whereEqualTo("tourId", tourId)
-                // ❌ QUITAMOS orderBy PARA EVITAR ERROR CON Timestamps inválidos
                 .limit(2)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -686,81 +683,77 @@ public class DetalleTourActivity extends BaseActivity {
 
     private void mostrarDialogoDetalles() {
 
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_detalles);
-        dialog.getWindow().setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        if (extrasDisponibles == null || extrasDisponibles.isEmpty()) {
+            Toast.makeText(this, "Cargando servicios extra…", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // ================
-        // 🔹 BOTONES EXTRA
-        // ================
-        ImageButton btnMasDesayuno = dialog.findViewById(R.id.btnMasDesayuno);
-        ImageButton btnMenosDesayuno = dialog.findViewById(R.id.btnMenosDesayuno);
-        TextView tvCantidadDesayuno = dialog.findViewById(R.id.tvCantidadDesayuno);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_detalles, null);
+        builder.setView(dialogView);
 
-        ImageButton btnMasCanotaje = dialog.findViewById(R.id.btnMasCanotaje);
-        ImageButton btnMenosCanotaje = dialog.findViewById(R.id.btnMenosCanotaje);
-        TextView tvCantidadCanotaje = dialog.findViewById(R.id.tvCantidadCanotaje);
+        AlertDialog dialog = builder.create();
 
-        Button btnAgregarExtras = dialog.findViewById(R.id.btnAgregarExtras);
-        Button btnSalir = dialog.findViewById(R.id.btnSalir);
+        TextView tvHoraInicio = dialogView.findViewById(R.id.tvHoraInicio);
+        TextView tvIdiomas = dialogView.findViewById(R.id.tvIdiomas);
+        TextView tvFechaTour = dialogView.findViewById(R.id.tvFechaTour);
+        RecyclerView rvExtras = dialogView.findViewById(R.id.rvServiciosExtras);
+        Button btnAgregarExtras = dialogView.findViewById(R.id.btnAgregarExtras);
+        Button btnSalir = dialogView.findViewById(R.id.btnSalir);
 
-        // Mostrar cantidades actuales
-        tvCantidadDesayuno.setText(String.valueOf(cantDesayuno));
-        tvCantidadCanotaje.setText(String.valueOf(cantCanotaje));
+        String horarioActual = horariosDisponibles.isEmpty() ? "9:00am" : horariosDisponibles.get(0);
+        tvHoraInicio.setText(horarioActual);
+        tvIdiomas.setText("Español");
+        tvFechaTour.setText(fechaSeleccionadaGlobal);
 
-        // 🔸 SUMAR
-        btnMasDesayuno.setOnClickListener(v -> {
-            cantDesayuno++;
-            tvCantidadDesayuno.setText(String.valueOf(cantDesayuno));
-        });
+        // ✅ Configurar RecyclerView
+        rvExtras.setLayoutManager(new LinearLayoutManager(this));
+        rvExtras.setNestedScrollingEnabled(false);
 
-        btnMasCanotaje.setOnClickListener(v -> {
-            cantCanotaje++;
-            tvCantidadCanotaje.setText(String.valueOf(cantCanotaje));
-        });
+        // ✅ PASAR LAS CANTIDADES ACTUALES AL ADAPTER
+        ServicioExtraAdapter adapter = new ServicioExtraAdapter(extrasDisponibles, cantidadesExtras);
+        rvExtras.setAdapter(adapter);
 
-        // 🔸 RESTAR
-        btnMenosDesayuno.setOnClickListener(v -> {
-            if (cantDesayuno > 0) cantDesayuno--;
-            tvCantidadDesayuno.setText(String.valueOf(cantDesayuno));
-        });
-
-        btnMenosCanotaje.setOnClickListener(v -> {
-            if (cantCanotaje > 0) cantCanotaje--;
-            tvCantidadCanotaje.setText(String.valueOf(cantCanotaje));
-        });
-
-        // 🔹 GUARDAR EXTRAS
         btnAgregarExtras.setOnClickListener(v -> {
+            // ✅ ACTUALIZAR cantidadesExtras con lo seleccionado
+            cantidadesExtras.clear();
+            cantidadesExtras.putAll(adapter.getCantidadesSeleccionadas());
 
-            precioExtras = (cantDesayuno * 10) + (cantCanotaje * 30);
-
-            Toast.makeText(
-                    this,
-                    "Extras añadidos: S/ " + precioExtras,
-                    Toast.LENGTH_SHORT
-            ).show();
-
-            dialog.dismiss();
+            // ✅ CALCULAR PRECIO TOTAL
+            precioExtras = Math.round(adapter.getPrecioTotalExtras());
 
             actualizarPrecioConExtras();
+            dialog.dismiss();
         });
 
-        btnSalir.setOnClickListener(v -> dialog.dismiss());
-
-        dialog.show();
-
-
-    // =============================
-        // 🔹 BOTÓN SALIR
-        // =============================
         btnSalir.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
 
+
+    private void cargarExtrasDesdeFirestore() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tours")
+                .document(tourId)
+                .collection("extraService")
+                .get()
+                .addOnSuccessListener(query -> {
+
+                    extrasDisponibles.clear();
+
+                    for (DocumentSnapshot doc : query) {
+                        Tour.ServicioExtra extra = doc.toObject(Tour.ServicioExtra.class);
+                        if (extra != null) {
+                            extrasDisponibles.add(extra);
+                        }
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error al cargar extras", Toast.LENGTH_SHORT).show()
+                );
+    }
 
 }

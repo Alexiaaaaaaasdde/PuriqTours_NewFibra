@@ -34,7 +34,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PagoActivity extends BaseActivity {
@@ -89,7 +91,7 @@ public class PagoActivity extends BaseActivity {
         String opiniones = getIntent().getStringExtra("opiniones");
         int rating = getIntent().getIntExtra("rating", 5);
         String img = getIntent().getStringExtra("img");
-        String extrasDetalle = getIntent().getStringExtra("extrasDetalle");
+        ArrayList<String> extrasDetalle = getIntent().getStringArrayListExtra("extrasDetalle");
         int precioExtras = getIntent().getIntExtra("precioExtras", 0);
 
 
@@ -99,8 +101,10 @@ public class PagoActivity extends BaseActivity {
         if (precio != null) tvPrecioPago.setText("" + precio);
         if (hora != null) tvHoraPago.setText("Hora: " + hora);
 
-        if (extrasDetalle != null && !extrasDetalle.equals("Sin extras")) {
-            tvExtrasDetalle.setText(extrasDetalle);
+        if (extrasDetalle != null && !extrasDetalle.isEmpty() && !extrasDetalle.contains("Sin extras")) {
+            // Unir la lista con saltos de línea
+            String extrasTexto = String.join("\n", extrasDetalle);
+            tvExtrasDetalle.setText(extrasTexto);
         } else {
             tvExtrasDetalle.setText("Sin extras");
         }
@@ -271,7 +275,11 @@ public class PagoActivity extends BaseActivity {
 
         String idCliente = mAuth.getCurrentUser().getUid();
 
+        // 🔹 CREAR ID DE RESERVA MANUALMENTE
+        String reservaId = db.collection("reservas").document().getId();
+
         Map<String, Object> reserva = new HashMap<>();
+        reserva.put("idReserva", reservaId); // ⭐ AGREGAR ESTO
         reserva.put("idCliente", idCliente);
         reserva.put("idTour", tourId);
         reserva.put("titulo", titulo);
@@ -282,22 +290,100 @@ public class PagoActivity extends BaseActivity {
         reserva.put("estado", "Reservado");
         reserva.put("timestamp", System.currentTimeMillis());
         reserva.put("imageUrl", imageUrl);
-
-        // 🔥 Nuevos campos
         reserva.put("metodoPago", metodoPago);
         reserva.put("codigoOperacion", codigoOperacion);
 
+        // 🔥 GUARDAR RESERVA CON ID ESPECÍFICO
         db.collection("reservas")
-                .add(reserva)
+                .document(reservaId)  // ⭐ USAR .document() en vez de .add()
+                .set(reserva)
                 .addOnSuccessListener(r -> {
-                    System.out.println("✔ RESERVA GUARDADA con método: " + metodoPago);
+                    System.out.println("✔ RESERVA GUARDADA: " + reservaId);
+
+                    // 🔥 GUARDAR EXTRAS EN SUBCOLLECTION
+                    ArrayList<String> extrasDetalle = getIntent().getStringArrayListExtra("extrasDetalle");
+                    if (extrasDetalle != null && !extrasDetalle.isEmpty() && !extrasDetalle.contains("Sin extras")) {
+                        guardarExtrasEnSubcollection(reservaId, extrasDetalle);
+                    }
+
+                    // 🔥 COPIAR CHECKPOINTS DEL TOUR
+                    copiarCheckpoints(tourId, reservaId);
                 })
                 .addOnFailureListener(e -> {
                     System.out.println("❌ ERROR FIRESTORE " + e.getMessage());
+                    Toast.makeText(this, "Error al guardar reserva", Toast.LENGTH_SHORT).show();
                 });
     }
 
+    private void guardarExtrasEnSubcollection(String reservaId, ArrayList<String> extrasDetalle) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        for (String detalle : extrasDetalle) {
+            // Formato esperado: "2× Desayuno"
+            if (detalle.contains("×")) {
+                String[] partes = detalle.split("× ");
+                int cantidad = Integer.parseInt(partes[0]);
+                String titulo = partes[1];
+
+                // Guardar cada extra tantas veces como cantidad
+                for (int i = 0; i < cantidad; i++) {
+                    Map<String, Object> extraData = new HashMap<>();
+                    extraData.put("title", titulo);
+                    extraData.put("timestamp", System.currentTimeMillis());
+
+                    db.collection("reservas")
+                            .document(reservaId)
+                            .collection("addedServices")
+                            .add(extraData)
+                            .addOnSuccessListener(doc -> {
+                                System.out.println("✔ Extra guardado: " + titulo);
+                            })
+                            .addOnFailureListener(e -> {
+                                System.out.println("❌ Error al guardar extra: " + e.getMessage());
+                            });
+                }
+            }
+        }
+    }
+
+    private void copiarCheckpoints(String tourId, String reservaId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tours")
+                .document(tourId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        // Obtener la ruta del tour
+                        List<Map<String, Object>> ruta = (List<Map<String, Object>>) doc.get("ruta");
+
+                        if (ruta != null && !ruta.isEmpty()) {
+                            for (Map<String, Object> ubicacion : ruta) {
+                                Map<String, Object> checkpointData = new HashMap<>();
+                                checkpointData.put("title", ubicacion.get("title"));
+                                checkpointData.put("order", ubicacion.get("order"));
+                                checkpointData.put("lat", ubicacion.get("lat"));
+                                checkpointData.put("lng", ubicacion.get("lng"));
+                                checkpointData.put("status", "Pendiente");
+
+                                db.collection("reservas")
+                                        .document(reservaId)
+                                        .collection("checkpoints")
+                                        .add(checkpointData)
+                                        .addOnSuccessListener(d -> {
+                                            System.out.println("✔ Checkpoint copiado: " + ubicacion.get("title"));
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            System.out.println("❌ Error al copiar checkpoint: " + e.getMessage());
+                                        });
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("❌ Error al obtener tour: " + e.getMessage());
+                });
+    }
 
 
     // 🔹 MÉTODO SEPARADO PARA ENVIAR LA NOTIFICACIÓN
@@ -376,8 +462,5 @@ public class PagoActivity extends BaseActivity {
         int num = (int) (Math.random() * 900000) + 100000; // 6 dígitos
         return "PAY-" + num;
     }
-
-
-
 
 }
