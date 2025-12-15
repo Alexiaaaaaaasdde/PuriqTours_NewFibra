@@ -12,6 +12,7 @@ import com.example.puriqtours.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,6 +39,9 @@ public class RutaTourActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ruta_tour);
+
+        MapsInitializer.initialize(this, MapsInitializer.Renderer.LATEST, null);
 
         try {
             setContentView(R.layout.activity_ruta_tour);

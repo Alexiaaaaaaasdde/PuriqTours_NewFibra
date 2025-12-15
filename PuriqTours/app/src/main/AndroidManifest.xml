@@ -279,7 +279,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBqg-o8eDsbrz09nCNj1nHezO4TSu8PgwA" />
+            android:value="AIzaSyDCaHMU3V-OwsshvhxHtLmJj3lnLICesnQ" />
 
         <activity
             android:name=".cliente.RutaTourActivity"

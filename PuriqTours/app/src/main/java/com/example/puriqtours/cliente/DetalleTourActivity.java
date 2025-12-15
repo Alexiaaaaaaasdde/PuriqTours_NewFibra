@@ -839,18 +839,19 @@ public class DetalleTourActivity extends BaseActivity {
     // 🗺️ GENERAR URL DE GOOGLE MAPS STATIC API
     private String generarUrlMapaEstatico(List<String> coordenadas) {
 
-        String apiKey = "AIzaSyDXdIlSVSfX4SeQGa3vYHKv9EXICQmScq8";
+        String apiKey = getString(R.string.google_maps_key);
 
         StringBuilder url = new StringBuilder("https://maps.googleapis.com/maps/api/staticmap?");
         url.append("size=600x300");
         url.append("&maptype=roadmap");
 
-        // 🗺️ Agregar marcadores numerados
         for (int i = 0; i < coordenadas.size(); i++) {
-            url.append("&markers=color:red%7Clabel:").append(i + 1).append("%7C").append(coordenadas.get(i));
+            url.append("&markers=color:red%7Clabel:")
+                    .append(i + 1)
+                    .append("%7C")
+                    .append(coordenadas.get(i));
         }
 
-        // 🗺️ Agregar línea de ruta
         url.append("&path=color:0x2B746CFF%7Cweight:5");
         for (String coord : coordenadas) {
             url.append("%7C").append(coord);
@@ -860,6 +861,7 @@ public class DetalleTourActivity extends BaseActivity {
 
         return url.toString();
     }
+
 
     // 🗺️ CARGAR SOLO LA LISTA DE UBICACIONES
     private void cargarListaRuta(LinearLayout containerRuta) {

@@ -49,6 +49,10 @@
         68499209549-jtn9pvm4si0stqo24bpir410hgr5b8qh.apps.googleusercontent.com
     </string>
 
+    <!-- Google Maps -->
+    <string name="google_maps_key">AIzaSyDCaHMU3V-OwsshvhxHtLmJj3lnLICesnQ</string>
+
+
 
 
 </resources>
