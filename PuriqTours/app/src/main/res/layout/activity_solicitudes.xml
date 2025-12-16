@@ -3,177 +3,154 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- 🔹 TopBar fija -->
+    <include
+        android:id="@+id/topAppBar"
+        layout="@layout/top_app_bar_superadmin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- 🔹 Título Solicitudes -->
+    <LinearLayout
+        android:id="@+id/solicitudesHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tvSolicitudesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Solicitudes de Guías"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#009688"/>
+    </LinearLayout>
+
+    <!-- 🔹 Buscador -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputSearchSolicitudes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/solicitudesHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:startIconDrawable="@drawable/ic_search_teal"
+        app:startIconTint="@color/teal_700">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearchSolicitudes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Buscar guía..."
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 🔹 Chips de filtro -->
+    <HorizontalScrollView
+        android:id="@+id/solicitudesFiltersScroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/inputSearchSolicitudes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 🔹 TopBar fija -->
-        <include layout="@layout/top_app_bar_superadmin"/>
-
-        <!-- 🔹 Título Solicitudes -->
         <LinearLayout
-            android:id="@+id/solicitudesHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/topAppBar"
-            app:layout_constraintStart_toStartOf="parent">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvSolicitudesTitle"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPendientes"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Solicitudes de Guías"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:layout_height="40dp"
+                android:text="Pendientes"
                 android:textColor="#009688"
-                android:layout_marginStart="8dp"/>
-        </LinearLayout>
+                app:strokeColor="#009688"
+                app:strokeWidth="2dp"
+                android:backgroundTint="#FFFFFF"
+                android:layout_marginEnd="8dp"/>
 
-        <!-- 🔹 Buscador -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputSearchSolicitudes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/solicitudesHeader"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:startIconDrawable="@drawable/ic_search_teal"
-            app:startIconTint="@color/teal_700">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSearchSolicitudes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Buscar guía..."
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- 🔹 Botones de filtro -->
-        <HorizontalScrollView
-            android:id="@+id/solicitudesFiltersScroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:layout_marginTop="16dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/inputSearchSolicitudes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <LinearLayout
-                android:id="@+id/solicitudesFilters"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnHabilitados"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_height="40dp"
+                android:text="Habilitados"
+                android:textColor="#009688"
+                app:strokeColor="#009688"
+                app:strokeWidth="2dp"
+                android:backgroundTint="#FFFFFF"/>
+        </LinearLayout>
+    </HorizontalScrollView>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPendientes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Pendientes"
-                    android:textColor="#009688"
-                    app:strokeColor="#009688"
-                    app:strokeWidth="2dp"
-                    android:backgroundTint="#FFFFFF"
-                    android:layout_marginEnd="8dp"/>
+    <!-- 🔹 Ordenar -->
+    <LinearLayout
+        android:id="@+id/ordenarLayoutSolicitudes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/solicitudesFiltersScroll"
+        app:layout_constraintStart_toStartOf="parent">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRechazados"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Rechazados"
-                    android:textColor="#009688"
-                    app:strokeColor="#009688"
-                    app:strokeWidth="2dp"
-                    android:backgroundTint="#FFFFFF"
-                    android:layout_marginEnd="8dp"/>
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/flechitas_superadmin"/>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnHabilitados"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Habilitados"
-                    android:textColor="#009688"
-                    app:strokeColor="#009688"
-                    app:strokeWidth="2dp"
-                    android:backgroundTint="#FFFFFF"
-                    android:layout_marginEnd="8dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnTodosSolicitudes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Todos"
-                    android:textColor="#009688"
-                    app:strokeColor="#009688"
-                    app:strokeWidth="2dp"
-                    android:backgroundTint="#FFFFFF"/>
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <!-- 🔹 Ordenar -->
-        <LinearLayout
-            android:id="@+id/ordenarLayoutSolicitudes"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintTop_toBottomOf="@id/solicitudesFiltersScroll"
-            app:layout_constraintStart_toStartOf="parent">
+            android:text="Ordenar"
+            android:textColor="#009688"
+            android:textSize="16sp"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/flechitas_superadmin" />
+    <!-- 🔹 RecyclerView (SCROLL PERFECTO) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSolicitudes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/ordenarLayoutSolicitudes"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationSuperAdmin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ordenar"
-                android:textColor="#009688"
-                android:textSize="16sp"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <!-- 🔹 Lista de Solicitudes -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSolicitudes"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@id/ordenarLayoutSolicitudes"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- 🔹 Bottom bar -->
+    <!-- 🔹 Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationSuperAdmin"
         android:layout_width="0dp"
-        android:layout_height="105dp"
+        android:layout_height="72dp"
         android:background="@android:color/white"
         app:menu="@menu/bottom_nav_superadmin"
         app:itemIconTint="@color/teal_700"
         app:itemTextColor="@color/teal_700"
         app:labelVisibilityMode="labeled"
         app:itemBackground="@android:color/transparent"
+        app:itemIconSize="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:itemIconSize="45dp"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

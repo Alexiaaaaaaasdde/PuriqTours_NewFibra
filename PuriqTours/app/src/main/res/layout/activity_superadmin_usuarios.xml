@@ -5,13 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 🔹 CONTENEDOR PRINCIPAL (FIX DE ALTURA) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF">
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationSuperAdmin">
 
         <!-- 🔹 TopBar fija -->
-        <include layout="@layout/top_app_bar_superadmin"/>
+        <include
+            android:id="@+id/topAppBar"
+            layout="@layout/top_app_bar_superadmin"/>
 
         <!-- 🔹 Título Usuarios -->
         <LinearLayout
@@ -22,9 +27,8 @@
             android:gravity="center_vertical"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/topAppBar"
+            app:layout_constraintTop_toBottomOf="@id/topAppBar"
             app:layout_constraintStart_toStartOf="parent">
-
 
             <TextView
                 android:id="@+id/tvUsuariosTitle"
@@ -49,13 +53,11 @@
             android:paddingEnd="20dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-
             app:icon="@drawable/ic_add_user"
             app:iconGravity="textStart"
             app:iconPadding="8dp"
             app:iconTint="@android:color/white"
             app:backgroundTint="@color/teal_700"
-
             app:layout_constraintTop_toBottomOf="@id/usuariosHeader"
             app:layout_constraintStart_toStartOf="parent"/>
 
@@ -78,10 +80,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Buscar usuario..."
-                android:inputType="text" />
+                android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- 🔹 Botones de filtro -->
+        <!-- 🔹 CHIPS / FILTROS (NO TOCADOS) -->
         <HorizontalScrollView
             android:id="@+id/usuariosFiltersScroll"
             android:layout_width="match_parent"
@@ -90,9 +92,7 @@
             android:layout_marginTop="16dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/inputSearchUsuarios"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/inputSearchUsuarios">
 
             <LinearLayout
                 android:id="@+id/usuariosFilters"
@@ -157,7 +157,7 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <!-- 🔹 Botón Ordenar -->
+        <!-- 🔹 Ordenar -->
         <LinearLayout
             android:id="@+id/ordenarLayout"
             android:layout_width="wrap_content"
@@ -165,6 +165,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintTop_toBottomOf="@id/usuariosFiltersScroll"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -182,34 +183,29 @@
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
 
-        <!-- 🔹 Contenedor donde cargan los fragments -->
+        <!-- 🔹 CONTENEDOR DEL LISTADO -->
         <FrameLayout
             android:id="@+id/usuariosContentContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/ordenarLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- 🔹 Bottom bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationSuperAdmin"
         android:layout_width="0dp"
-        android:layout_height="105dp"
+        android:layout_height="72dp"
         android:background="@android:color/white"
         app:menu="@menu/bottom_nav_superadmin"
         app:itemIconTint="@color/teal_700"
         app:itemTextColor="@color/teal_700"
         app:labelVisibilityMode="labeled"
         app:itemBackground="@android:color/transparent"
+        app:itemIconSize="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:itemIconSize="45dp"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

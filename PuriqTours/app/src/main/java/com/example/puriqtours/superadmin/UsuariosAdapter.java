@@ -2,6 +2,7 @@ package com.example.puriqtours.superadmin;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,13 +49,17 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
     }
 
     private LinearLayout.LayoutParams paramsBoton() {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, 0, dpToPx(12), 0);
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        0,
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        1f
+                );
+
+        params.setMargins(0, 0, dpToPx(8), 0);
         return params;
     }
+
 
     public void sortByNameAsc() {
         Collections.sort(listaUsuarios, (u1, u2) -> {
@@ -113,14 +118,15 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
 
         // -------------------- BOTÓN VER DETALLES --------------------
         Button btnDetalles = new Button(context);
-        btnDetalles.setText("Ver detalles");
+        btnDetalles.setText("Detalles");
         btnDetalles.setAllCaps(false);
         btnDetalles.setBackgroundResource(R.drawable.bg_oval_button);
         btnDetalles.setTextColor(Color.WHITE);
         btnDetalles.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_eye, 0, 0, 0);
-        btnDetalles.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
-        btnDetalles.setCompoundDrawablePadding(dpToPx(2)); // ahora sí funciona
-        btnDetalles.setMinWidth(dpToPx(120));
+        btnDetalles.setPadding(dpToPx(8), dpToPx(6), dpToPx(8), dpToPx(6));
+        btnDetalles.setLayoutParams(paramsBoton());
+        btnDetalles.setGravity(Gravity.CENTER);
+
         btnDetalles.setOnClickListener(v -> {
             DetallesUsuarioBottomSheet bottomSheet = new DetallesUsuarioBottomSheet(usuario);
             bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), "DetallesUsuario");
@@ -144,9 +150,10 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
                 btnBloq.getBackground().mutate().setTint(Color.parseColor("#E63127"));
                 btnBloq.setTextColor(Color.WHITE);
                 btnBloq.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_block, 0, 0, 0);
-                btnBloq.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
-                btnBloq.setCompoundDrawablePadding(dpToPx(2));
-                btnBloq.setMinWidth(dpToPx(120));
+                btnBloq.setPadding(dpToPx(8), dpToPx(6), dpToPx(8), dpToPx(6));
+                btnBloq.setLayoutParams(paramsBoton());
+                btnBloq.setGravity(Gravity.CENTER);
+
 
                 btnBloq.setOnClickListener(v -> {
                     FirebaseFirestore.getInstance()
@@ -167,15 +174,16 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
 
                 // ---- DESBLOQUEAR ----
                 Button btnDes = new Button(context);
-                btnDes.setText("Desbloquear");
+                btnDes.setText("Activar");
                 btnDes.setAllCaps(false);
                 btnDes.setBackgroundResource(R.drawable.bg_oval_button);
                 btnDes.getBackground().mutate().setTint(Color.parseColor("#3133E0"));
                 btnDes.setTextColor(Color.WHITE);
                 btnDes.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unlock, 0, 0, 0);
-                btnDes.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
-                btnDes.setCompoundDrawablePadding(dpToPx(2));
-                btnDes.setMinWidth(dpToPx(120));
+                btnDes.setPadding(dpToPx(8), dpToPx(6), dpToPx(8), dpToPx(6));
+                btnDes.setLayoutParams(paramsBoton());
+                btnDes.setGravity(Gravity.CENTER);
+
 
                 btnDes.setOnClickListener(v -> {
                     FirebaseFirestore.getInstance()
