@@ -275,7 +275,6 @@
         <activity android:name=".superadmin.SolicitudesActivity"/>
         <activity android:name=".cliente.ChatActivityDos" />
 
-
         <activity
             android:name=".superadmin.MainSuperAdminActivity"
             android:exported="true"
@@ -293,6 +292,15 @@
             android:name=".cliente.RutaTourActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".guia.RegisterGuideActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".guia.GuidePendingActivity"
+            android:exported="false" />
+
 
     </application>
 

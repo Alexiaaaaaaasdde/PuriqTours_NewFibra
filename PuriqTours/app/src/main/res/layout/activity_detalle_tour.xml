@@ -327,7 +327,29 @@
                             android:layout_marginStart="6dp"/>
                     </LinearLayout>
 
+                    <!-- Dirección -->
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
 
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/teal_700" />
+
+                        <TextView
+                            android:id="@+id/tvEmpresaDireccion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Dirección: ---"
+                            android:textColor="#2B746C"
+                            android:textSize="15sp"
+                            android:layout_marginStart="6dp"/>
+                    </LinearLayout>
 
 
                 </LinearLayout>

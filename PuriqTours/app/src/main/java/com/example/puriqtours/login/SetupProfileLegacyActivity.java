@@ -36,7 +36,7 @@ public class SetupProfileLegacyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setup_profile_legacy);
+        setContentView(R.layout.activity_setup_profile);
 
         imgProfile = findViewById(R.id.imgProfile);
         etUsername = findViewById(R.id.etUsername);

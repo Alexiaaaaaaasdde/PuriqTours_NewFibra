@@ -155,9 +155,9 @@
         android:contentDescription="Atrás"
         android:elevation="12dp"
         android:src="@drawable/ic_arrow_back"
-        android:tint="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
 
     <!-- Indicador de carga mientras se verifica el correo -->
     <ProgressBar

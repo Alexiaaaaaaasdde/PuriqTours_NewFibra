@@ -297,18 +297,23 @@ public class LoginActivity extends AppCompatActivity {
 
     private void irAProfile() {
         Intent intent = new Intent(this, SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("FROM_LOGIN", true); // ⭐ CLAVE
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
         startActivity(intent);
         finish();
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
-        // Verificar nuevamente al volver a esta actividad
         if (mAuth.getCurrentUser() != null) {
-            Log.d(TAG, "Usuario ya autenticado en onStart");
             irAProfile();
         }
     }
+
 }

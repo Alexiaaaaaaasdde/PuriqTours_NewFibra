@@ -30,7 +30,7 @@ public class SetPasswordLegacyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_set_password_legacy);
+        setContentView(R.layout.activity_set_password);
 
         tilPassword = findViewById(R.id.tilPassword);
         tilConfirm  = findViewById(R.id.tilConfirm);
