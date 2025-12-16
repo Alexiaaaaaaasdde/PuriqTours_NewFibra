@@ -29,6 +29,7 @@ public class LogsActivity extends AppCompatActivity {
     private LogsAdapter adapter;
     private List<LogItem> logsList;
     private FirebaseFirestore db;
+    private boolean ordenDescendente = true;
 
     private MaterialButton btnGeneral, btnUsuarios, btnPagos, btnGuias, btnEmpresas;
 
@@ -145,29 +146,37 @@ public class LogsActivity extends AppCompatActivity {
     // =====================================================
     private void cargarLogs(String tipo) {
 
-        Query query = db.collection("logs").orderBy("timestamp", Query.Direction.DESCENDING);
-
-        if (tipo != null) {
-            query = query.whereEqualTo("type", tipo);
-        }
+        Query query = db.collection("logs")
+                .orderBy("timestamp", Query.Direction.DESCENDING);
 
         query.get().addOnSuccessListener(snapshot -> {
             logsList.clear();
 
             for (QueryDocumentSnapshot doc : snapshot) {
-                LogItem log = new LogItem(
-                        doc.getString("type"),
-                        doc.getString("desc"),
-                        doc.getTimestamp("timestamp")
-                );
-                logsList.add(log);
+                String logType = doc.getString("type");
+
+                if (tipo == null || tipo.equals(logType)) {
+                    LogItem log = new LogItem(
+                            logType,
+                            doc.getString("desc"),
+                            doc.getTimestamp("timestamp")
+                    );
+                    logsList.add(log);
+                }
             }
 
-            adapter = new LogsAdapter(this, logsList);
-            rvLogs.setAdapter(adapter);
+            if (adapter == null) {
+                adapter = new LogsAdapter(this, logsList);
+                rvLogs.setAdapter(adapter);
+            } else {
+                adapter.setLogs(logsList);
+            }
 
-        }).addOnFailureListener(e ->
-                Toast.makeText(this, "Error al cargar logs", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e -> {
+            Toast.makeText(this,
+                    "Error real: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        });
     }
 
 
@@ -192,12 +201,20 @@ public class LogsActivity extends AppCompatActivity {
     // 🔽 ORDENAR POR FECHA DESCENDENTE
     // =====================================================
     private void ordenarPorFecha() {
+        if (adapter == null || logsList == null) return;
+
         logsList.sort((l1, l2) -> {
             if (l1.getTimestamp() == null || l2.getTimestamp() == null) return 0;
-            return l2.getTimestamp().compareTo(l1.getTimestamp());
+
+            return ordenDescendente
+                    ? l2.getTimestamp().compareTo(l1.getTimestamp()) // DESC
+                    : l1.getTimestamp().compareTo(l2.getTimestamp()); // ASC
         });
-        adapter.notifyDataSetChanged();
+
+        ordenDescendente = !ordenDescendente; // 🔁 CAMBIA EL ORDEN
+        adapter.setLogs(logsList);
     }
+
 
     // =====================================================
     // ✅ SOMBREADO IGUAL A USUARIOS / SOLICITUDES
