@@ -29,6 +29,7 @@ public class SolicitudesActivity extends AppCompatActivity {
     private SolicitudesAdapter adapter;
     private List<DocumentSnapshot> solicitudList;
     private FirebaseFirestore db;
+    private String estadoActual = "No habilitado"; // default Pendientes
 
     private MaterialButton btnPendientes, btnHabilitados;
 
@@ -101,12 +102,14 @@ public class SolicitudesActivity extends AppCompatActivity {
 
         // 🔹 Filtros (ahora cada uno resalta el suyo)
         btnPendientes.setOnClickListener(v -> {
-            cargarSolicitudes("No habilitado");
+            estadoActual = "No habilitado";
+            cargarSolicitudes(estadoActual);
             highlightFilter(R.id.btnPendientes);
         });
 
         btnHabilitados.setOnClickListener(v -> {
-            cargarSolicitudes("Habilitado");
+            estadoActual = "Habilitado";
+            cargarSolicitudes(estadoActual);
             highlightFilter(R.id.btnHabilitados);
         });
 
@@ -136,9 +139,10 @@ public class SolicitudesActivity extends AppCompatActivity {
                 solicitudList.add(doc);
             }
 
-            boolean mostrarBotones = !"Habilitado".equals(estado);
+            boolean mostrarBotones = !"Habilitado".equals(estadoActual);
             adapter = new SolicitudesAdapter(this, solicitudList, mostrarBotones);
             rvSolicitudes.setAdapter(adapter);
+
 
         }).addOnFailureListener(e ->
                 Toast.makeText(this, "Error al cargar solicitudes.", Toast.LENGTH_SHORT).show());
@@ -162,9 +166,10 @@ public class SolicitudesActivity extends AppCompatActivity {
                 filtradas.add(doc);
             }
         }
-
-        adapter = new SolicitudesAdapter(this, filtradas, true);
+        boolean mostrarBotones = !"Habilitado".equals(estadoActual);
+        adapter = new SolicitudesAdapter(this, filtradas, mostrarBotones);
         rvSolicitudes.setAdapter(adapter);
+
     }
 
     // =====================================================
