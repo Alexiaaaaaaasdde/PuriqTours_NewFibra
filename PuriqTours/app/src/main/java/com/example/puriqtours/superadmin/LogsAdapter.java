@@ -1,7 +1,6 @@
 package com.example.puriqtours.superadmin;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,29 +16,36 @@ import java.util.List;
 
 public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.LogViewHolder> {
 
-    private List<LogItem> logs;              // Lista filtrada
-    private List<LogItem> logsOriginal;      // Lista original
     private Context context;
+    private List<LogItem> logs;
 
     public LogsAdapter(Context context, List<LogItem> logs) {
         this.context = context;
-        this.logs = logs;
-        this.logsOriginal = new ArrayList<>(logs); // ⭐ Guardamos copia para el buscador
+        this.logs = logs != null ? logs : new ArrayList<>();
     }
 
     @NonNull
     @Override
     public LogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_log, parent, false);
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.item_log, parent, false);
         return new LogViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull LogViewHolder holder, int position) {
         LogItem log = logs.get(position);
-        holder.tvTipo.setText(log.tipo);
-        holder.tvFecha.setText(log.fecha);
-        holder.tvDescripcion.setText(log.descripcion);
+
+        // 🔹 Tipo
+        holder.tvTipo.setText(log.getType() != null ? log.getType() : "GENERAL");
+
+        // 🔹 Descripción
+        holder.tvDescripcion.setText(
+                log.getDesc() != null ? log.getDesc() : "Sin descripción"
+        );
+
+        // 🔹 Fecha formateada
+        holder.tvFecha.setText(log.getFechaFormateada());
     }
 
     @Override
@@ -47,40 +53,27 @@ public class LogsAdapter extends RecyclerView.Adapter<LogsAdapter.LogViewHolder>
         return logs.size();
     }
 
-    public void setLogs(List<LogItem> nuevosLogs) {
-        this.logs = nuevosLogs;
-        this.logsOriginal = new ArrayList<>(nuevosLogs);
+    // =====================================================
+    // 🔄 ACTUALIZAR LISTA (para filtros)
+    // =====================================================
+    public void setLogs(List<LogItem> nuevaLista) {
+        this.logs = nuevaLista != null ? nuevaLista : new ArrayList<>();
         notifyDataSetChanged();
     }
 
-    // ⭐ FILTRO POR DESCRIPCIÓN (BUSCADOR)
-    public void filter(String text) {
-        logs.clear();
+    // =====================================================
+    // 🧩 VIEW HOLDER
+    // =====================================================
+    static class LogViewHolder extends RecyclerView.ViewHolder {
 
-        if (TextUtils.isEmpty(text)) {
-            logs.addAll(logsOriginal);  // ← restauramos la lista completa
-        } else {
-            String query = text.toLowerCase();
-
-            for (LogItem log : logsOriginal) {
-                if (log.descripcion != null &&
-                        log.descripcion.toLowerCase().contains(query)) {
-                    logs.add(log);
-                }
-            }
-        }
-
-        notifyDataSetChanged();
-    }
-
-    public static class LogViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTipo, tvFecha, tvDescripcion;
+        TextView tvTipo, tvDescripcion, tvFecha;
 
         public LogViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTipo = itemView.findViewById(R.id.tvTipo);
-            tvFecha = itemView.findViewById(R.id.tvFecha);
-            tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
+
+            tvTipo = itemView.findViewById(R.id.tvLogType);
+            tvDescripcion = itemView.findViewById(R.id.tvLogDesc);
+            tvFecha = itemView.findViewById(R.id.tvLogTime);
         }
     }
 }

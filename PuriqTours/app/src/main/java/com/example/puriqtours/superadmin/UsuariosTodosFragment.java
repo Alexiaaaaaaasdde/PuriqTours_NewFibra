@@ -47,6 +47,7 @@ public class UsuariosTodosFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("users")
+                .whereEqualTo("status", "Activo") // 🔥 SOLO ACTIVOS
                 .get(Source.SERVER)
                 .addOnSuccessListener(snapshot -> {
 
@@ -54,9 +55,8 @@ public class UsuariosTodosFragment extends Fragment {
 
                     for (QueryDocumentSnapshot doc : snapshot) {
 
-                        Usuario u = new Usuario();  // instancia vacía
+                        Usuario u = new Usuario();
 
-                        // ✔ USANDO SETTERS (CORRECTO)
                         u.setUid(doc.getId());
 
                         String name = doc.getString("name");
@@ -64,8 +64,9 @@ public class UsuariosTodosFragment extends Fragment {
                         u.setName(name);
 
                         u.setAddress(doc.getString("address"));
-                        u.setRol(doc.getString("rol"));
+                        u.setRol(doc.getString("rol"));      // 👈 TODOS LOS ROLES
                         u.setStatus(doc.getString("status"));
+                        u.setProfile_image(doc.getString("profile_image"));
 
                         list.add(u);
                     }

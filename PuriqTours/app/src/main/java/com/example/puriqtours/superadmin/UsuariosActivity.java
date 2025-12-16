@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.puriqtours.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class UsuariosActivity extends AppCompatActivity {
@@ -22,6 +23,10 @@ public class UsuariosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_superadmin_usuarios);
+        findViewById(R.id.btnCrearUsuario).setOnClickListener(v -> {
+            CrearUsuarioDialog dialog = new CrearUsuarioDialog();
+            dialog.show(getSupportFragmentManager(), "CrearUsuarioDialog");
+        });
 
         // ---------- 🔍 BUSCADOR ----------
         etSearch = findViewById(R.id.etSearchUsuarios);
@@ -40,25 +45,40 @@ public class UsuariosActivity extends AppCompatActivity {
         });
 
 
-        // ---------- BOTTOM BAR ----------
-        findViewById(R.id.btnPrincipal).setOnClickListener(v -> {
-            Intent intent = new Intent(UsuariosActivity.this, MainSuperAdminActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        });
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
 
-// ---------- CREAR USUARIO ----------
-        findViewById(R.id.btnCrearUsuario).setOnClickListener(v -> {
-            CrearUsuarioDialog dialog = new CrearUsuarioDialog();
-            dialog.show(getSupportFragmentManager(), "CrearUsuario");
-        });
+        if (bottomNav != null) {
 
+            // Estamos en Rankings
+            bottomNav.setSelectedItemId(R.id.nav_usuarios);
 
-        findViewById(R.id.btnLogs).setOnClickListener(v -> {
-            Intent intent = new Intent(UsuariosActivity.this, LogsActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        });
+            bottomNav.setOnItemSelectedListener(item -> {
+
+                int id = item.getItemId();
+
+                if (id == R.id.nav_principal) {
+                    startActivity(new Intent(this, MainSuperAdminActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                if (id == R.id.nav_usuarios) {
+                    return true;
+                }
+                if (id == R.id.nav_solicitudes) {
+                    startActivity(new Intent(this, SolicitudesActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.nav_logs) {
+                    startActivity(new Intent(this, LogsActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
+                return false;
+            });
+        }
 
 
         // ---------- BOTONES DE FILTRO ----------

@@ -1,30 +1,45 @@
 package com.example.puriqtours.superadmin;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.view.Gravity;
 import android.util.TypedValue;
 import android.view.ViewGroup;
+import com.bumptech.glide.Glide;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.login.LoginActivity;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -38,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainSuperAdminActivity extends AppCompatActivity {
+    private TextView tvDisabledGuidesCount;
 
     private TextView tvActiveUsersCount;
     private TextView tvEnabledGuidesCount;
@@ -46,151 +62,76 @@ public class MainSuperAdminActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private ListenerRegistration usersListener;
     private GuiasHorizontalAdapter guiasAdapter;
-    
+    // 🧠 Últimos valores para evitar re-animaciones innecesarias
+    private int lastActiveUsers = -1;
+    private int lastEnabledGuides = -1;
+    private int lastAdminCount = -1;
+
     private void setupUsersListener() {
+
+        // 🔁 Remover listener previo si existe
         if (usersListener != null) {
             usersListener.remove();
+            usersListener = null;
         }
 
-        // Configurar el listener con source específico para forzar server
-        db.collection("users")
-            .get(com.google.firebase.firestore.Source.SERVER)
-            .addOnSuccessListener(snapshot -> {
-                Log.d("MainSuperAdmin", "Datos obtenidos del servidor - total docs: " + snapshot.size());
-                int activeUsers = 0;
-                int enabledGuides = 0;
-                
-                for (QueryDocumentSnapshot doc : snapshot) {
-                    String rol = doc.getString("rol");
-                    String state = doc.getString("state");
-                    String username = doc.getString("username");
-                    
-                    Log.d("MainSuperAdmin", "Usuario: " + username + ", rol: " + rol + ", state: " + state);
-                    
-                    // Contar usuarios activos (no SuperAdmin)
-                    if (rol == null || !"SuperAdmin".equalsIgnoreCase(rol)) {
-                        activeUsers++;
+        usersListener = db.collection("users")
+                .addSnapshotListener((snapshot, error) -> {
+
+                    if (error != null || snapshot == null) {
+                        Log.e("MainSuperAdmin", "Listener error: ", error);
+                        return;
                     }
-                    
-                    // Contar guías habilitados
-                    if ("Guia".equalsIgnoreCase(rol) && "habilitado".equalsIgnoreCase(state)) {
-                        enabledGuides++;
+
+                    int activeUsers = 0;
+                    int enabledGuides = 0;
+                    int adminCount = 0;
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        String rol = doc.getString("rol");
+                        String status = doc.getString("status");
+
+                        // 🟢 USUARIOS ACTIVOS (NO SuperAdmin + Activo)
+                        if (
+                                rol != null &&
+                                        !"SuperAdmin".equalsIgnoreCase(rol) &&
+                                        "Activo".equalsIgnoreCase(status)
+                        ) {
+                            activeUsers++;
+                        }
+
+                        // 🧭 GUÍAS HABILITADOS
+                        if ("Guia".equalsIgnoreCase(rol)
+                                && "Activo".equalsIgnoreCase(status)) {
+                            enabledGuides++;
+                        }
+
+                        // 🏢 EMPRESAS REGISTRADAS (Admins activos)
+                        if ("Admin".equalsIgnoreCase(rol)
+                                && "Activo".equalsIgnoreCase(status)) {
+                            adminCount++;
+                        }
                     }
-                }
-                
-                Log.d("MainSuperAdmin", "Total usuarios activos (no SuperAdmin): " + activeUsers);
-                Log.d("MainSuperAdmin", "Total guías habilitados: " + enabledGuides);
-                
-                if (tvActiveUsersCount != null) {
-                    tvActiveUsersCount.setText(String.valueOf(activeUsers));
-                }
-                if (tvEnabledGuidesCount != null) {
-                    tvEnabledGuidesCount.setText(String.valueOf(enabledGuides));
-                }
 
-                // Consultar el total de empresas
-                db.collection("empresas")
-                    .get(com.google.firebase.firestore.Source.SERVER)
-                    .addOnSuccessListener(empresasSnapshot -> {
-                        Log.d("MainSuperAdmin", "Total empresas registradas: " + empresasSnapshot.size());
-                        if (tvRegisteredCompaniesCount != null) {
-                            tvRegisteredCompaniesCount.setText(String.valueOf(empresasSnapshot.size()));
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("MainSuperAdmin", "Error al obtener empresas: " + e.getMessage(), e);
-                        if (tvRegisteredCompaniesCount != null) {
-                            tvRegisteredCompaniesCount.setText("--");
-                        }
-                    });
-                
-                // Consultar tours y construir gráfico de barras simple (usuarios por tour)
-                db.collection("tours")
-                    .get(com.google.firebase.firestore.Source.SERVER)
-                    .addOnSuccessListener(toursSnapshot -> {
-                        Log.d("MainSuperAdmin", "Tours obtenidos: " + toursSnapshot.size());
-                        // Map para mantener orden de inserción
-                        Map<String, Integer> tourCounts = new LinkedHashMap<>();
-                        int maxCount = 0;
-                        for (QueryDocumentSnapshot tourDoc : toursSnapshot) {
-                            String tourName = tourDoc.getString("nombre");
-                            if (tourName == null) tourName = tourDoc.getId();
-                            int count = 0;
-                            // Contar campos que empiezan por 'usuario'
-                            for (String key : tourDoc.getData().keySet()) {
-                                if (key != null && key.toLowerCase().startsWith("usuario")) {
-                                    Object val = tourDoc.get(key);
-                                    if (val != null) count++;
-                                }
-                            }
-                            tourCounts.put(tourName, count);
-                            if (count > maxCount) maxCount = count;
-                        }
+                    // 🔄 ACTUALIZAR UI EN TIEMPO REAL
+                    if (activeUsers != lastActiveUsers) {
+                        animateCounter(tvActiveUsersCount, activeUsers);
+                        lastActiveUsers = activeUsers;
+                    }
+                    if (enabledGuides != lastEnabledGuides) {
+                        animateCounter(tvEnabledGuidesCount, enabledGuides);
+                        lastEnabledGuides = enabledGuides;
+                    }
 
-                        // Construir vistas en la UI
-                        final int finalMaxCount = maxCount; // capturar para uso dentro del lambda
-                        final int maxBarHeightDp = 100; // altura máxima de barra en dp
-                        runOnUiThread(() -> {
-                            if (llToursBarsContainer == null) return;
-                            llToursBarsContainer.removeAllViews();
-                            for (Map.Entry<String, Integer> entry : tourCounts.entrySet()) {
-                                String name = entry.getKey();
-                                int cnt = entry.getValue();
+                    if (adminCount != lastAdminCount) {
+                        animateCounter(tvRegisteredCompaniesCount, adminCount);
+                        lastAdminCount = adminCount;
+                    }
 
-                                // calcular altura proporcional
-                                int barHeightDp = (finalMaxCount > 0) ? Math.max(4, Math.round((cnt / (float) finalMaxCount) * maxBarHeightDp)) : 4;
-
-                                LinearLayout item = new LinearLayout(MainSuperAdminActivity.this);
-                                item.setOrientation(LinearLayout.VERTICAL);
-                                item.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-                                LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
-                                        dpToPx(60), ViewGroup.LayoutParams.MATCH_PARENT);
-                                itemParams.setMargins(dpToPx(8), 0, dpToPx(8), 0);
-                                item.setLayoutParams(itemParams);
-
-                                View bar = new View(MainSuperAdminActivity.this);
-                                LinearLayout.LayoutParams barParams = new LinearLayout.LayoutParams(dpToPx(24), dpToPx(barHeightDp));
-                                barParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                            bar.setLayoutParams(barParams);
-                            bar.setBackgroundColor(Color.parseColor("#B2DFDB"));
-                            
-                            // Agregar OnClickListener para mostrar el valor
-                            final int finalCount = cnt;
-                            item.setOnClickListener(v -> {
-                                android.widget.Toast.makeText(MainSuperAdminActivity.this, 
-                                    String.format(Locale.getDefault(), "Usuarios: %d", finalCount),
-                                    android.widget.Toast.LENGTH_SHORT).show();
-                            });
-
-                            TextView tvName = new TextView(MainSuperAdminActivity.this);
-                                LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                nameParams.topMargin = dpToPx(6);
-                                tvName.setLayoutParams(nameParams);
-                                tvName.setText(name);
-                                tvName.setTextSize(12f);
-                                tvName.setTextColor(Color.DKGRAY);
-                                tvName.setGravity(Gravity.CENTER);
-
-                                item.addView(bar);
-                                item.addView(tvName);
-                                llToursBarsContainer.addView(item);
-                            }
-                        });
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("MainSuperAdmin", "Error al obtener tours: " + e.getMessage(), e);
-                    });
-            })
-            .addOnFailureListener(e -> {
-                Log.e("MainSuperAdmin", "Error al obtener usuarios: " + e.getMessage(), e);
-                if (tvActiveUsersCount != null) {
-                    tvActiveUsersCount.setText("--");
-                }
-                if (tvEnabledGuidesCount != null) {
-                    tvEnabledGuidesCount.setText("--");
-                }
-            });
+                });
     }
+
+
 
     // Cargar empresas y agregar conteo por mes (últimos 6 meses) al LineChart
     private void loadCompaniesMonthlyData(LineChart lineChart) {
@@ -425,23 +366,29 @@ public class MainSuperAdminActivity extends AppCompatActivity {
 
         db.collection("users")
                 .whereEqualTo("rol", "Guia")
-                .whereEqualTo("state", "deshabilitado")
-                .get(com.google.firebase.firestore.Source.SERVER)
+                .whereEqualTo("guide_status", "No habilitado") // <-- CAMPO REAL
+                .get()
                 .addOnSuccessListener(snapshot -> {
 
-                    Log.d("MainSuperAdmin", "Guías deshabilitados obtenidos: " + snapshot.size());
+                    int disabledCount = snapshot.size(); // contador real
 
-                    java.util.List<Usuario> guias = new java.util.ArrayList<>();
+                    Log.d("MainSuperAdmin", "Guías no habilitados: " + disabledCount);
+
+                    // Mostrar en el TextView
+                    if (tvDisabledGuidesCount != null) {
+                        animateCounter(tvDisabledGuidesCount, disabledCount);
+                    }
+
+                    // Lista para el RecyclerView
+                    java.util.List<Usuario> guias = new ArrayList<>();
 
                     for (QueryDocumentSnapshot doc : snapshot) {
 
                         Usuario guia = Usuario.fromSnapshot(doc);
 
-                        // fallback de nombre
                         if (guia.getName() == null)
                             guia.setName("Guía");
 
-                        // fallback de imagen
                         if (guia.getProfile_image() == null)
                             guia.setProfile_image("");
 
@@ -451,98 +398,130 @@ public class MainSuperAdminActivity extends AppCompatActivity {
                     if (guiasAdapter != null) {
                         guiasAdapter.setGuias(guias);
                     }
+
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("MainSuperAdmin", "Error al obtener guías deshabilitados: " + e.getMessage(), e);
+                    Log.e("MainSuperAdmin", "Error al cargar guías no habilitados: " + e.getMessage(), e);
+
+                    if (tvDisabledGuidesCount != null) {
+                        tvDisabledGuidesCount.setText("--");
+                    }
                 });
     }
 
 
 
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Vinculamos el layout activity_superadmin_home.xml
         setContentView(R.layout.activity_superadmin_home);
-        // Status bar blanco y iconos oscuros (solo método moderno, sin warning)
+        // 🔹 Toolbar
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+        // 🔹 Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // 🔹 Status bar
         getWindow().setStatusBarColor(Color.WHITE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             getWindow().getInsetsController().setSystemBarsAppearance(
-                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             );
         }
-        // Cambiar color del TopAppBar al mismo que otras secciones
-        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
+        // 🔹 Toolbar
         if (toolbar != null) {
-            toolbar.setBackgroundColor(Color.parseColor("#009688")); // Cambiar de #1DE9B6 a #009688
+            toolbar.setBackgroundColor(Color.parseColor("#009688"));
         }
-        // Navegación al hacer click en el botón Usuarios
-        findViewById(R.id.btnUsuarios).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.UsuariosActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+
+
+        // 🔹 Cards (NO CAMBIADAS)
+        findViewById(R.id.cardRankings).setOnClickListener(v ->
+                startActivity(new Intent(this, TopToursActivity.class))
+        );
+
+        findViewById(R.id.cardPreferencias).setOnClickListener(v ->
+                startActivity(new Intent(this, IdiomasActivity.class))
+        );
+
+        findViewById(R.id.cardActividad).setOnClickListener(v ->
+                startActivity(new Intent(this, ActividadSistemaActivity.class))
+        );
+
+        findViewById(R.id.cardCrecimiento).setOnClickListener(v ->
+                startActivity(new Intent(this, CrecimientoActivity.class))
+        );
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationSuperAdmin);
+
+// Marca "Principal" como activo
+        bottomNav.setSelectedItemId(R.id.nav_principal);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            int id = item.getItemId();
+
+            if (id == R.id.nav_principal) {
+                // Ya estás en Home
+                return true;
             }
+            if (id == R.id.nav_solicitudes) {
+                startActivity(new Intent(this, SolicitudesActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+
+
+            if (id == R.id.nav_usuarios) {
+                startActivity(new Intent(this, UsuariosActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+
+            if (id == R.id.nav_logs) {
+                startActivity(new Intent(this, LogsActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+
+            return false;
         });
 
-        // Navegación al hacer click en el botón Logs
-        findViewById(R.id.btnLogs).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainSuperAdminActivity.this, com.example.puriqtours.superadmin.LogsActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-            }
-        });
-        // Inicializar gráfico de líneas de empresas registradas usando datos reales
-        LineChart lineChart = findViewById(R.id.lineChartEmpresas);
-        if (lineChart != null) {
-            // Cargar datos reales desde Firestore y poblar el gráfico
-            loadCompaniesMonthlyData(lineChart);
-        }
-
-        // Inicializar RecyclerView horizontal de guías (adapter vacío, se llenará desde Firestore)
-        RecyclerView rvGuiasHorizontal = findViewById(R.id.rvGuiasHorizontal);
-
-        if (rvGuiasHorizontal != null) {
-            rvGuiasHorizontal.setLayoutManager(
-                    new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-            );
-
-            // Cambia UsuarioGuia → Usuario
-            java.util.List<Usuario> guias = new java.util.ArrayList<>();
-
-            guiasAdapter = new GuiasHorizontalAdapter(this, guias);
-            rvGuiasHorizontal.setAdapter(guiasAdapter);
-        }
-
-        // TextViews para mostrar estadísticas
+        // 🔹 TextViews (NO CAMBIADOS)
         tvActiveUsersCount = findViewById(R.id.tvActiveUsersCount);
         tvEnabledGuidesCount = findViewById(R.id.tvEnabledGuidesCount);
         tvRegisteredCompaniesCount = findViewById(R.id.tvRegisteredCompaniesCount);
-        llToursBarsContainer = findViewById(R.id.llToursBarsContainer);
+        tvDisabledGuidesCount = findViewById(R.id.tvDisabledGuidesCount);
 
-        // Inicializar Firestore
-        db = FirebaseFirestore.getInstance();
-        
-        // Verificar conectividad primero
-        db.enableNetwork()
-            .addOnSuccessListener(aVoid -> {
-                Log.d("MainSuperAdmin", "Red habilitada exitosamente");
-                // Solo después de confirmar la conectividad, consultamos los usuarios
-                setupUsersListener();
-                // Cargar guías deshabilitados para la sección de solicitudes
-                loadDisabledGuides();
-            })
-            .addOnFailureListener(e -> {
-                Log.e("MainSuperAdmin", "Error al habilitar la red: " + e.getMessage(), e);
-                if (tvActiveUsersCount != null) {
-                    tvActiveUsersCount.setText("--");
-                }
-            });
-            
-        Log.d("MainSuperAdmin", "Iniciando conexión a Firestore...");
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull android.view.MenuItem item) {
+
+        if (item.getItemId() == R.id.action_logout) {
+
+            FirebaseAuth.getInstance().signOut();
+
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // 🔄 Siempre se ejecuta al volver a esta pantalla
+        setupUsersListener();
+        loadDisabledGuides();
     }
 
     @Override
@@ -559,4 +538,134 @@ public class MainSuperAdminActivity extends AppCompatActivity {
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
+    private void animateCounter(TextView textView, int finalValue) {
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, finalValue);
+        animator.setDuration(900); // duracion animacion
+        animator.setInterpolator(new DecelerateInterpolator()); // animacion suave
+
+        animator.addUpdateListener(valueAnimator -> {
+            int animatedValue = (int) valueAnimator.getAnimatedValue();
+            textView.setText(String.valueOf(animatedValue));
+        });
+
+        animator.start();
+    }
+    private void cargarTopTours(RecyclerView rv) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("reservas")
+                .get()
+                .addOnSuccessListener(reservasSnap -> {
+
+                    Map<String, Integer> conteo = new HashMap<>();
+
+                    for (QueryDocumentSnapshot r : reservasSnap) {
+                        String idTour = r.getString("idTour");
+                        if (idTour != null) {
+                            conteo.put(idTour, conteo.getOrDefault(idTour, 0) + 1);
+                        }
+                    }
+
+                    obtenerTours(conteo, rv);
+                });
+    }
+    private void obtenerTours(Map<String,Integer> conteo, RecyclerView rv) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tours")
+                .get()
+                .addOnSuccessListener(toursSnap -> {
+
+                    // Aquí guardamos tours completos SIN crear clases nuevas
+                    ArrayList<Tour> lista = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot t : toursSnap) {
+
+                        String id = t.getId();
+                        if (!conteo.containsKey(id)) continue;
+
+                        Tour tour = t.toObject(Tour.class);
+                        tour.setIdTour(id); // porque Firestore no lo asigna solo
+
+                        lista.add(tour);
+                    }
+
+                    // Ordenamos de mayor a menor reservas
+                    lista.sort((a, b) ->
+                            conteo.get(b.getIdTour()) - conteo.get(a.getIdTour())
+                    );
+
+                    // Top 10
+                    if (lista.size() > 10)
+                        lista.subList(10, lista.size()).clear();
+
+                    rv.setAdapter(new TopToursAdapter(lista, conteo));
+                });
+    }
+
+    public class TopToursAdapter extends RecyclerView.Adapter<TopToursAdapter.ViewHolder> {
+
+        private List<Tour> lista;
+        private Map<String, Integer> conteo;
+        private int maxValor;
+
+        public TopToursAdapter(List<Tour> lista, Map<String,Integer> conteo) {
+            this.lista = lista;
+            this.conteo = conteo;
+
+            maxValor = 1;
+            for (Tour t : lista)
+                if (conteo.get(t.getIdTour()) > maxValor)
+                    maxValor = conteo.get(t.getIdTour());
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_tour_ranking_sensortower, parent, false);
+            return new ViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder h, int pos) {
+            Tour tour = lista.get(pos);
+            int reservas = conteo.get(tour.getIdTour());
+
+            h.tvTitle.setText(tour.getTitle());
+            h.tvCount.setText(String.valueOf(reservas));
+
+            float porcentaje = (float) reservas / maxValor * 100f;
+            h.progress.setProgress((int) porcentaje);
+
+            Glide.with(h.itemView.getContext())
+                    .load(tour.getImageUrl())
+                    .placeholder(R.drawable.placeholder)
+                    .into(h.imgTour);
+        }
+
+        @Override
+        public int getItemCount() {
+            return lista.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tvTitle, tvCount;
+            ImageView imgTour;
+            ProgressBar progress;
+
+            ViewHolder(View item) {
+                super(item);
+                tvTitle = item.findViewById(R.id.tvTitle);
+                tvCount = item.findViewById(R.id.tvCount);
+                imgTour = item.findViewById(R.id.imgTour);
+                progress = item.findViewById(R.id.progressBar);
+            }
+        }
+    }
+
+
 }

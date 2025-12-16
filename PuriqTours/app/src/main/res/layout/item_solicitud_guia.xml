@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -22,7 +23,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:src="@drawable/avatar1"
-            android:contentDescription="Avatar"
+            android:contentDescription="@string/avatar"
             android:scaleType="centerCrop"/>
 
         <LinearLayout
@@ -32,6 +33,7 @@
             android:orientation="vertical"
             android:layout_marginStart="12dp">
 
+            <!-- Nombre del guía -->
             <TextView
                 android:id="@+id/txtNombre"
                 android:layout_width="wrap_content"
@@ -40,37 +42,14 @@
                 android:textSize="20sp"
                 android:textStyle="bold"/>
 
-
-
-            <!-- Para Guía -->
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:rating="0"
-                android:stepSize="1"
-                android:isIndicator="true"
-                style="?android:attr/ratingBarStyleSmall"
-                android:progressTint="@color/teal_700"
-                android:layout_marginTop="4dp"
-                android:visibility="gone"/>
-
-            <!-- Para Administrador -->
+            <!-- Correo -->
             <TextView
-                android:id="@+id/txtEmpresa"
+                android:id="@+id/txtEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#757575"
                 android:textSize="15sp"
-                android:visibility="gone"/>
-            <TextView
-                android:id="@+id/txtFechaRegistro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#757575"
-                android:textSize="15sp"
-                android:visibility="gone"/>
+                android:layout_marginTop="2dp"/>
 
             <!-- Botones -->
             <LinearLayout

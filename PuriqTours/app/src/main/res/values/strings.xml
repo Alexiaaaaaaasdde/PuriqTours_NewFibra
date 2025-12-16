@@ -11,6 +11,7 @@
     <string name="close">Cerrar</string>
 
     <string name="menu_notifications">Notificaciones</string>
+
     <string-array name="departamentos_peru">
         <item>Amazonas</item>
         <item>Áncash</item>
@@ -38,9 +39,8 @@
         <item>Tumbes</item>
         <item>Ucayali</item>
     </string-array>
+
     <string-array name="roles_usuarios">
-        <item>Cliente</item>
-        <item>Guía</item>
         <item>Administrador</item>
     </string-array>
 
@@ -52,7 +52,9 @@
     <!-- Google Maps -->
     <string name="google_maps_key">AIzaSyDCaHMU3V-OwsshvhxHtLmJj3lnLICesnQ</string>
 
-
-
+    <!-- 🧩 NUEVOS STRINGS para item_solicitud_guia.xml -->
+    <string name="avatar">Avatar del guía</string>
+    <string name="nombre_guia">Nombre del guía</string>
+    <string name="correo_ejemplo">correo@ejemplo.com</string>
 
 </resources>

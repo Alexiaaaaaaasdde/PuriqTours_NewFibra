@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_principal"
+        android:icon="@drawable/estrella_superadmin"
+        android:title="Principal"/>
+
+    <item
+        android:id="@+id/nav_usuarios"
+        android:icon="@drawable/usuarios_superadmin"
+        android:title="Usuarios"/>
+
+    <item
+        android:id="@+id/nav_solicitudes"
+        android:icon="@drawable/ic_solicitudes"
+        android:title="Solicitudes"/>
+
+    <item
+        android:id="@+id/nav_logs"
+        android:icon="@drawable/reloj_superadmin"
+        android:title="Logs"/>
+
+</menu>

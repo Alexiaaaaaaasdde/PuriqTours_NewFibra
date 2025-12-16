@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Usuario;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -71,16 +73,18 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
     }
 
     public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNombre, txtCiudad;
+        TextView txtNombre;
+        ImageView imgAvatar; // 🔹 agregado
         LinearLayout layoutBotones;
 
         public UsuarioViewHolder(@NonNull View itemView) {
             super(itemView);
             txtNombre = itemView.findViewById(R.id.txtNombre);
-            txtCiudad = itemView.findViewById(R.id.txtCiudad);
+            imgAvatar = itemView.findViewById(R.id.imgAvatar); // 🔹 agregado
             layoutBotones = itemView.findViewById(R.id.layoutBotones);
         }
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull UsuarioViewHolder holder, int position) {
@@ -88,8 +92,21 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         Usuario usuario = listaUsuarios.get(position);
 
         holder.txtNombre.setText(usuario.getName());
-        holder.txtCiudad.setText(usuario.getAddress());
+
+// 🟢 NUEVO BLOQUE — carga la imagen de perfil del usuario
+        if (usuario.getProfile_image() != null && !usuario.getProfile_image().isEmpty()) {
+            Glide.with(context)
+                    .load(usuario.getProfile_image())
+                    .placeholder(R.drawable.avatar1) // mientras carga
+                    .error(R.drawable.avatar1)       // si falla
+                    .circleCrop()                    // forma circular
+                    .into(holder.imgAvatar);
+        } else {
+            holder.imgAvatar.setImageResource(R.drawable.avatar1);
+        }
+
         holder.layoutBotones.removeAllViews();
+
 
         String rol = usuario.getRol();
         String estado = usuario.getStatus();

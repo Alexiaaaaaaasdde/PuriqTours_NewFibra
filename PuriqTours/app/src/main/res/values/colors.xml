@@ -17,7 +17,9 @@
     <color name="md_theme_surface">@color/white</color>
     <color name="md_theme_onSurface">@color/teal_dark</color>
     <color name="md_theme_outline">@color/teal_700</color>
-
+    <color name="purple_700">#7B1FA2</color>
+    <color name="orange_700">#F57C00</color>
+    <color name="blue_700">#1976D2</color>
     <color name="teal_700">#00796B</color>
     <color name="teal_500">#009688</color>
     <color name="teal_200">#009688</color>
