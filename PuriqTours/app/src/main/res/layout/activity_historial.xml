@@ -48,7 +48,7 @@
             android:id="@+id/searchBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Buscar tourLegacies"
+            android:hint="Buscar tour"
             android:drawableStart="@android:drawable/ic_menu_search"
             android:background="@drawable/search_background"
             android:padding="7dp"
