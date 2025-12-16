@@ -54,24 +54,18 @@ public class ChatActivityDos extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ImageButton btnBack = findViewById(R.id.btnBack);
 
-        // ================= Firebase =================
+        btnBack.setOnClickListener(v -> {
+            finish(); // vuelve a la pantalla anterior
+        });
+
         db = FirebaseFirestore.getInstance();
         currentUserId = FirebaseAuth.getInstance().getUid();
 
-        // ================= Obtener rol del usuario =================
-        db.collection("users")
-                .document(currentUserId)
-                .get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        senderRole = doc.getString("rol");
-                    }
-                });
-
-        // ================= Views =================
         recyclerChat = findViewById(R.id.recyclerChat);
         etMensaje = findViewById(R.id.etMensaje);
         btnSend = findViewById(R.id.btnSend);
@@ -79,29 +73,28 @@ public class ChatActivityDos extends AppCompatActivity {
         profileIcon = findViewById(R.id.profileIcon);
         topAppBar = findViewById(R.id.topAppBar);
 
-        // ================= Intent =================
         chatId = getIntent().getStringExtra("chatId");
         idCliente = getIntent().getStringExtra("idCliente");
         idEmpresa = getIntent().getStringExtra("idEmpresa");
         clientName = getIntent().getStringExtra("clientName");
         tourName = getIntent().getStringExtra("tourName");
 
-        // ================= Recycler =================
+        if (chatId == null || chatId.isEmpty()) {
+            finish();
+            return;
+        }
+
         adapter = new ChatAdapterDos(messageList, currentUserId);
         recyclerChat.setLayoutManager(new LinearLayoutManager(this));
         recyclerChat.setAdapter(adapter);
 
-        // ================= Cargar datos =================
+        obtenerRol();
         cargarEmpresa();
+        asegurarChatThread();
         escucharMensajes();
 
         btnSend.setOnClickListener(v -> enviarMensaje());
     }
-
-
-
-
-
 
     // =========================================================================
     // 🔥 CARGAR EMPRESA (NOMBRE + FOTO)
@@ -191,4 +184,38 @@ public class ChatActivityDos extends AppCompatActivity {
                 .document(chatId)
                 .update(update);
     }
+
+    private void obtenerRol() {
+        db.collection("users")
+                .document(currentUserId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        senderRole = doc.getString("rol");
+                    }
+                });
+    }
+
+    private void asegurarChatThread() {
+
+        DocumentReference chatRef =
+                db.collection("chatThreads").document(chatId);
+
+        chatRef.get().addOnSuccessListener(doc -> {
+            if (doc.exists()) return;
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("chatId", chatId);
+            data.put("idCliente", idCliente);
+            data.put("idEmpresa", idEmpresa);
+            data.put("clientName", clientName);
+            data.put("tourName", tourName);
+            data.put("lastMessage", "");
+            data.put("lastTimestamp", Timestamp.now());
+
+            chatRef.set(data);
+        });
+    }
+
+
 }

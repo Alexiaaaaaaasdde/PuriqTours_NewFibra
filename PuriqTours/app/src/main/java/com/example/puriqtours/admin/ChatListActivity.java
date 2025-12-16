@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class ChatListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
@@ -63,9 +65,9 @@ public class ChatListActivity extends AppCompatActivity {
 
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
-            notificationIcon.setOnClickListener(v -> {
-                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
-            });
+            notificationIcon.setOnClickListener(v ->
+                    Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show()
+            );
         }
     }
 
@@ -90,7 +92,6 @@ public class ChatListActivity extends AppCompatActivity {
         db.collection("chatThreads")
                 .orderBy("lastTimestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshots, error) -> {
-
                     if (error != null || snapshots == null) return;
 
                     chatList.clear();
