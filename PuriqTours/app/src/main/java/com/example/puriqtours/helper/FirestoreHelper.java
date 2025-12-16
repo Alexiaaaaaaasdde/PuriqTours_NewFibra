@@ -782,6 +782,9 @@ public class FirestoreHelper {
         if (tour.getIdEmpresa() != null) {
             map.put("idEmpresa", tour.getIdEmpresa());
         }
+        if (tour.getIdGuia() != null) {
+            map.put("idGuia", tour.getIdGuia());
+        }
         if (tour.getImageUrl() != null) {
             map.put("imageUrl", tour.getImageUrl());
         }

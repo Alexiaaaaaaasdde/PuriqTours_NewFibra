@@ -96,6 +96,15 @@ public class ProfileAdminActivity extends AppCompatActivity implements OnMapRead
             profileView.setVisibility(View.GONE);
         }
         
+        // Icono de notificaciones
+        ImageView notificationIcon = findViewById(R.id.notificationIcon);
+        if (notificationIcon != null) {
+            notificationIcon.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileAdminActivity.this, NotificationsActivity.class);
+                startActivity(intent);
+            });
+        }
+        
         setupBottomNavigation();
         checkProfileStatus();
     }
@@ -105,8 +114,7 @@ public class ProfileAdminActivity extends AppCompatActivity implements OnMapRead
         android.widget.ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                Intent intent = new Intent(this, NotificationsActivity.class);
-                startActivity(intent);
+                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
             });
         }
 

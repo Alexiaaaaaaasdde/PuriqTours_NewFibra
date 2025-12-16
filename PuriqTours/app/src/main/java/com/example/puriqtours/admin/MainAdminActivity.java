@@ -22,10 +22,10 @@ import com.example.puriqtours.R;
 import com.example.puriqtours.entity.TourAdmin;
 import com.example.puriqtours.entity.GuideAdmin;
 import com.example.puriqtours.helper.FirestoreHelper;
-import com.example.puriqtours.helper.NotificationHelper;
 import com.example.puriqtours.helper.TourConverter;
 import com.example.puriqtours.helper.GuideConverter;
 import com.example.puriqtours.helper.UserSessionManager;
+import com.example.puriqtours.utils.NotificationHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -71,11 +71,11 @@ public class MainAdminActivity extends AppCompatActivity {
         // Inicializar vistas
         initViews();
         
-        // 🔹 Icono de notificaciones en toolbar (probar todas las notificaciones)
+        // 🔹 Icono de notificaciones en toolbar
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                Intent intent = new Intent(this, NotificationsActivity.class);
+                Intent intent = new Intent(MainAdminActivity.this, NotificationsActivity.class);
                 startActivity(intent);
             });
         }
@@ -417,38 +417,24 @@ public class MainAdminActivity extends AppCompatActivity {
         // Recargar datos cuando volvamos a esta actividad
         loadLatestTour();
         loadLatestGuides();
+        updateNotificationBadge();
+    }
+    
+    private void updateNotificationBadge() {
+        TextView badge = findViewById(R.id.notificationBadge);
+        if (badge != null && notificationHelper != null) {
+            int unreadCount = notificationHelper.getUnreadCount();
+            if (unreadCount > 0) {
+                badge.setVisibility(View.VISIBLE);
+                badge.setText(String.valueOf(unreadCount));
+            } else {
+                badge.setVisibility(View.GONE);
+            }
+        }
     }
     
     private void initializeNotificationSystem() {
-        // Crear instancia del NotificationHelper (esto crea los canales automáticamente)
+        // Crear instancia del NotificationHelper local
         notificationHelper = new NotificationHelper(this);
-        
-        // Solicitar permisos para notificaciones en Android 13+
-        requestNotificationPermission();
-    }
-    
-    private void requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, 
-                    android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
-                        100);
-            }
-        }
-    }
-    
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        
-        if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permisos de notificación concedidos", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Las notificaciones están deshabilitadas", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 }

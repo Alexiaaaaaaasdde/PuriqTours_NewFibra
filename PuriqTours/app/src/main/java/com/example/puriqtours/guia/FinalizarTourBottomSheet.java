@@ -20,7 +20,9 @@ import androidx.annotation.Nullable;
 
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.ReservaIndividual;
+import com.example.puriqtours.utils.NotificationHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -43,6 +45,10 @@ public class FinalizarTourBottomSheet extends BottomSheetDialogFragment {
     private TextView tvClientesFinalizadoContador;
 
     private FirebaseFirestore db;
+    private String tourId;
+    private String tourName;
+    private String guideId;
+    private String guideName;
 
     public static FinalizarTourBottomSheet newInstance(String idReserva) {
         FinalizarTourBottomSheet sheet = new FinalizarTourBottomSheet();
@@ -211,7 +217,50 @@ public class FinalizarTourBottomSheet extends BottomSheetDialogFragment {
     private void finalizarTour(){
         db.collection("reservas")
                 .document(idReserva)
-                .update("status", "Finalizado");
+                .update("status", "Finalizado")
+                .addOnSuccessListener(aVoid -> {
+                    // Crear notificación local para el admin
+                    crearNotificacionParaAdmin();
+                });
+    }
+
+    private void crearNotificacionParaAdmin() {
+        // Obtener datos del tour y guía
+        db.collection("reservas")
+                .document(idReserva)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        tourId = doc.getString("tourId");
+                        tourName = doc.getString("tourName");
+                        guideId = doc.getString("guideId");
+                        
+                        // Obtener nombre del guía
+                        if (guideId != null) {
+                            db.collection("users")
+                                    .document(guideId)
+                                    .get()
+                                    .addOnSuccessListener(guideDoc -> {
+                                        if (guideDoc.exists()) {
+                                            guideName = guideDoc.getString("name");
+                                            
+                                            // Crear la notificación
+                                            NotificationHelper helper = new NotificationHelper(requireContext());
+                                            helper.addNotification(
+                                                    "tour_finalizado",
+                                                    tourId != null ? tourId : "",
+                                                    tourName != null ? tourName : "Tour",
+                                                    idReserva,
+                                                    guideName != null ? guideName : "Guía",
+                                                    clientesFinalizados.intValue()
+                                            );
+                                            
+                                            Log.d("NOTIFICATION", "Notificación creada para el admin");
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 
     // ============================================================================

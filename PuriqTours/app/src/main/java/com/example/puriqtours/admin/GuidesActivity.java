@@ -59,6 +59,9 @@ public class GuidesActivity extends AppCompatActivity {
         // Configurar listeners
         setupListeners();
         
+        // Configurar toolbar
+        setupToolbar();
+        
         // Configurar bottom navigation
         setupBottomNavigation();
     }
@@ -73,6 +76,15 @@ public class GuidesActivity extends AppCompatActivity {
             Toast.makeText(this, "Error: RecyclerView no encontrado", Toast.LENGTH_LONG).show();
             finish();
             return;
+        }
+        
+        // Icono de notificaciones
+        ImageView notificationIcon = findViewById(R.id.notificationIcon);
+        if (notificationIcon != null) {
+            notificationIcon.setOnClickListener(v -> {
+                Intent intent = new Intent(GuidesActivity.this, NotificationsActivity.class);
+                startActivity(intent);
+            });
         }
     }
 
@@ -119,28 +131,6 @@ public class GuidesActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Icono de notificaciones en toolbar (simular propuesta a guía)
-        ImageView notificationIcon = findViewById(R.id.notificationIcon);
-        if (notificationIcon != null) {
-            notificationIcon.setOnClickListener(v -> {
-                // Simular propuesta de tour a guía seleccionado
-                if (!guideAdminList.isEmpty()) {
-                    GuideAdmin randomGuideAdmin = guideAdminList.get((int) (Math.random() * guideAdminList.size()));
-                    notificationHelper.notifyTourProposedToGuide("Tour Machu Picchu", randomGuideAdmin.getName(), "Cusco");
-                    Toast.makeText(this, "Simulando propuesta de tour a " + randomGuideAdmin.getName(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        // Configurar toolbar navigation (botón de logout)
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.topAppBar);
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(v -> {
-                // TODO: Implementar cerrar sesión
-                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
-            });
-        }
-
         // Botón de filtro por provincia
         if (btnFiltrar != null) {
             btnFiltrar.setOnClickListener(v -> showFilterDialog());
@@ -252,5 +242,29 @@ public class GuidesActivity extends AppCompatActivity {
                 return false;
             });
         }
+    }
+    
+    private void setupToolbar() {
+        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> cerrarSesion());
+        }
+    }
+    
+    private void cerrarSesion() {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> {
+                    com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
+                    android.content.SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    prefs.edit().clear().apply();
+                    Intent intent = new Intent(GuidesActivity.this, com.example.puriqtours.login.LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 }

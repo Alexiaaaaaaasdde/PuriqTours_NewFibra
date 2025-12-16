@@ -56,11 +56,13 @@ public class ReportsActivity extends AppCompatActivity {
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                // TODO: Implementar vista de notificaciones
-                // Intent intent = new Intent(ReportsActivity.this, NotificationsActivity.class);
-                // startActivity(intent);
+                Intent intent = new Intent(ReportsActivity.this, NotificationsActivity.class);
+                startActivity(intent);
             });
         }
+
+        // 🔹 Configurar toolbar
+        setupToolbar();
 
         // 🔹 BottomNavigation
         setupBottomNavigation();

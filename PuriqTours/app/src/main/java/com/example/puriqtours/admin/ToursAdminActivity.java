@@ -66,6 +66,9 @@ public class ToursAdminActivity extends AppCompatActivity {
         // Configurar listeners
         setupListeners();
         
+        // Configurar toolbar
+        setupToolbar();
+        
         // Configurar bottom navigation
         setupBottomNavigation();
     }
@@ -87,6 +90,15 @@ public class ToursAdminActivity extends AppCompatActivity {
         btnReservas = findViewById(R.id.btnReservas);
         fabCrearTour = findViewById(R.id.fabCrearTour);
         searchBar = findViewById(R.id.searchBar);
+        
+        // Icono de notificaciones
+        ImageView notificationIcon = findViewById(R.id.notificationIcon);
+        if (notificationIcon != null) {
+            notificationIcon.setOnClickListener(v -> {
+                Intent intent = new Intent(ToursAdminActivity.this, NotificationsActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     private void createSampleData() {
@@ -173,24 +185,6 @@ public class ToursAdminActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Icono de notificaciones en toolbar
-        ImageView notificationIcon = findViewById(R.id.notificationIcon);
-        if (notificationIcon != null) {
-            notificationIcon.setOnClickListener(v -> {
-                // TODO: Implementar vista de notificaciones
-                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-        // Configurar toolbar navigation (botón de logout)
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.topAppBar);
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(v -> {
-                // TODO: Implementar cerrar sesión
-                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
-            });
-        }
-
         // Botón Mis Tours
         btnMisTours.setOnClickListener(v -> showMisTours());
 
@@ -445,5 +439,29 @@ public class ToursAdminActivity extends AppCompatActivity {
     private void refreshToursList() {
         // Recargar tours desde Firestore
         loadToursFromEmpresa();
+    }
+    
+    private void setupToolbar() {
+        com.google.android.material.appbar.MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> cerrarSesion());
+        }
+    }
+    
+    private void cerrarSesion() {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> {
+                    com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
+                    android.content.SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    prefs.edit().clear().apply();
+                    Intent intent = new Intent(ToursAdminActivity.this, com.example.puriqtours.login.LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 }

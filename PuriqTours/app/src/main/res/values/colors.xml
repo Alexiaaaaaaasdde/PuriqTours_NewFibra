@@ -58,6 +58,7 @@
     <color name="chip_teal_dark">#009688</color>       <!-- Teal principal PuriqTours -->
     <color name="chip_border_teal">#4DB6AC</color>     <!-- Teal medio -->
 
-
+    <!-- Notificaciones -->
+    <color name="notification_unread_bg">#E0F7FA</color> <!-- Fondo azul claro para notificaciones no leídas -->
 
 </resources>

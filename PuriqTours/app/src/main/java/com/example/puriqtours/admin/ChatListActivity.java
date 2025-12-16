@@ -47,6 +47,9 @@ public class ChatListActivity extends AppCompatActivity {
         // Configurar listeners
         setupListeners();
         
+        // Configurar toolbar
+        setupToolbar();
+        
         // Configurar bottom navigation
         setupBottomNavigation();
     }
@@ -95,13 +98,12 @@ public class ChatListActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Icono de notificaciones en toolbar (ahora con simulación)
+        // Icono de notificaciones en toolbar
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                // Simular llegada de mensaje para demostración
-                notificationHelper.simulateIncomingMessage();
-                Toast.makeText(this, "Simulando llegada de mensaje...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ChatListActivity.this, NotificationsActivity.class);
+                startActivity(intent);
             });
         }
 
@@ -158,5 +160,29 @@ public class ChatListActivity extends AppCompatActivity {
                 return false;
             });
         }
+    }
+    
+    private void setupToolbar() {
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.topAppBar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> cerrarSesion());
+        }
+    }
+    
+    private void cerrarSesion() {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> {
+                    com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
+                    android.content.SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                    prefs.edit().clear().apply();
+                    Intent intent = new Intent(ChatListActivity.this, com.example.puriqtours.login.LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 }
