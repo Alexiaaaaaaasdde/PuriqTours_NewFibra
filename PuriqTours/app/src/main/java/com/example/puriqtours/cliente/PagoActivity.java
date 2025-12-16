@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,10 +31,17 @@ import android.app.PendingIntent;
 import com.bumptech.glide.Glide;
 import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.CheckpointReserva;
+import com.example.puriqtours.entity.ReservaCliente;
+import com.example.puriqtours.entity.ReservaIndividual;
+import com.example.puriqtours.helper.TokenUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +51,11 @@ public class PagoActivity extends BaseActivity {
 
     // 🔹 Launcher para pedir permiso de notificaciones
     private ActivityResultLauncher<String> requestPermissionLauncher;
+
+    private String img, reservaId;
+    private ArrayList<String> extrasDetalle;
+    private ReservaCliente reservaCliente = new ReservaCliente();
+    private ReservaIndividual reservaIndividual = new ReservaIndividual();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +79,9 @@ public class PagoActivity extends BaseActivity {
                     }
                 }
         );
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        String idCliente = mAuth.getCurrentUser().getUid();
 
         // 🔹 Referencias generales
         TextView tvFechaPago = findViewById(R.id.tvFechaPago);
@@ -80,25 +96,33 @@ public class PagoActivity extends BaseActivity {
         RatingBar ratingBarCard = findViewById(R.id.ratingBar);
         ImageView imgTourCard = findViewById(R.id.imgTourCard);
 
+        reservaCliente.setDate(getIntent().getStringExtra("fecha"));
+        reservaCliente.setHour(getIntent().getStringExtra("hora"));
+        reservaCliente.setIdTour(getIntent().getStringExtra("tourId"));
+        reservaCliente.setTitle(getIntent().getStringExtra("titulo"));
+        reservaCliente.setIdGuia(getIntent().getStringExtra("idGuia"));
+
+        reservaIndividual.setTravelers(getIntent().getStringExtra("viajeros"));
+        reservaIndividual.setPrice((double) getIntent().getFloatExtra("precio", 0));
+        reservaIndividual.setIdCliente(idCliente);
+
         // 🔹 Recuperar datos enviados desde DetalleTourActivity
-        String fecha = getIntent().getStringExtra("fecha");
         String viajeros = getIntent().getStringExtra("viajeros");
         String precio = getIntent().getStringExtra("precio");
-        String hora = getIntent().getStringExtra("hora");
-        String tourId = getIntent().getStringExtra("tourId");
         String titulo = getIntent().getStringExtra("titulo");
+        String fecha = getIntent().getStringExtra("fecha");
+        String hora = getIntent().getStringExtra("hora");
         String ubicacion = getIntent().getStringExtra("ubicacion");
         String opiniones = getIntent().getStringExtra("opiniones");
         int rating = getIntent().getIntExtra("rating", 5);
-        String img = getIntent().getStringExtra("img");
-        ArrayList<String> extrasDetalle = getIntent().getStringArrayListExtra("extrasDetalle");
-        int precioExtras = getIntent().getIntExtra("precioExtras", 0);
+        img = getIntent().getStringExtra("img");
+        extrasDetalle = getIntent().getStringArrayListExtra("extrasDetalle");
 
 
         // ------- SETEAR DATOS EN LA UI -------
         if (fecha != null) tvFechaPago.setText("Fecha: " + fecha);
         if (viajeros != null) tvViajerosPago.setText("Viajeros: " + viajeros);
-        if (precio != null) tvPrecioPago.setText("" + precio);
+        if (reservaIndividual.getPrice() != null) tvPrecioPago.setText("S/." + reservaIndividual.getPrice());
         if (hora != null) tvHoraPago.setText("Hora: " + hora);
 
         if (extrasDetalle != null && !extrasDetalle.isEmpty() && !extrasDetalle.contains("Sin extras")) {
@@ -181,18 +205,10 @@ public class PagoActivity extends BaseActivity {
         btnConfirmar.setOnClickListener(_view -> {
 
             dialogTarjeta.dismiss();
+            reservaIndividual.setMetodoPago("Tarjeta");
+            reservaIndividual.setCodigoOperacion("N/A");
 
-            guardarReservaEnFirestore(
-                    getIntent().getStringExtra("tourId"),
-                    getIntent().getStringExtra("titulo"),
-                    getIntent().getStringExtra("fecha"),
-                    getIntent().getStringExtra("hora"),
-                    getIntent().getStringExtra("viajeros"),
-                    getIntent().getStringExtra("precio"),
-                    getIntent().getStringExtra("img"),
-                    "Tarjeta",     // ⭐ nuevo parámetro
-                    "N/A"          // ⭐ nuevo parámetro
-            );
+            guardarReservaEnFirestore();
 
             mostrarDialogoReserva();
         });
@@ -266,118 +282,158 @@ public class PagoActivity extends BaseActivity {
         dialog.show();
     }
 
-    private void guardarReservaEnFirestore(String tourId, String titulo, String fecha,
-                                           String hora, String viajeros, String precio,
-                                           String imageUrl, String metodoPago, String codigoOperacion) {
+    public interface OnReservaCheckListener {
+        void onResult(boolean existe);
+        void onError(Exception e);
+    }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-        String idCliente = mAuth.getCurrentUser().getUid();
-
-        // 🔹 CREAR ID DE RESERVA MANUALMENTE
-        String reservaId = db.collection("reservas").document().getId();
-
-        Map<String, Object> reserva = new HashMap<>();
-        reserva.put("idReserva", reservaId); // ⭐ AGREGAR ESTO
-        reserva.put("idCliente", idCliente);
-        reserva.put("idTour", tourId);
-        reserva.put("titulo", titulo);
-        reserva.put("fecha", fecha);
-        reserva.put("hora", hora);
-        reserva.put("viajeros", viajeros);
-        reserva.put("precio", precio);
-        reserva.put("estado", "Reservado");
-        reserva.put("timestamp", System.currentTimeMillis());
-        reserva.put("imageUrl", imageUrl);
-        reserva.put("metodoPago", metodoPago);
-        reserva.put("codigoOperacion", codigoOperacion);
-
-        // 🔥 GUARDAR RESERVA CON ID ESPECÍFICO
+    private void verificarExistenciaReserva(OnReservaCheckListener listener){
         db.collection("reservas")
-                .document(reservaId)  // ⭐ USAR .document() en vez de .add()
-                .set(reserva)
-                .addOnSuccessListener(r -> {
-                    System.out.println("✔ RESERVA GUARDADA: " + reservaId);
-
-                    // 🔥 GUARDAR EXTRAS EN SUBCOLLECTION
-                    ArrayList<String> extrasDetalle = getIntent().getStringArrayListExtra("extrasDetalle");
-                    if (extrasDetalle != null && !extrasDetalle.isEmpty() && !extrasDetalle.contains("Sin extras")) {
-                        guardarExtrasEnSubcollection(reservaId, extrasDetalle);
-                    }
-
-                    // 🔥 COPIAR CHECKPOINTS DEL TOUR
-                    copiarCheckpoints(tourId, reservaId);
+                .whereEqualTo("date", reservaCliente.getDate())
+                .whereEqualTo("hour", reservaCliente.getHour())
+                .limit(1)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    boolean existe = !querySnapshot.isEmpty();
+                    listener.onResult(existe);
                 })
                 .addOnFailureListener(e -> {
-                    System.out.println("❌ ERROR FIRESTORE " + e.getMessage());
-                    Toast.makeText(this, "Error al guardar reserva", Toast.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Error al buscar reserva", e);
+                    listener.onError(e);
                 });
     }
 
-    private void guardarExtrasEnSubcollection(String reservaId, ArrayList<String> extrasDetalle) {
+    private void guardarReservaEnFirestore() {
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        for (String detalle : extrasDetalle) {
-            // Formato esperado: "2× Desayuno"
-            if (detalle.contains("×")) {
-                String[] partes = detalle.split("× ");
-                int cantidad = Integer.parseInt(partes[0]);
-                String titulo = partes[1];
-
-                // Guardar cada extra tantas veces como cantidad
-                for (int i = 0; i < cantidad; i++) {
-                    Map<String, Object> extraData = new HashMap<>();
-                    extraData.put("title", titulo);
-                    extraData.put("timestamp", System.currentTimeMillis());
-
+        verificarExistenciaReserva(new OnReservaCheckListener() {
+            @Override
+            public void onResult(boolean existe) {
+                //Si ya existe una Reserva para la misma fecha y hora
+                if(existe){
                     db.collection("reservas")
-                            .document(reservaId)
-                            .collection("addedServices")
-                            .add(extraData)
+                            .whereEqualTo("date", reservaCliente.getDate())
+                            .whereEqualTo("hour", reservaCliente.getHour())
+                            .limit(1).get()
                             .addOnSuccessListener(doc -> {
-                                System.out.println("✔ Extra guardado: " + titulo);
+                                for(DocumentSnapshot documentSnapshot: doc){
+                                    reservaId = documentSnapshot.getId();
+                                }
+                                db.collection("reservas")
+                                        .document(reservaId)
+                                        .update("totalClients", FieldValue.increment(1));
+                                db.collection("reservas")
+                                        .document(reservaId)
+                                        .update("idClientes", FieldValue.arrayUnion(reservaIndividual.getIdCliente()));
+
+
+                                guardarReservaIndividual();
+                                copiarCheckpoints();
+                            });
+                //Si no existe una Reserva para la fecha y hora
+                } else {
+                    // 🔹 CREAR ID DE RESERVA MANUALMENTE
+                    reservaId = db.collection("reservas").document().getId();
+                    List<String> idClientes = new ArrayList<>();
+                    idClientes.add(reservaIndividual.getIdCliente());
+
+                    Map<String, Object> reserva = new HashMap<>();
+                    reserva.put("idTour", reservaCliente.getIdTour());
+                    reserva.put("idGuia", reservaCliente.getIdGuia());
+                    reserva.put("title", reservaCliente.getTitle());
+                    reserva.put("date", reservaCliente.getDate());
+                    reserva.put("hour", reservaCliente.getHour());
+                    reserva.put("idClientes", idClientes);
+                    reserva.put("totalClients", 1);
+                    reserva.put("verifiedClients", 0);
+                    reserva.put("finishedClients", 0);
+                    reserva.put("status", "Reservado");
+                    reserva.put("timestamp", System.currentTimeMillis());
+                    reserva.put("imageUrl", img);
+
+                    // 🔥 GUARDAR RESERVA CON ID ESPECÍFICO
+                    db.collection("reservas")
+                            .document(reservaId)  // ⭐ USAR .document() en vez de .add()
+                            .set(reserva)
+                            .addOnSuccessListener(r -> {
+                                System.out.println("✔ RESERVA GUARDADA: " + reservaId);
+
+                                // 🔥 COPIAR CHECKPOINTS DEL TOUR
+                                guardarReservaIndividual();
+                                copiarCheckpoints();
                             })
                             .addOnFailureListener(e -> {
-                                System.out.println("❌ Error al guardar extra: " + e.getMessage());
+                                System.out.println("❌ ERROR FIRESTORE " + e.getMessage());
                             });
                 }
             }
-        }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("Firestore", "Error al validar Reserva");
+            }
+        });
+
+
     }
 
-    private void copiarCheckpoints(String tourId, String reservaId) {
+    private void guardarReservaIndividual(){
+        Map<String, Object> reservaExtra = new HashMap<>();
+        reservaExtra.put("idCliente", reservaIndividual.getIdCliente());
+        reservaExtra.put("price", reservaIndividual.getPrice());
+        reservaExtra.put("tokenStart", TokenUtil.generarToken());
+        reservaExtra.put("tokenEnd", TokenUtil.generarToken());
+        reservaExtra.put("travelers", reservaIndividual.getTravelers());
+        reservaExtra.put("codigoOperacion", reservaIndividual.getCodigoOperacion());
+        reservaExtra.put("metodoPago", reservaIndividual.getMetodoPago());
+        reservaExtra.put("verified", false);
+        reservaExtra.put("finished", false);
+        reservaExtra.put("addedServices", extrasDetalle);
+
+        db.collection("reservas")
+                .document(reservaId)
+                .collection("reservaIndividual")
+                .add(reservaExtra)
+                .addOnSuccessListener(doc -> {
+                    Log.e("Firestore", "Reserva Individual Guardada");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error al guardar reserva individual: " + e.getMessage());
+                });
+
+    }
+
+    private void copiarCheckpoints() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("tours")
-                .document(tourId)
+                .document(reservaCliente.getIdTour())
+                .collection("locations")
                 .get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        // Obtener la ruta del tour
-                        List<Map<String, Object>> ruta = (List<Map<String, Object>>) doc.get("ruta");
+                .addOnSuccessListener(querySnapshot -> {
 
-                        if (ruta != null && !ruta.isEmpty()) {
-                            for (Map<String, Object> ubicacion : ruta) {
-                                Map<String, Object> checkpointData = new HashMap<>();
-                                checkpointData.put("title", ubicacion.get("title"));
-                                checkpointData.put("order", ubicacion.get("order"));
-                                checkpointData.put("lat", ubicacion.get("lat"));
-                                checkpointData.put("lng", ubicacion.get("lng"));
-                                checkpointData.put("status", "Pendiente");
-
-                                db.collection("reservas")
-                                        .document(reservaId)
-                                        .collection("checkpoints")
-                                        .add(checkpointData)
-                                        .addOnSuccessListener(d -> {
-                                            System.out.println("✔ Checkpoint copiado: " + ubicacion.get("title"));
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            System.out.println("❌ Error al copiar checkpoint: " + e.getMessage());
-                                        });
-                            }
-                        }
+                    if (querySnapshot.isEmpty()) {
+                        Log.w("CHECKPOINTS", "El tour no tiene locations");
+                        return;
+                    }
+                    for(DocumentSnapshot doc : querySnapshot){
+                        Map<String, Object> checkpoint = new HashMap<>();
+                        checkpoint.put("title", doc.getString("title"));
+                        checkpoint.put("order", doc.getLong("order"));
+                        checkpoint.put("lat", doc.getDouble("lat"));
+                        checkpoint.put("lng", doc.getDouble("lng"));
+                        checkpoint.put("status", "Pendiente");
+                        db.collection("reservas")
+                                .document(reservaId)
+                                .collection("checkpoints")
+                                .add(checkpoint)
+                                .addOnSuccessListener(d -> {
+                                    System.out.println("✔ Checkpoint copiado: " + checkpoint.get("title"));
+                                })
+                                .addOnFailureListener(e -> {
+                                    System.out.println("❌ Error al copiar checkpoint: " + e.getMessage());
+                                });
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -427,29 +483,20 @@ public class PagoActivity extends BaseActivity {
         Button btnYaPague = dialogYape.findViewById(R.id.btnYaPague);
 
         // 🔹 Recuperar el monto
-        String precio = getIntent().getStringExtra("precio");
-        tvMonto.setText("Monto: " + precio);
+        tvMonto.setText("Monto: S/." + reservaIndividual.getPrice());
 
         // 🔹 Generar código automáticamente
         String codigoOperacion = generarCodigoOperacion();
         tvCodigo.setText("Cod. operación: " + codigoOperacion);
+        reservaIndividual.setCodigoOperacion(codigoOperacion);
+        reservaIndividual.setMetodoPago("Yape/Plin/GooglePay");
 
         btnYaPague.setOnClickListener(v -> {
 
             dialogYape.dismiss();
 
             // 🔥 Guardar la reserva indicando método Yape/Plin
-            guardarReservaEnFirestore(
-                    getIntent().getStringExtra("tourId"),
-                    getIntent().getStringExtra("titulo"),
-                    getIntent().getStringExtra("fecha"),
-                    getIntent().getStringExtra("hora"),
-                    getIntent().getStringExtra("viajeros"),
-                    getIntent().getStringExtra("precio"),
-                    getIntent().getStringExtra("img"),
-                    "Yape/Plin/GooglePay",
-                    codigoOperacion   // AUTO-GENERADO
-            );
+            guardarReservaEnFirestore();
 
             mostrarDialogoReserva();
         });

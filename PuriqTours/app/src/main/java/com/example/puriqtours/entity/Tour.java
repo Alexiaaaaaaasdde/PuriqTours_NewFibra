@@ -16,6 +16,7 @@ public class Tour implements Serializable {
     private String startTime;
     private String endTime;
     private String idEmpresa;
+    private String idGuia;
     private String imageUrl;
     private Integer rating;
 
@@ -26,6 +27,14 @@ public class Tour implements Serializable {
     private String idiomas;
     private List<ServicioExtra> serviciosExtras;
     private List<Ubicacion> ruta;
+
+    public String getIdGuia() {
+        return idGuia;
+    }
+
+    public void setIdGuia(String idGuia) {
+        this.idGuia = idGuia;
+    }
 
     // Clases internas
     public static class ServicioExtra implements Serializable {
@@ -79,7 +88,7 @@ public class Tour implements Serializable {
 
     public Tour(String idTour, String title, String desc, String location, String region,
                 Float price, String status, String startTime, String endTime,
-                String idEmpresa, String imageUrl, Integer rating) {
+                String idEmpresa, String idGuia, String imageUrl, Integer rating) {
         this.idTour = idTour;
         this.title = title;
         this.desc = desc;
@@ -90,6 +99,7 @@ public class Tour implements Serializable {
         this.startTime = startTime;
         this.endTime = endTime;
         this.idEmpresa = idEmpresa;
+        this.setIdGuia(idGuia);
         this.imageUrl = imageUrl;
         this.rating = rating;
     }

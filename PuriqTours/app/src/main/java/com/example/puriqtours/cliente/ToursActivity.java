@@ -106,6 +106,7 @@ public class ToursActivity extends BaseActivity {
             Intent intent = new Intent(ToursActivity.this, DetalleTourActivity.class);
 
             intent.putExtra("tourId", safeId);
+            intent.putExtra("idGuia", tour.getIdGuia());
             intent.putExtra("titulo", tour.getTitle() != null ? tour.getTitle() : "Sin título");
             intent.putExtra("precio", String.valueOf(tour.getPrice() != null ? tour.getPrice() : 0));
             intent.putExtra("desc", tour.getDesc() != null ? tour.getDesc() : "Sin descripción");
@@ -126,7 +127,9 @@ public class ToursActivity extends BaseActivity {
     // --------------------------------------------------------------------
 
     private void cargarToursDesdeFirebase() {
-        db.collection("tours").get()
+        db.collection("tours")
+                .whereEqualTo("status", "Disponible")
+                .get()
                 .addOnSuccessListener(query -> {
                     tourList.clear();
                     listaFiltrada.clear();

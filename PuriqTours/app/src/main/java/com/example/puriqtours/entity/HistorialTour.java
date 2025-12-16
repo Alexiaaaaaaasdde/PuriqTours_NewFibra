@@ -8,16 +8,21 @@ public class HistorialTour {
     private String fecha;
     private String hora;
     private String estado;
-    private String precio;
+    private Double precio;
     private String viajeros;
+    private String tokenInicio;
+    private String tokenFin;
     private int imagen;
     private float rating;
     private String imageUrl;
     private boolean valorada;
 
+    public HistorialTour(){
+    }
+
     public HistorialTour(String idTour, String titulo, String fecha, String hora,
-                         String estado, String precio, String viajeros, int imagen,
-                         float rating, String imageUrl) {
+                         String estado, Double precio, String viajeros, int imagen,
+                         String tokenInicio, String tokenFin, float rating, String imageUrl) {
         this.idTour = idTour;
         this.titulo = titulo;
         this.fecha = fecha;
@@ -28,6 +33,8 @@ public class HistorialTour {
         this.imagen = imagen;
         this.rating = rating;
         this.imageUrl = imageUrl;
+        this.tokenInicio = tokenInicio;
+        this.tokenFin = tokenFin;
         this.valorada = false;  // Por defecto no está valorada
     }
 
@@ -80,11 +87,11 @@ public class HistorialTour {
         this.estado = estado;
     }
 
-    public String getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(String precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
 
@@ -138,5 +145,21 @@ public class HistorialTour {
 
     public boolean isFinalizadoYNoValorado() {
         return "Finalizado".equalsIgnoreCase(estado) && !valorada;
+    }
+
+    public String getTokenInicio() {
+        return tokenInicio;
+    }
+
+    public void setTokenInicio(String tokenInicio) {
+        this.tokenInicio = tokenInicio;
+    }
+
+    public String getTokenFin() {
+        return tokenFin;
+    }
+
+    public void setTokenFin(String tokenFin) {
+        this.tokenFin = tokenFin;
     }
 }

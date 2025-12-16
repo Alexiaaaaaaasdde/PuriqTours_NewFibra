@@ -69,7 +69,7 @@ public class DetalleTourActivity extends BaseActivity {
 
     private Dialog dialogDisponibilidad;
     private String fechaSeleccionadaGlobal = "Martes, 15 de Marzo de 2025";
-    private String tourId;
+    private String tourId, idGuia;
 
     private String tituloTour;
     private float precioTour;
@@ -90,6 +90,7 @@ public class DetalleTourActivity extends BaseActivity {
         setupSharedToolbar();
 
         tourId = getIntent().getStringExtra("tourId");
+        idGuia = getIntent().getStringExtra("idGuia");
 
         // Referencias UI
         tvTitulo = findViewById(R.id.tvTitulo);
@@ -492,9 +493,10 @@ public class DetalleTourActivity extends BaseActivity {
             Intent i = new Intent(this, PagoActivity.class);
             i.putExtra("fecha", fechaSeleccionadaGlobal);
             i.putExtra("viajeros", tvViajerosSel.getText().toString());
-            i.putExtra("precio", "S/ " + String.format("%.2f", totalFinal));
+            i.putExtra("precio", totalFinal);
             i.putExtra("hora", horaSeleccionada[0]);
             i.putExtra("tourId", tourId);
+            i.putExtra("idGuia", idGuia);
             i.putExtra("titulo", tituloTour);
             i.putExtra("ubicacion", location);
             i.putExtra("img", getIntent().getStringExtra("img"));

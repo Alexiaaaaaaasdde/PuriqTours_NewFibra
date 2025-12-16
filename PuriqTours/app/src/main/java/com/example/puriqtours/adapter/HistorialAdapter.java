@@ -56,7 +56,7 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
         holder.tvTitulo.setText(tour.getTitulo());
         holder.tvEstado.setText("Estado: " + tour.getEstado());
         holder.tvDuracion.setText(tour.getFecha() + " • " + tour.getHora());
-        holder.tvPrecio.setText(tour.getPrecio());
+        holder.tvPrecio.setText(tour.getPrecio().toString());
         holder.ratingBar.setRating(tour.getRating());
 
         // ✅ Cargar imagen con Glide

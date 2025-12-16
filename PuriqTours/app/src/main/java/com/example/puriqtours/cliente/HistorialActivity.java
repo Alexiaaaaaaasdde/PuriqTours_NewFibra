@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -130,72 +132,64 @@ public class HistorialActivity extends BaseActivity {
         String idCliente = auth.getCurrentUser().getUid();
 
         db.collection("reservas")
+                        .whereArrayContains("idClientes", idCliente)
+                        .get()
+                        .addOnSuccessListener(querySnapshot -> {
+                            listaTours.clear();
+                            for(DocumentSnapshot doc : querySnapshot.getDocuments()) {
+
+                                HistorialTour historialTour = new HistorialTour();
+                                historialTour.setIdReserva(doc.getId());
+                                historialTour.setIdTour(doc.getString("idTour"));
+                                historialTour.setIdGuia(doc.getString("idGuia"));
+                                historialTour.setTitulo(doc.getString("title"));
+                                historialTour.setFecha(doc.getString("date"));
+                                historialTour.setHora(doc.getString("hour"));
+                                historialTour.setEstado(doc.getString("status"));
+                                historialTour.setImageUrl(doc.getString("imageUrl"));
+
+                                cargarReservaIndividual(historialTour, idCliente, historial -> {
+                                    listaTours.add(historial);
+                                    adapter.actualizarLista(listaTours);
+                                });
+                            }
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(this,
+                                        "Error al cargar historial: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show());
+    }
+
+    private void cargarReservaIndividual(HistorialTour historialTour, String idCliente, OnHistorialLoaded callback){
+        db.collection("reservas")
+                .document(historialTour.getIdReserva())
+                .collection("reservaIndividual")
                 .whereEqualTo("idCliente", idCliente)
+                .limit(1)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    listaTours.clear();
+                    if (!querySnapshot.isEmpty()) {
+                        DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
 
-                    for (var doc : querySnapshot.getDocuments()) {
+                        historialTour.setPrecio(doc.getDouble("price"));
+                        historialTour.setViajeros(doc.getString("travelers"));
+                        historialTour.setTokenInicio(doc.getString("tokenStart"));
+                        historialTour.setTokenFin(doc.getString("tokenEnd"));
 
-                        String idReserva = doc.getId();
-
-                        // 🔥 CAMPOS COMO ESTÁN EN FIRESTORE
-                        String idTour = doc.getString("idTour");
-                        String idGuia = doc.getString("idGuia");
-
-                        String titulo = doc.getString("titulo");
-                        String fecha = doc.getString("fecha");
-                        String hora = doc.getString("hora");
-                        String estado = doc.getString("estado");
-                        String precio = doc.getString("precio");      // "Total: S/. 610"
-                        String viajeros = doc.getString("viajeros");  // "5 adultos, 1 niños"
-                        String imageUrl = doc.getString("imageUrl");
-
-                        // 🔥 Manejo seguro en caso de nulos
-                        if (titulo == null) titulo = "Sin título";
-                        if (fecha == null) fecha = "Fecha no registrada";
-                        if (hora == null) hora = "--:--";
-                        if (estado == null) estado = "Sin estado";
-                        if (precio == null) precio = "S/ 0.00";
-                        if (viajeros == null) viajeros = "No especificado";
-                        if (imageUrl == null) imageUrl = "";
-
-                        // 🔥 Valoración
                         Boolean valorada = doc.getBoolean("valorada");
-                        boolean yaValorado = valorada != null && valorada;
-
-                        // Imagen default + rating por defecto
-                        int imagenDefault = R.drawable.kuelap;
-                        float rating = 4.5f;
-
-                        // Crear objeto
-                        HistorialTour ht = new HistorialTour(
-                                idTour,
-                                titulo,
-                                fecha,
-                                hora,
-                                estado,
-                                precio,
-                                viajeros,
-                                imagenDefault,
-                                rating,
-                                imageUrl
-                        );
-
-                        ht.setIdReserva(idReserva);
-                        ht.setIdGuia(idGuia);
-                        ht.setValorada(yaValorado);
-
-                        listaTours.add(ht);
+                        historialTour.setValorada(valorada != null && valorada);
                     }
-
-                    adapter.actualizarLista(listaTours);
+                    callback.onLoaded(historialTour);
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this,
-                                "Error al cargar historial: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error al cargar reservaIndividual", e);
+                    callback.onLoaded(historialTour); // opcional
+                });
     }
+
+    public interface OnHistorialLoaded {
+        void onLoaded(HistorialTour historialTour);
+    }
+
 
 }
