@@ -55,8 +55,6 @@ public class HistorialActivity extends BaseActivity {
         inicializarVistas();
         configurarBuscador();
         configurarChips();
-
-        cargarHistorialDesdeFirebase();
     }
 
     @Override
