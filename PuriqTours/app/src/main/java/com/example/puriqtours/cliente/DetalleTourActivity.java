@@ -57,6 +57,7 @@ public class DetalleTourActivity extends BaseActivity {
 
     private TextView tvTitulo, tvPrecio, tvFecha, tvViajeros, tvSeleccion, tvDesc;
     private ImageView imgTour, btnCalendario;
+    private TextView tvEmpresa;
 
     // Cantidades de viajeros
     private int adultos = 2;
@@ -89,10 +90,9 @@ public class DetalleTourActivity extends BaseActivity {
         setContentView(R.layout.activity_detalle_tour);
         setupSharedToolbar();
 
-        tourId = getIntent().getStringExtra("tourId");
-        idGuia = getIntent().getStringExtra("idGuia");
-
-        // Referencias UI
+        // ===============================
+        // 🔹 REFERENCIAS UI (SIEMPRE PRIMERO)
+        // ===============================
         tvTitulo = findViewById(R.id.tvTitulo);
         tvPrecio = findViewById(R.id.tvPreciokuelap);
         tvFecha = findViewById(R.id.tvFecha);
@@ -101,19 +101,31 @@ public class DetalleTourActivity extends BaseActivity {
         tvDesc = findViewById(R.id.tvDescripcionTour);
         imgTour = findViewById(R.id.imgTour);
         btnCalendario = findViewById(R.id.btnCalendario);
+        tvEmpresa = findViewById(R.id.tvEmpresa);
 
         ImageView imgEmpresaLogo = findViewById(R.id.imgEmpresaLogo);
         TextView tvEmpresaTelefono = findViewById(R.id.tvEmpresaTelefono);
         TextView tvEmpresaEmail = findViewById(R.id.tvEmpresaEmail);
 
-
         RatingBar ratingBar = findViewById(R.id.ratingBar1);
         Button btnDisponibilidad = findViewById(R.id.btnDisponibilidad);
 
-        // Recuperar datos del tour
+        // ===============================
+        // 🔹 DATOS DESDE INTENT
+        // ===============================
+        tourId = getIntent().getStringExtra("tourId");
+        idGuia = getIntent().getStringExtra("idGuia");
         tituloTour = getIntent().getStringExtra("titulo");
-        String precioStr = getIntent().getStringExtra("precio");
+        location = getIntent().getStringExtra("location");
 
+        String img = getIntent().getStringExtra("img");
+        String precioStr = getIntent().getStringExtra("precio");
+        String desc = getIntent().getStringExtra("desc");
+        int rating = getIntent().getIntExtra("rating", 5);
+
+        // ===============================
+        // 🔹 PRECIO
+        // ===============================
         try {
             precioTour = Float.parseFloat(precioStr);
         } catch (Exception e) {
@@ -123,68 +135,9 @@ public class DetalleTourActivity extends BaseActivity {
         precioAdulto = precioTour;
         precioNino = precioTour * 0.80f;
 
-        String desc = getIntent().getStringExtra("desc");
-
-        // 🔥 MOSTRAR EMPRESA DEL TOUR
-        String idEmpresa = getIntent().getStringExtra("idEmpresa");
-        TextView tvEmpresa = findViewById(R.id.tvEmpresa);
-
-        if (idEmpresa != null && !idEmpresa.isEmpty()) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("empresas")
-                    .document(idEmpresa)
-                    .get()
-                    .addOnSuccessListener(doc -> {
-                        if (doc.exists()) {
-                            String nombreEmpresa = doc.getString("name");
-                            tvEmpresa.setText("Ofrecido por: " + nombreEmpresa);
-                        } else {
-                            tvEmpresa.setText("Empresa no disponible");
-                        }
-                    })
-                    .addOnFailureListener(e -> tvEmpresa.setText("Empresa no disponible"));
-        } else {
-            tvEmpresa.setText("Empresa no asignada");
-        }
-
-        if (idEmpresa != null && !idEmpresa.isEmpty()) {
-
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("empresas")
-                    .document(idEmpresa)
-                    .get()
-                    .addOnSuccessListener(doc -> {
-                        if (doc.exists()) {
-
-                            String phone = doc.getString("phone");
-                            String email = doc.getString("email");
-                            String logoUrl = doc.getString("imageUrl");
-
-                            tvEmpresaTelefono.setText("Teléfono: " + phone);
-                            tvEmpresaEmail.setText("Email: " + email);
-
-                            if (logoUrl != null && !logoUrl.isEmpty()) {
-                                imgEmpresaLogo.setVisibility(View.VISIBLE);
-                                Glide.with(this)
-                                        .load(logoUrl)
-                                        .placeholder(R.drawable.kuelap)
-                                        .into(imgEmpresaLogo);
-                            }
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        tvEmpresaTelefono.setText("Teléfono: No disponible");
-                        tvEmpresaEmail.setText("Email: No disponible");
-
-                    });
-        }
-
-
-
-        String img = getIntent().getStringExtra("img");
-        location = getIntent().getStringExtra("location");
-        int rating = getIntent().getIntExtra("rating", 5);
-
+        // ===============================
+        // 🔹 MOSTRAR DATOS DEL TOUR
+        // ===============================
         tvTitulo.setText(tituloTour);
         tvPrecio.setText("Desde S/ " + String.format("%.2f", precioAdulto));
         tvDesc.setText(desc);
@@ -195,9 +148,22 @@ public class DetalleTourActivity extends BaseActivity {
                 .placeholder(R.drawable.kuelap)
                 .into(imgTour);
 
+        // ===============================
+        // 🔹 MOSTRAR EMPRESA (CORRECTO)
+        // ===============================
+        String idEmpresa = getIntent().getStringExtra("idEmpresa");
+
+        if (idEmpresa != null && !idEmpresa.isEmpty()) {
+            cargarEmpresaDesdeUsuario(idEmpresa);
+        } else {
+            tvEmpresa.setText("Empresa no asignada");
+        }
+
+        // ===============================
+        // 🔹 BOTONES Y LISTENERS
+        // ===============================
         findViewById(R.id.btnBack).setOnClickListener(v -> onBackPressed());
 
-        // 🔹 CARGAR HORARIOS DESDE FIRESTORE
         cargarHorariosDesdeFirestore();
 
         tvViajeros.setOnClickListener(v -> mostrarDialogoViajeros(tvViajeros));
@@ -206,7 +172,9 @@ public class DetalleTourActivity extends BaseActivity {
         btnCalendario.setOnClickListener(v -> mostrarDatePicker());
         tvFecha.setOnClickListener(v -> mostrarDatePicker());
 
-        // Bottom Navigation
+        // ===============================
+        // 🔹 BOTTOM NAVIGATION
+        // ===============================
         BottomNavigationView nav = findViewById(R.id.bottomNavigation);
         nav.setSelectedItemId(R.id.nav_tours);
 
@@ -225,14 +193,12 @@ public class DetalleTourActivity extends BaseActivity {
             return false;
         });
 
-
-
-
-
-
-        // 🔥 CARGAR VALORACIONES DESDE FIREBASE
+        // ===============================
+        // 🔹 VALORACIONES
+        // ===============================
         cargarValoracionesDesdeFirebase();
     }
+
 
     // 🔹 CARGAR HORARIOS DESDE FIRESTORE
     private void cargarHorariosDesdeFirestore() {
@@ -1028,6 +994,54 @@ public class DetalleTourActivity extends BaseActivity {
                     Toast.makeText(this, "Error al cargar extras", Toast.LENGTH_SHORT).show();
                 });
     }
+
+    private void cargarEmpresaDesdeUsuario(String idEmpresa) {
+
+        ImageView imgEmpresaLogo = findViewById(R.id.imgEmpresaLogo);
+        TextView tvEmpresa = findViewById(R.id.tvEmpresa);
+        TextView tvEmpresaTelefono = findViewById(R.id.tvEmpresaTelefono);
+        TextView tvEmpresaEmail = findViewById(R.id.tvEmpresaEmail);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users") // ✅ USERS, NO EMPRESAS
+                .document(idEmpresa)
+                .get()
+                .addOnSuccessListener(doc -> {
+
+                    if (!doc.exists()) {
+                        tvEmpresa.setText("Empresa no disponible");
+                        return;
+                    }
+
+                    String rol = doc.getString("rol");
+                    if (!"Admin".equals(rol)) {
+                        tvEmpresa.setText("Empresa no válida");
+                        return;
+                    }
+
+                    String nombre = doc.getString("name");
+                    String email = doc.getString("email");
+                    String phone = doc.getString("phone");
+                    String logoUrl = doc.getString("profile_image");
+
+                    tvEmpresa.setText("Ofrecido por: " + nombre);
+                    tvEmpresaTelefono.setText("Teléfono: " + phone);
+                    tvEmpresaEmail.setText("Email: " + email);
+
+                    if (logoUrl != null && !logoUrl.isEmpty()) {
+                        imgEmpresaLogo.setVisibility(View.VISIBLE);
+                        Glide.with(this)
+                                .load(logoUrl)
+                                .placeholder(R.drawable.kuelap)
+                                .into(imgEmpresaLogo);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    tvEmpresa.setText("Empresa no disponible");
+                });
+    }
+
 
 
 }
