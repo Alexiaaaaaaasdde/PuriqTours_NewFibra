@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -29,6 +30,7 @@
                 android:textColor="#2B746C" />
 
             <TextView
+                android:id="@+id/tvPrecioAdulto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="S/ 165.02"
@@ -85,11 +87,20 @@
                 android:textColor="#2B746C" />
 
             <TextView
+                android:id="@+id/tvPrecioNino"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="S/ 20.00"
+                android:text="S/ 132.02"
                 android:textSize="14sp"
                 android:textColor="#666" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(20% descuento)"
+                android:textSize="11sp"
+                android:textStyle="italic"
+                android:textColor="#999" />
         </LinearLayout>
 
         <ImageButton
@@ -98,8 +109,8 @@
             android:layout_height="40dp"
             android:background="@drawable/rounded_button_bg"
             android:src="@drawable/ic_remove"
-            android:tint="@android:color/white"
-            android:contentDescription="Quitar niño" />
+            android:contentDescription="Quitar niño"
+            app:tint="@android:color/white" />
 
         <TextView
             android:id="@+id/tvCantidadNinos"
@@ -115,8 +126,8 @@
             android:layout_height="40dp"
             android:background="@drawable/rounded_button_bg"
             android:src="@drawable/ic_add"
-            android:tint="@android:color/white"
-            android:contentDescription="Agregar niño" />
+            android:contentDescription="Agregar niño"
+            app:tint="@android:color/white" />
     </LinearLayout>
 
     <!-- Bebés -->
@@ -145,7 +156,8 @@
                 android:layout_height="wrap_content"
                 android:text="Gratis"
                 android:textSize="14sp"
-                android:textColor="#666" />
+                android:textColor="#4CAF50"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageButton
@@ -171,8 +183,8 @@
             android:layout_height="40dp"
             android:background="@drawable/rounded_button_bg"
             android:src="@drawable/ic_add"
-            android:tint="@android:color/white"
-            android:contentDescription="Agregar bebé" />
+            android:contentDescription="Agregar bebé"
+            app:tint="@android:color/white" />
     </LinearLayout>
 
     <!-- Botón aceptar -->

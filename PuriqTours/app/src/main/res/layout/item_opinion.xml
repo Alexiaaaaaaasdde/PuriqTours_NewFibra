@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:layout_weight="1"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Nombre del usuario -->
+        <TextView
+            android:id="@+id/tvNombreOpinion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Usuario"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="#000" />
+
+        <!-- Rating -->
+        <RatingBar
+            android:id="@+id/ratingBarOpinion"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:progressTint="@color/teal_700"
+            android:rating="5"
+            android:stepSize="0.5" />
+
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/tvFechaOpinion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024-12-07"
+            android:textSize="12sp"
+            android:textColor="#666"
+            android:layout_marginBottom="6dp" />
+
+        <!-- Comentario -->
+        <TextView
+            android:id="@+id/tvComentarioOpinion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#333"
+            android:textSize="14sp"
+            android:lineSpacingExtra="2dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="6dp"
+            android:ellipsize="none"
+            android:singleLine="false"
+            android:maxLines="99999" />
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

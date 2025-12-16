@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/box_bg"
+    android:layout_marginBottom="8dp">
+
+    <!-- 🔥 IMAGEN DEL SERVICIO -->
+    <ImageView
+        android:id="@+id/imgExtraServicio"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/kuelap"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/rounded_corners"/>
+
+    <!-- Título del extra -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvExtraTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Servicio Extra"
+            android:textColor="#2B746C"
+            android:textStyle="bold"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tvExtraPrecio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S/ 50.00"
+            android:textColor="#666666"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <!-- Botón menos -->
+    <ImageButton
+        android:id="@+id/btnMenos"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_delete"
+        android:layout_marginEnd="8dp"
+        app:tint="#F44336" />
+
+    <!-- Cantidad -->
+    <TextView
+        android:id="@+id/tvCantidad"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textColor="#2B746C"
+        android:textSize="16sp"/>
+
+    <!-- Botón más -->
+    <ImageButton
+        android:id="@+id/btnMas"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_input_add"
+        android:layout_marginStart="8dp"
+        app:tint="#4CAF50" />
+
+</LinearLayout>

@@ -92,7 +92,7 @@
         android:textStyle="bold"
         android:textColor="@android:color/white" />
 
-    <!-- Card del tourLegacy -->
+    <!-- Card del tour -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -110,7 +110,6 @@
             android:textSize="16sp"
             android:textColor="#2B746C" />
 
-
         <TextView
             android:id="@+id/tvPrecio"
             android:layout_width="wrap_content"
@@ -120,32 +119,23 @@
             android:textSize="19sp"
             android:layout_marginTop="4dp" />
 
+        <!-- 🔹 CONTENEDOR DINÁMICO DE HORARIOS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Horarios disponibles:"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="#2B746C"
+            android:layout_marginTop="12dp" />
 
-        <!-- Horarios -->
         <LinearLayout
+            android:id="@+id/layoutHorarios"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="8dp">
-
-            <Button
-                android:id="@+id/btnHora1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="9:00am"
-                android:backgroundTint="@color/teal_700"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/btnHora2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="11:00am"
-                android:backgroundTint="@color/teal_700"
-                android:textColor="@android:color/white" />
+            <!-- Los botones se crearán dinámicamente aquí en filas de 3 -->
         </LinearLayout>
     </LinearLayout>
 
@@ -159,6 +149,5 @@
         android:text="Reservar ahora"
         android:textStyle="bold"
         android:textColor="@android:color/white" />
-
 
 </LinearLayout>

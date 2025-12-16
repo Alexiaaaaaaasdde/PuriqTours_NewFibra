@@ -1,37 +1,28 @@
 package com.example.puriqtours.entity;
 
-import java.io.Serializable;
-
-public class HistorialTour implements Serializable {
-
-    private String idReserva;     // ID del documento en 'reservas'
+public class HistorialTour {
+    private String idReserva;
     private String idTour;
+    private String idGuia;
     private String titulo;
     private String fecha;
     private String hora;
     private String estado;
-    private String precio;
+    private Double precio;
     private String viajeros;
-
-    private int imagenResId;      // recurso local por defecto
+    private String tokenInicio;
+    private String tokenFin;
+    private int imagen;
     private float rating;
-    private String imageUrl;      // URL de la imagen real
+    private String imageUrl;
+    private boolean valorada;
 
-    // 🔹 Constructor vacío obligatorio para Firebase
-    public HistorialTour() {}
+    public HistorialTour(){
+    }
 
-    // 🔹 Constructor usado en HistorialActivity
-    public HistorialTour(String idTour,
-                         String titulo,
-                         String fecha,
-                         String hora,
-                         String estado,
-                         String precio,
-                         String viajeros,
-                         int imagenResId,
-                         float rating,
-                         String imageUrl) {
-
+    public HistorialTour(String idTour, String titulo, String fecha, String hora,
+                         String estado, Double precio, String viajeros, int imagen,
+                         String tokenInicio, String tokenFin, float rating, String imageUrl) {
         this.idTour = idTour;
         this.titulo = titulo;
         this.fecha = fecha;
@@ -39,25 +30,136 @@ public class HistorialTour implements Serializable {
         this.estado = estado;
         this.precio = precio;
         this.viajeros = viajeros;
-        this.imagenResId = imagenResId;
+        this.imagen = imagen;
         this.rating = rating;
+        this.imageUrl = imageUrl;
+        this.tokenInicio = tokenInicio;
+        this.tokenFin = tokenFin;
+        this.valorada = false;  // Por defecto no está valorada
+    }
+
+    // Getters y Setters existentes
+    public String getIdReserva() {
+        return idReserva;
+    }
+
+    public void setIdReserva(String idReserva) {
+        this.idReserva = idReserva;
+    }
+
+    public String getIdTour() {
+        return idTour;
+    }
+
+    public void setIdTour(String idTour) {
+        this.idTour = idTour;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(Double precio) {
+        this.precio = precio;
+    }
+
+    public String getViajeros() {
+        return viajeros;
+    }
+
+    public void setViajeros(String viajeros) {
+        this.viajeros = viajeros;
+    }
+
+    public int getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(int imagen) {
+        this.imagen = imagen;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
-    // 🔹 Setters y getters
-    public String getIdReserva() { return idReserva; }
-    public void setIdReserva(String idReserva) { this.idReserva = idReserva; }
+    public String getIdGuia() {
+        return idGuia;
+    }
 
-    public String getIdTour() { return idTour; }
-    public String getTitulo() { return titulo; }
-    public String getFecha() { return fecha; }
-    public String getHora() { return hora; }
-    public String getEstado() { return estado; }
-    public String getPrecio() { return precio; }
-    public String getViajeros() { return viajeros; }
-    public int getImagenResId() { return imagenResId; }
-    public float getRating() { return rating; }
-    public String getImageUrl() { return imageUrl; }
+    public void setIdGuia(String idGuia) {
+        this.idGuia = idGuia;
+    }
 
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public boolean isValorada() {
+        return valorada;
+    }
+
+    public void setValorada(boolean valorada) {
+        this.valorada = valorada;
+    }
+
+    public boolean isFinalizadoYNoValorado() {
+        return "Finalizado".equalsIgnoreCase(estado) && !valorada;
+    }
+
+    public String getTokenInicio() {
+        return tokenInicio;
+    }
+
+    public void setTokenInicio(String tokenInicio) {
+        this.tokenInicio = tokenInicio;
+    }
+
+    public String getTokenFin() {
+        return tokenFin;
+    }
+
+    public void setTokenFin(String tokenFin) {
+        this.tokenFin = tokenFin;
+    }
 }

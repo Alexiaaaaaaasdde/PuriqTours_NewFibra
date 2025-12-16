@@ -3,119 +3,196 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:fillViewport="true"
     android:background="#F8F9FA">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <!-- Título -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ciudadela de Kuélap"
-            android:textSize="22sp"
+            android:text="Valoración del Tour"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/teal_700"
-            android:layout_marginBottom="16dp"/>
+            android:gravity="center"
+            android:layout_marginBottom="24dp"/>
 
-        <!-- Sección valoración del tourLegacy -->
-        <TextView
-            android:text="Valoración del tourLegacy:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="¿El tourLegacy cumplió con tus expectativas?"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <RatingBar
-            android:id="@+id/ratingExpectativasTour"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1"
-            android:rating="0"
-            android:isIndicator="false"
-            android:clickable="true"
-            android:focusable="true" />
-
-        <TextView
-            android:text="¿El tourLegacy cumplió ofreciendo todos sus servicios?"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
-
-        <RatingBar
-            android:id="@+id/ratingServiciosTour"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1"
-            android:rating="0"
-            android:isIndicator="false"
-            android:clickable="true"
-            android:focusable="true"
-            />
-
-        <!-- Caja de comentarios -->
-        <EditText
-            android:id="@+id/etComentarios"
+        <!-- Card para Expectativas del Tour -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:hint="Cuéntanos tu experiencia..."
-            android:gravity="top|start"
-            android:background="@android:drawable/edit_text"
-            android:padding="8dp"
-            android:maxLength="400"
-            android:layout_marginTop="12dp"/>
-
-        <!-- Sección valoración del guía -->
-        <TextView
-            android:text="Valoración del guía:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:text="¿El guía cumplió con tus expectativas?"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <RatingBar
-            android:id="@+id/ratingGuia"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1"
-            android:rating="0"
-            android:isIndicator="false"
-            android:clickable="true"
-            android:focusable="true"
-            />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
 
-        <!-- Botón enviar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Valoración del tour:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2B746C"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¿El tour cumplió con tus expectativas?"
+                    android:textSize="14sp"
+                    android:textColor="#666"
+                    android:layout_marginBottom="8dp"/>
+
+                <RatingBar
+                    android:id="@+id/ratingExpectativasTour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1"
+                    android:rating="0"
+                    android:progressTint="@color/teal_700"
+                    android:layout_gravity="center"
+                    android:isIndicator="false"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Card para Servicios del Tour -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¿El tour cumplió ofreciendo todos sus servicios?"
+                    android:textSize="14sp"
+                    android:textColor="#666"
+                    android:layout_marginBottom="8dp"/>
+
+                <RatingBar
+                    android:id="@+id/ratingServiciosTour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1"
+                    android:rating="0"
+                    android:progressTint="@color/teal_700"
+                    android:layout_gravity="center"
+                    android:isIndicator="false"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Card para Guía -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Valoración del guía:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2B746C"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¿El guía cumplió con tus expectativas?"
+                    android:textSize="14sp"
+                    android:textColor="#666"
+                    android:layout_marginBottom="8dp"/>
+
+                <RatingBar
+                    android:id="@+id/ratingGuia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="1"
+                    android:rating="0"
+                    android:progressTint="@color/teal_700"
+                    android:layout_gravity="center"
+                    android:isIndicator="false"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Campo de Comentario -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cuéntanos tu experiencia:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#2B746C"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etComentarios"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:hint="Escribe tu comentario aquí (opcional)"
+                    android:gravity="top|start"
+                    android:padding="12dp"
+                    android:background="@android:drawable/edit_text"
+                    android:inputType="textMultiLine"
+                    android:maxLength="400"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Botón Enviar -->
         <Button
             android:id="@+id/btnEnviarValoracion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enviar Valoración"
-            android:backgroundTint="@color/teal_700"
             android:textColor="@android:color/white"
-            android:layout_marginTop="20dp"/>
+            android:backgroundTint="@color/teal_700"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
     </LinearLayout>
 </ScrollView>

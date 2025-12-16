@@ -69,7 +69,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                     .setTitle("Éxito")
                     .setMessage("Tu contraseña ha sido restablecida correctamente 🎉")
                     .setPositiveButton("Ir al login", (dialog, which) -> {
-                        Intent i = new Intent(this, LoginLegacyActivity.class);
+                        Intent i = new Intent(this, LoginActivity.class);
                         startActivity(i);
                         finish();
                     })

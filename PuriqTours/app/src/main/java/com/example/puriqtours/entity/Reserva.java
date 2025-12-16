@@ -20,7 +20,7 @@ public class Reserva implements Serializable {
     private String travelers;   // Formato: "x adultos, y niños"
     private String metodoPago;  // Método de pago utilizado
     private String codigoOperacion; // Código de operación del pago
-    
+
     // Campos adicionales del tour (para filtrado)
     private String tourRegion;  // Región/departamento del tour
     private String tourLocation; // Ubicación específica del tour

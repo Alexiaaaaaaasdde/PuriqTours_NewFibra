@@ -25,7 +25,6 @@
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:title="Puriq Tours"
             app:titleCentered="true"
-            app:navigationIcon="@drawable/ic_menu"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -119,3 +118,4 @@
         app:itemTextColor="@color/nav_item_colors"
         app:itemIconSize="66dp"/>
 </androidx.drawerlayout.widget.DrawerLayout>
+

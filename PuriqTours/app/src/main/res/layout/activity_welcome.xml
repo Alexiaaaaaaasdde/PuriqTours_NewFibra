@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Fondo de pantalla completa -->
+        <ImageView
+            android:id="@+id/bgImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/background_puriq"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Overlay oscuro suave sobre toda la imagen -->
+        <View
+            android:id="@+id/overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_overlay_puriq"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Título de bienvenida -->
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Bienvenido a"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivLogo" />
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="140dp"
+            android:layout_height="149dp"
+            android:layout_marginTop="60dp"
+            android:contentDescription="Logo Puriq Tours"
+            android:src="@drawable/ic_logo_puriq"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"
+            android:text="PURIQ TOURS"
+            android:textColor="@color/white"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvWelcome" />
+
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Descubre los destinos más hermosos del Perú"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif"
+            android:textAlignment="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            app:layout_constraintTop_toBottomOf="@id/tvAppName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Card contenedor de botones -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="48dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="28dp"
+                android:background="@color/white">
+
+                <!-- Título de la sección -->
+                <TextView
+                    android:id="@+id/tvHasAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¿Ya tienes una cuenta?"
+                    android:textSize="18sp"
+                    android:textColor="@color/teal_dark"
+                    android:fontFamily="sans-serif-medium"
+                    android:textAlignment="center"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Botón Iniciar Sesión -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:text="Iniciar Sesión"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif-medium"
+                    app:backgroundTint="@color/darkgreen"
+                    app:cornerRadius="16dp"
+                    android:layout_marginBottom="20dp"
+                    app:elevation="4dp"
+                    android:textAllCaps="false"
+                    app:iconGravity="textStart"
+                    app:iconPadding="12dp"
+                    app:iconSize="22dp" />
+
+                <!-- Separador con texto -->
+                <LinearLayout
+                    android:id="@+id/dividerLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="20dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/lightgray" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="  ¿Primera vez?  "
+                        android:textSize="14sp"
+                        android:textColor="@color/gray"
+                        android:fontFamily="sans-serif" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/lightgray" />
+                </LinearLayout>
+
+                <!-- Texto registrate como -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Regístrate como:"
+                    android:textSize="15sp"
+                    android:textColor="@color/gray_dark"
+                    android:fontFamily="sans-serif-medium"
+                    android:textAlignment="center"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Botón Registrarse como Usuario -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegisterUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:text="Usuario Turista"
+                    android:textSize="16sp"
+                    android:textColor="@color/teal_dark"
+                    android:fontFamily="sans-serif-medium"
+                    app:backgroundTint="@color/white"
+                    app:strokeColor="@color/teal_dark"
+                    app:strokeWidth="2dp"
+                    app:cornerRadius="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:textAllCaps="false"
+                    app:icon="@drawable/ic_person"
+                    app:iconGravity="textStart"
+                    app:iconPadding="12dp"
+                    app:iconTint="@color/teal_dark"
+                    app:iconSize="22dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                <!-- Botón Registrarse como Guía -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRegisterGuide"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:text="Guía de Turismo"
+                    android:textSize="16sp"
+                    android:textColor="@color/teal_dark"
+                    android:fontFamily="sans-serif-medium"
+                    app:backgroundTint="@color/white"
+                    app:strokeColor="@color/teal_dark"
+                    app:strokeWidth="2dp"
+                    app:cornerRadius="16dp"
+                    android:textAllCaps="false"
+                    app:icon="@drawable/ic_guide_superadmin"
+                    app:iconGravity="textStart"
+                    app:iconPadding="12dp"
+                    app:iconTint="@color/teal_dark"
+                    app:iconSize="22dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Texto de términos y condiciones -->
+        <TextView
+            android:id="@+id/tvTerms"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Al continuar, aceptas los Términos y Condiciones"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif"
+            android:textAlignment="center"
+            android:alpha="0.9"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintTop_toBottomOf="@id/cardButtons"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import com.example.puriqtours.SplashActivity;
 import com.example.puriqtours.entity.Usuario;
 import com.example.puriqtours.helper.UserSessionManager;
-import com.example.puriqtours.login.LoginActivity;
-import com.example.puriqtours.login.LoginLegacyActivity;
 import com.example.puriqtours.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

@@ -4,16 +4,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.ImageButton;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.puriqtours.BaseActivity;
 import com.example.puriqtours.R;
+import com.example.puriqtours.entity.HistorialTour;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
@@ -21,15 +28,17 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-public class ReservaDetalleActivity extends AppCompatActivity {
+public class ReservaDetalleActivity extends BaseActivity {
 
-    // ✅ CORREGIDO: Usar los IDs que SÍ existen en el XML
     private TextView tvTitulo, tvEstado, tvFecha, tvPersonas, tvCosto, tvPago;
-    private ImageView imgTour, imgQR;
-    private ImageButton btnBack;
+    private TextView tvQrFinBloqueado;
+    private ImageView imgTour, imgQrInicio, imgQrFin;
+    private HistorialTour historialTour = new HistorialTour();
+    private LinearLayout layoutQrFin;
 
     private FirebaseFirestore db;
-    private String reservaId;
+    private FirebaseAuth auth;
+    private String reservaId, qrString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,7 @@ public class ReservaDetalleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reserva_detalle);
 
         db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
         reservaId = getIntent().getStringExtra("RESERVA_ID");
 
         if (reservaId == null) {
@@ -45,9 +55,18 @@ public class ReservaDetalleActivity extends AppCompatActivity {
             return;
         }
 
-        // ---------- NAVEGACIÓN INFERIOR ----------
+        // ⭐ Usa el toolbar de BaseActivity con foto y menú
+        setupSharedToolbar();
+
+        inicializarVistas();
+        configurarNavegacion();
+        cargarDatos();
+    }
+
+    private void configurarNavegacion() {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
-        bottomNavigation.setSelectedItemId(R.id.nav_tours);
+
+        bottomNavigation.setSelectedItemId(R.id.nav_historial);
 
         bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -55,21 +74,23 @@ public class ReservaDetalleActivity extends AppCompatActivity {
             if (id == R.id.nav_perfil) {
                 startActivity(new Intent(this, ProfileActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
+
             } else if (id == R.id.nav_tours) {
                 startActivity(new Intent(this, ToursActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
+
             } else if (id == R.id.nav_historial) {
                 startActivity(new Intent(this, HistorialActivity.class));
                 overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             return false;
         });
-
-        inicializarVistas();
-        cargarDatos();
     }
 
     private void inicializarVistas() {
@@ -77,13 +98,14 @@ public class ReservaDetalleActivity extends AppCompatActivity {
         tvEstado = findViewById(R.id.tvEstado);
         tvFecha = findViewById(R.id.tvFecha);
         tvPersonas = findViewById(R.id.tvPersonas);
-        tvCosto = findViewById(R.id.tvCosto);      // ✅ Cambiado de tvPrecio
+        tvCosto = findViewById(R.id.tvCosto);
         tvPago = findViewById(R.id.tvPago);
         imgTour = findViewById(R.id.imgTour);
-        imgQR = findViewById(R.id.imgQR);
-        btnBack = findViewById(R.id.btnBack);
 
-        btnBack.setOnClickListener(v -> finish());
+        imgQrInicio = findViewById(R.id.imgQrInicio);
+        imgQrFin = findViewById(R.id.imgQrFin);
+        tvQrFinBloqueado = findViewById(R.id.tvQrFinBloqueado);
+        layoutQrFin = findViewById(R.id.layoutQrFin);
     }
 
     private void cargarDatos() {
@@ -104,38 +126,100 @@ public class ReservaDetalleActivity extends AppCompatActivity {
             return;
         }
 
-        String titulo = doc.getString("titulo");
-        String fecha = doc.getString("fecha");
-        String estado = doc.getString("estado");
-        String precio = doc.getString("precio");
-        String viajeros = doc.getString("viajeros");
-        String pago = doc.getString("medioPago");
-        String img = doc.getString("imageUrl");
+        historialTour.setTitulo(doc.getString("title"));
+        historialTour.setFecha(doc.getString("date"));
+        historialTour.setEstado(doc.getString("status"));
+        historialTour.setImageUrl(doc.getString("imageUrl"));
 
-        tvTitulo.setText(titulo);
-        tvEstado.setText("Estado: " + estado);
-        tvFecha.setText("Fecha: " + fecha);
-        tvPersonas.setText("Personas: " + viajeros);
-        tvCosto.setText("" + precio);  // ✅ Ahora usa tvCosto
-        tvPago.setText("Medio de pago: " + (pago != null ? pago : "No registrado"));
+        db.collection("reservas")
+                .document(reservaId)
+                .collection("reservaIndividual")
+                .whereEqualTo("idCliente", auth.getCurrentUser().getUid())
+                .limit(1)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if(!querySnapshot.isEmpty()){
+                        DocumentSnapshot doc2 = querySnapshot.getDocuments().get(0);
+                        historialTour.setViajeros(doc2.getString("travelers"));
+                        String pago = doc2.getString("metodoPago");
+                        historialTour.setPrecio(doc2.getDouble("price"));
+                        historialTour.setTokenInicio(doc2.getString("tokenStart"));
+                        historialTour.setTokenFin(doc2.getString("tokenEnd"));
 
-        Glide.with(this)
-                .load(img)
-                .placeholder(R.drawable.kuelap)
-                .into(imgTour);
 
-        generarQR(reservaId, titulo, fecha, viajeros);
+
+                        if (historialTour.getEstado() == null) historialTour.setEstado("Desconocido");
+                        //Si el tour ya finalizó → NO mostrar QR de inicio
+                        if (historialTour.getEstado().equalsIgnoreCase("Finalizado")) {
+                            imgQrInicio.setImageAlpha(50); // semitransparente o desactivado
+                        }
+                        if (historialTour.getEstado().equalsIgnoreCase("En proceso")) {
+                            imgQrInicio.setImageAlpha(50); // semitransparente o desactivado
+                        }
+
+                        //Si el tour está Finalizado → QR FINAL debe mostrarse SIEMPRE
+                        if (historialTour.getEstado().equalsIgnoreCase("Finalizado")) {
+                            tvQrFinBloqueado.setVisibility(View.GONE);
+                            layoutQrFin.setVisibility(View.VISIBLE);
+
+                            // si hay token de fin → mostrar QR final
+                            if (historialTour.getTokenFin() != null && !historialTour.getTokenFin().isEmpty()) {
+                                qrString = generarJSON("tokenFin");
+                                generarYMostrarQR(qrString, imgQrFin);
+                            }
+                        }
+
+
+                        tvTitulo.setText(historialTour.getTitulo());
+                        tvEstado.setText("Estado: " + historialTour.getEstado());
+                        tvFecha.setText("Fecha: " + historialTour.getFecha());
+                        tvPersonas.setText("Personas: " + historialTour.getViajeros());
+                        tvCosto.setText(historialTour.getPrecio().toString());
+                        tvPago.setText("Medio de pago: " + (pago != null ? pago : "No registrado"));
+
+                        Glide.with(this)
+                                .load(historialTour.getImageUrl())
+                                .placeholder(R.drawable.kuelap)
+                                .into(imgTour);
+
+                        // QR Inicio
+                        if (historialTour.getTokenInicio() != null && !historialTour.getTokenInicio().isEmpty()) {
+                            qrString = generarJSON("tokenInicio");
+                            generarYMostrarQR(qrString, imgQrInicio);
+                        }
+
+                        // QR Fin
+                        if (historialTour.getEstado().equalsIgnoreCase("En proceso")) {
+                            tvQrFinBloqueado.setVisibility(View.GONE);
+                            layoutQrFin.setVisibility(View.VISIBLE);
+
+                            if (historialTour.getTokenFin() != null && !historialTour.getTokenFin().isEmpty()) {
+                                qrString = generarJSON("tokenFin");
+                                generarYMostrarQR(qrString, imgQrFin);
+                            }
+
+                        } else if (historialTour.getEstado().equalsIgnoreCase("Finalizado")) {
+                            tvQrFinBloqueado.setVisibility(View.GONE);
+                            layoutQrFin.setVisibility(View.VISIBLE);
+
+                            if (historialTour.getTokenFin() != null && !historialTour.getTokenFin().isEmpty()) {
+                                qrString = generarJSON("tokenFin");
+                                generarYMostrarQR(qrString, imgQrFin);
+                            }
+
+                        } else {
+                            tvQrFinBloqueado.setVisibility(View.VISIBLE);
+                            layoutQrFin.setVisibility(View.GONE);
+                        }
+                    }
+                });
+
     }
 
-    private void generarQR(String id, String titulo, String fecha, String viajeros) {
+    private void generarYMostrarQR(String contenido, ImageView imageView) {
         try {
-            String data = "RESERVA:" + id + "\n" +
-                    "TOUR:" + titulo + "\n" +
-                    "FECHA:" + fecha + "\n" +
-                    "VIAJEROS:" + viajeros;
-
-            BitMatrix matrix = new QRCodeWriter()
-                    .encode(data, BarcodeFormat.QR_CODE, 500, 500);
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix matrix = writer.encode(contenido, BarcodeFormat.QR_CODE, 500, 500);
 
             Bitmap bmp = Bitmap.createBitmap(500, 500, Bitmap.Config.RGB_565);
 
@@ -145,10 +229,35 @@ public class ReservaDetalleActivity extends AppCompatActivity {
                 }
             }
 
-            imgQR.setImageBitmap(bmp);
+            imageView.setImageBitmap(bmp);
 
-        } catch (WriterException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error al generar código QR", Toast.LENGTH_SHORT).show();
         }
+    }
+    
+    private String generarJSON(String token){
+        JSONObject json = new JSONObject();
+        String jsonString = "";
+        if(token.equals("tokenInicio")){
+            try {
+                json.put("idCliente", auth.getCurrentUser().getUid());
+                json.put("tokenStart", historialTour.getTokenInicio());
+                json.put("idReserva", reservaId);
+                jsonString = json.toString();
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        } else if (token.equals("tokenFin")) {
+            try {
+                json.put("idCliente", auth.getCurrentUser().getUid());
+                json.put("tokenEnd", historialTour.getTokenFin());
+                json.put("idReserva", reservaId);
+                jsonString = json.toString();
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+        return jsonString;
     }
 }
