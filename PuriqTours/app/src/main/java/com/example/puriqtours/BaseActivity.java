@@ -138,7 +138,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void cerrarSesion() {
         auth.signOut();
         sessionManager.clearSession();
-        startActivity(new Intent(this, LoginActivity.class));
+        startActivity(new Intent(this, SplashActivity.class));
         finish();
     }
 

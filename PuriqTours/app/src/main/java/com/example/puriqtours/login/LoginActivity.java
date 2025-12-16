@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
 
 import com.example.puriqtours.R;
+import com.example.puriqtours.SplashActivity;
 import com.example.puriqtours.cliente.ProfileActivity;
 import com.example.puriqtours.helper.UserSessionManager;
 import com.example.puriqtours.entity.Usuario;
@@ -295,7 +296,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void irAProfile() {
-        Intent intent = new Intent(this, ProfileActivity.class);
+        Intent intent = new Intent(this, SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
