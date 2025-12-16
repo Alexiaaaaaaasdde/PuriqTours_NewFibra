@@ -81,32 +81,45 @@ public class ValoracionActivity extends AppCompatActivity {
                 .document(reservaId)
                 .get()
                 .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        String status = doc.getString("estado");
-                        Boolean yaValorado = doc.getBoolean("valorada");
-
-                        if (!"Finalizado".equalsIgnoreCase(status)) {
-                            Toast.makeText(this,
-                                    "Solo puedes valorar tours finalizados",
-                                    Toast.LENGTH_LONG).show();
-                            finish();
-                        } else if (yaValorado != null && yaValorado) {
-                            Toast.makeText(this,
-                                    "Ya has valorado este tour",
-                                    Toast.LENGTH_LONG).show();
-                            finish();
-                        }
-                    } else {
+                    if (!doc.exists()) {
                         Toast.makeText(this, "Reserva no encontrada", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
+
+                    // ✅ CAMPO CORRECTO
+                    String status = doc.getString("status");
+                    Boolean yaValorado = doc.getBoolean("valorada");
+
+                    if (status == null || !status.equalsIgnoreCase("Finalizado")) {
+                        Toast.makeText(
+                                this,
+                                "Solo puedes valorar tours finalizados",
+                                Toast.LENGTH_LONG
+                        ).show();
+                        finish();
+                        return;
+                    }
+
+                    if (yaValorado != null && yaValorado) {
+                        Toast.makeText(
+                                this,
+                                "Ya has valorado este tour",
+                                Toast.LENGTH_LONG
+                        ).show();
                         finish();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al validar reserva: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            this,
+                            "Error al validar reserva: " + e.getMessage(),
+                            Toast.LENGTH_SHORT
+                    ).show();
                     finish();
                 });
     }
+
 
     /**
      * Envía la valoración a Firestore
