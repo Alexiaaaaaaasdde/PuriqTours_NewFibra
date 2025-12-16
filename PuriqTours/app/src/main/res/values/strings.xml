@@ -52,9 +52,6 @@
     <!-- Google Maps API Key -->
     <string name="google_maps_key">AIzaSyBqg-o8eDsbrz09nCNj1nHezO4TSu8PgwA</string>
 
-    <!-- Google Maps -->
-    <string name="google_maps_key">AIzaSyDCaHMU3V-OwsshvhxHtLmJj3lnLICesnQ</string>
-
     <!-- 🧩 NUEVOS STRINGS para item_solicitud_guia.xml -->
     <string name="avatar">Avatar del guía</string>
     <string name="nombre_guia">Nombre del guía</string>
