@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.puriqtours.cliente.HistorialActivity;
 import com.example.puriqtours.cliente.ProfileActivity;
 import com.example.puriqtours.cliente.ToursActivity;
+import com.example.puriqtours.helper.UserSessionManager;
 import com.example.puriqtours.login.LoginActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -31,6 +32,7 @@ import java.lang.reflect.Method;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected DrawerLayout drawerLayout;
+    protected UserSessionManager sessionManager;
     protected NavigationView navigationView;
     protected MaterialToolbar toolbar;
     protected ShapeableImageView profileIconToolbar;
@@ -46,6 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        sessionManager = new UserSessionManager(this);
 
         if (auth.getCurrentUser() != null) {
             uid = auth.getCurrentUser().getUid();
@@ -134,6 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void cerrarSesion() {
         auth.signOut();
+        sessionManager.clearSession();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
