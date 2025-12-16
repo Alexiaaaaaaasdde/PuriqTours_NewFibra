@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.login.LoginActivity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -38,6 +39,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -414,7 +416,9 @@ public class MainSuperAdminActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_superadmin_home);
-
+        // 🔹 Toolbar
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
         // 🔹 Firestore
         db = FirebaseFirestore.getInstance();
 
@@ -428,10 +432,10 @@ public class MainSuperAdminActivity extends AppCompatActivity {
         }
 
         // 🔹 Toolbar
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         if (toolbar != null) {
             toolbar.setBackgroundColor(Color.parseColor("#009688"));
         }
+
 
         // 🔹 Cards (NO CAMBIADAS)
         findViewById(R.id.cardRankings).setOnClickListener(v ->
@@ -492,6 +496,23 @@ public class MainSuperAdminActivity extends AppCompatActivity {
         tvDisabledGuidesCount = findViewById(R.id.tvDisabledGuidesCount);
 
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull android.view.MenuItem item) {
+
+        if (item.getItemId() == R.id.action_logout) {
+
+            FirebaseAuth.getInstance().signOut();
+
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
