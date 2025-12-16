@@ -268,13 +268,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".superadmin.ReportesActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
-        <activity android:name=".superadmin.UsuariosActivity" />
-        <activity android:name=".superadmin.LogsActivity" />
         <activity android:name=".superadmin.TopToursActivity" />
         <activity android:name=".superadmin.IdiomasActivity" />
         <activity android:name=".superadmin.ActividadSistemaActivity"/>
