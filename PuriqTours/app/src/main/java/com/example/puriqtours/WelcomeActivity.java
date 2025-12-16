@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.guia.RegisterGuideActivity;
+import com.example.puriqtours.helper.WelcomePrefs;
 import com.example.puriqtours.login.LoginActivity;
 import com.example.puriqtours.login.RegisterActivity;
 import com.google.android.material.button.MaterialButton;
@@ -22,6 +23,9 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
+        WelcomePrefs.markSeen(this);
+
 
         // Inicializar vistas
         initViews();
@@ -94,5 +98,4 @@ public class WelcomeActivity extends AppCompatActivity {
             }
         });
     }
-
 }
