@@ -105,7 +105,6 @@ public class DetalleTourActivity extends BaseActivity {
         ImageView imgEmpresaLogo = findViewById(R.id.imgEmpresaLogo);
         TextView tvEmpresaTelefono = findViewById(R.id.tvEmpresaTelefono);
         TextView tvEmpresaEmail = findViewById(R.id.tvEmpresaEmail);
-        TextView tvEmpresaRuc = findViewById(R.id.tvEmpresaRuc);
 
 
         RatingBar ratingBar = findViewById(R.id.ratingBar1);
@@ -159,12 +158,10 @@ public class DetalleTourActivity extends BaseActivity {
 
                             String phone = doc.getString("phone");
                             String email = doc.getString("email");
-                            String ruc = doc.getString("ruc");
                             String logoUrl = doc.getString("imageUrl");
 
                             tvEmpresaTelefono.setText("Teléfono: " + phone);
                             tvEmpresaEmail.setText("Email: " + email);
-                            tvEmpresaRuc.setText("RUC: " + ruc);
 
                             if (logoUrl != null && !logoUrl.isEmpty()) {
                                 imgEmpresaLogo.setVisibility(View.VISIBLE);
@@ -178,7 +175,7 @@ public class DetalleTourActivity extends BaseActivity {
                     .addOnFailureListener(e -> {
                         tvEmpresaTelefono.setText("Teléfono: No disponible");
                         tvEmpresaEmail.setText("Email: No disponible");
-                        tvEmpresaRuc.setText("RUC: No disponible");
+
                     });
         }
 

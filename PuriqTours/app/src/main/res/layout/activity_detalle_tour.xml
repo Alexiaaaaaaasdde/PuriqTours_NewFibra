@@ -327,28 +327,8 @@
                             android:layout_marginStart="6dp"/>
                     </LinearLayout>
 
-                    <!-- RUC -->
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical">
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_company"
-                            app:tint="@color/teal_700" />
 
-                        <TextView
-                            android:id="@+id/tvEmpresaRuc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="RUC: ---"
-                            android:textColor="#2B746C"
-                            android:textSize="15sp"
-                            android:layout_marginStart="6dp"/>
-                    </LinearLayout>
 
                 </LinearLayout>
 

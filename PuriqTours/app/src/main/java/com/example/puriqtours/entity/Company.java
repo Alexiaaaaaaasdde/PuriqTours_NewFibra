@@ -4,7 +4,6 @@ public class Company {
 
     private String id;
     private String name;
-    private String ruc;
     private String email;
     private String phone;
     private String address;
@@ -17,7 +16,6 @@ public class Company {
     public Company(String name, String ruc, String email, String phone,
                    String address, String imageUrl, double rating, String status) {
         this.name = name;
-        this.ruc = ruc;
         this.email = email;
         this.phone = phone;
         this.address = address;
@@ -32,9 +30,6 @@ public class Company {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    public String getRuc() { return ruc; }
-    public void setRuc(String ruc) { this.ruc = ruc; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
