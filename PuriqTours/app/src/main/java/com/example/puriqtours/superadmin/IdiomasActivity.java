@@ -6,18 +6,24 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.puriqtours.R;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -30,6 +36,7 @@ public class IdiomasActivity extends AppCompatActivity {
 
     private PieChart pieChart;
     private BarChart barChartRegiones;
+
     private FirebaseFirestore db;
 
 
@@ -186,17 +193,14 @@ public class IdiomasActivity extends AppCompatActivity {
 
                                             if (servicio == null) continue;
 
-                                            // 🧹 LIMPIEZA
-                                            String limpio = servicio.trim();
+                                            String limpio = servicio.trim().replaceAll("\\s+", " ");
 
                                             if (limpio.isEmpty()) {
                                                 Log.w("SERVICIO_DEBUG", "Servicio vacío detectado");
                                                 continue;
                                             }
 
-                                            // 🔠 Normalizar nombre
-                                            limpio = limpio.substring(0,1).toUpperCase()
-                                                    + limpio.substring(1).toLowerCase();
+
 
                                             Log.d("SERVICIO_OK",
                                                     "Servicio usado = [" + limpio + "]");
@@ -229,43 +233,102 @@ public class IdiomasActivity extends AppCompatActivity {
 
     private void mostrarGraficoServicios(HashMap<String, Integer> conteo) {
 
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        ArrayList<String> labels = new ArrayList<>();
+        // 🔹 1. Ordenar servicios por cantidad
+        ArrayList<Map.Entry<String, Integer>> lista =
+                new ArrayList<>(conteo.entrySet());
 
+        lista.sort((a, b) -> b.getValue() - a.getValue());
+
+        // 🔹 2. Data
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> labelsCortos = new ArrayList<>();
+        ArrayList<String> labelsCompletos = new ArrayList<>();
+
+        int otros = 0;
         int index = 0;
-        for (Map.Entry<String, Integer> item : conteo.entrySet()) {
-            entries.add(new BarEntry(index, item.getValue()));
-            labels.add(item.getKey());
-            index++;
+
+        for (int i = 0; i < lista.size(); i++) {
+            Map.Entry<String, Integer> item = lista.get(i);
+
+            if (i < 5) {
+                entries.add(new BarEntry(index, item.getValue()));
+                labelsCortos.add(acortarLabel(item.getKey()));
+                labelsCompletos.add(item.getKey());
+                index++;
+            } else {
+                otros += item.getValue();
+            }
         }
 
-        BarDataSet dataSet =
-                new BarDataSet(entries, "Servicios extras más elegidos");
+        if (otros > 0) {
+            entries.add(new BarEntry(index, otros));
+            labelsCortos.add("Otros");
+            labelsCompletos.add("Otros");
+        }
 
+        // 🔹 3. Dataset
+        BarDataSet dataSet = new BarDataSet(entries, "Servicios extras más elegidos");
         dataSet.setColor(Color.parseColor("#42A5F5"));
         dataSet.setValueTextSize(12f);
+        dataSet.setValueTextColor(Color.BLACK);
 
         BarData data = new BarData(dataSet);
-        data.setBarWidth(0.5f);
+        data.setBarWidth(0.6f);
+
         barChartRegiones.setData(data);
 
+        // 🔹 4. X AXIS → ETIQUETAS
         XAxis xAxis = barChartRegiones.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labelsCortos));
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
+        xAxis.setTextSize(12f);
+        xAxis.setLabelRotationAngle(-30f);
         xAxis.setAvoidFirstLastClipping(true);
-        xAxis.setLabelRotationAngle(-15f);
 
+        // 🔹 5. Y AXIS → VALORES
+        barChartRegiones.getAxisLeft().setGranularity(1f);
+        barChartRegiones.getAxisLeft().setDrawGridLines(true);
+        barChartRegiones.getAxisLeft().setTextSize(12f);
         barChartRegiones.getAxisRight().setEnabled(false);
+
+        // 🔹 Estética
         barChartRegiones.getDescription().setEnabled(false);
+        barChartRegiones.getLegend().setEnabled(false);
 
-        // 🔥 ESTO ES LO QUE FALTABA
-        barChartRegiones.setExtraOffsets(10f, 10f, 10f, 30f);
+        // 🔹 6. MarkerView (nombre completo)
+        MarkerView marker = new MarkerView(this, R.layout.marker_servicio) {
 
-        barChartRegiones.animateY(800);
+            TextView tvServicio = findViewById(R.id.tvServicio);
+            TextView tvCantidad = findViewById(R.id.tvCantidad);
+
+            @Override
+            public void refreshContent(Entry e, Highlight highlight) {
+                int idx = (int) e.getX();
+                tvServicio.setText(labelsCompletos.get(idx));
+                tvCantidad.setText("Veces: " + (int) e.getY());
+                super.refreshContent(e, highlight);
+            }
+        };
+
+        marker.setChartView(barChartRegiones);
+        barChartRegiones.setMarker(marker);
+// 🔥 NUEVOS AJUSTES DE ESPACIO
+        barChartRegiones.setFitBars(true);
+        barChartRegiones.setExtraBottomOffset(56f);
+
+        barChartRegiones.animateY(900);
         barChartRegiones.invalidate();
+    }
+
+
+
+    private String acortarLabel(String texto) {
+        if (texto == null) return "";
+        if (texto.length() <= 18) return texto;
+        return texto.substring(0, 18) + "…";
     }
 
 

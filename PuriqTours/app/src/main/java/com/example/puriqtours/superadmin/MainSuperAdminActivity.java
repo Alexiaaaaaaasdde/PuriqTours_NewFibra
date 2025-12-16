@@ -102,9 +102,11 @@ public class MainSuperAdminActivity extends AppCompatActivity {
 
                         // 🧭 GUÍAS HABILITADOS
                         if ("Guia".equalsIgnoreCase(rol)
-                                && "Activo".equalsIgnoreCase(status)) {
+                                && "Activo".equalsIgnoreCase(status)
+                                && "Habilitado".equalsIgnoreCase(doc.getString("guide_status"))) {
                             enabledGuides++;
                         }
+
 
                         // 🏢 EMPRESAS REGISTRADAS (Admins activos)
                         if ("Admin".equalsIgnoreCase(rol)
