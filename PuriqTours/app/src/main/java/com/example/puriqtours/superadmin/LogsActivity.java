@@ -134,11 +134,12 @@ public class LogsActivity extends AppCompatActivity {
         // ==============================
         // 🔽 Ordenar por fecha
         // ==============================
-        LinearLayout ordenarLayout = findViewById(R.id.ordenarLayout);
-        ordenarLayout.setOnClickListener(v -> {
+        LinearLayout btnOrdenarLogs = findViewById(R.id.btnOrdenarLogs);
+        btnOrdenarLogs.setOnClickListener(v -> {
             ordenarPorFecha();
-            Toast.makeText(this, "🕓 Logs ordenados por fecha", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "🕓 Orden cambiado", Toast.LENGTH_SHORT).show();
         });
+
     }
 
     // =====================================================
