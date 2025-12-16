@@ -18,9 +18,19 @@ import com.example.puriqtours.entity.Tour;
 import com.example.puriqtours.helper.FirestoreHelper;
 import com.squareup.picasso.Picasso;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+
 import java.util.List;
 
-public class TourDetailActivity extends AppCompatActivity {
+public class TourDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private TextView tvHoraInicio, tvDuracion, tvCosto, tvIdiomas, tvRegion, tvLocation;
     private LinearLayout layoutServiciosExtrasContainer;
@@ -32,6 +42,9 @@ public class TourDetailActivity extends AppCompatActivity {
     private String tourName;
     private FirestoreHelper firestoreHelper;
     private Tour currentTour;
+    
+    private GoogleMap mMap;
+    private List<Tour.Ubicacion> ubicacionesCargadas; // Lista temporal para ubicaciones
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +86,13 @@ public class TourDetailActivity extends AppCompatActivity {
         
         // Inicializar vistas
         initViews();
+        
+        // Inicializar mapa
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapFragmentDetail);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
         
         // Mostrar los datos que ya tenemos cargados
         displayTourData(currentTour);
@@ -128,7 +148,6 @@ public class TourDetailActivity extends AppCompatActivity {
         android.util.Log.d("TourDetail", "Ubicación: " + tour.getLocation());
         android.util.Log.d("TourDetail", "Idiomas: " + tour.getIdiomas());
         android.util.Log.d("TourDetail", "Servicios extras: " + (tour.getServiciosExtras() != null ? tour.getServiciosExtras().size() : "null"));
-        android.util.Log.d("TourDetail", "Ruta: " + (tour.getRuta() != null ? tour.getRuta().size() : "null"));
         
         // Datos básicos del tour desde Firestore
         tvHoraInicio.setText(tour.getStartTime() != null && !tour.getStartTime().isEmpty() ? tour.getStartTime() : "No especificado");
@@ -151,12 +170,8 @@ public class TourDetailActivity extends AppCompatActivity {
             android.util.Log.d("TourDetail", "No hay servicios extras");
         }
         
-        // Cargar ubicaciones
-        if (tour.getRuta() != null && !tour.getRuta().isEmpty()) {
-            loadUbicaciones(tour.getRuta());
-        } else {
-            android.util.Log.d("TourDetail", "No hay ruta definida");
-        }
+        // Cargar ubicaciones desde la subcolección
+        loadUbicacionesFromFirestore(tour.getIdTour());
     }
     
     private void loadServiciosExtras(List<Tour.ServicioExtra> servicios) {
@@ -257,6 +272,22 @@ public class TourDetailActivity extends AppCompatActivity {
         
         // Agregar tarjeta al contenedor
         layoutServiciosExtrasContainer.addView(servicioLayout);
+    }
+    
+    private void loadUbicacionesFromFirestore(String tourId) {
+        // Cargar ubicaciones desde la subcolección locations
+        firestoreHelper.loadLocationsByTourId(tourId, ubicaciones -> {
+            if (ubicaciones != null && !ubicaciones.isEmpty()) {
+                ubicacionesCargadas = ubicaciones;
+                loadUbicaciones(ubicaciones);
+                // Actualizar mapa si ya está listo
+                if (mMap != null) {
+                    displayRouteOnMap(ubicaciones);
+                }
+            } else {
+                android.util.Log.d("TourDetail", "No hay ubicaciones en la subcolección");
+            }
+        });
     }
     
     private void loadUbicaciones(List<Tour.Ubicacion> ubicaciones) {
@@ -422,6 +453,82 @@ public class TourDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        
+        // Configurar el mapa
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        
+        // Cargar y mostrar la ruta si existe
+        if (ubicacionesCargadas != null && !ubicacionesCargadas.isEmpty()) {
+            displayRouteOnMap(ubicacionesCargadas);
+        } else {
+            // Centrar en Perú por defecto
+            LatLng peru = new LatLng(-9.19, -75.0152);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(peru, 5));
+        }
+    }
+    
+    private void displayRouteOnMap(List<Tour.Ubicacion> ubicaciones) {
+        if (mMap == null || ubicaciones == null || ubicaciones.isEmpty()) {
+            return;
+        }
+        
+        mMap.clear();
+        
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(8)
+                .color(0xFF009688); // Teal color
+        
+        // Agregar marcadores y puntos a la polilínea
+        for (int i = 0; i < ubicaciones.size(); i++) {
+            Tour.Ubicacion ubicacion = ubicaciones.get(i);
+            
+            if (ubicacion.getLat() != null && ubicacion.getLng() != null) {
+                LatLng position = new LatLng(ubicacion.getLat(), ubicacion.getLng());
+                
+                // Configurar el marcador
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(position)
+                        .title(ubicacion.getTitle() != null ? ubicacion.getTitle() : "Ubicación " + (i + 1));
+                
+                // Marcador especial para inicio y fin
+                if (i == 0) {
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    markerOptions.title("🚩 Inicio: " + markerOptions.getTitle());
+                } else if (i == ubicaciones.size() - 1) {
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    markerOptions.title("🏁 Fin: " + markerOptions.getTitle());
+                }
+                
+                mMap.addMarker(markerOptions);
+                polylineOptions.add(position);
+                boundsBuilder.include(position);
+            }
+        }
+        
+        // Dibujar la polilínea conectando todos los puntos
+        if (ubicaciones.size() > 1) {
+            mMap.addPolyline(polylineOptions);
+        }
+        
+        // Ajustar la cámara para mostrar todos los puntos
+        try {
+            LatLngBounds bounds = boundsBuilder.build();
+            int padding = 100; // Padding en píxeles
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        } catch (IllegalStateException e) {
+            // Si solo hay un punto, hacer zoom normal
+            if (!ubicaciones.isEmpty() && ubicaciones.get(0).getLat() != null && ubicaciones.get(0).getLng() != null) {
+                LatLng firstPoint = new LatLng(ubicaciones.get(0).getLat(), ubicaciones.get(0).getLng());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstPoint, 12));
+            }
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
@@ -434,6 +541,9 @@ public class TourDetailActivity extends AppCompatActivity {
                     if (tour != null) {
                         currentTour = tour;
                         displayTourData(tour);
+                        
+                        // Actualizar el mapa con las nuevas ubicaciones
+                        loadUbicacionesFromFirestore(tourId);
                     }
                 });
                 

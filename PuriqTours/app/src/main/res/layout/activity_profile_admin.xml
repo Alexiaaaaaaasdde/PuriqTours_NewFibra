@@ -297,39 +297,24 @@
                     app:tint="#009688"/>
             </LinearLayout>
 
-            <!-- Mapa simulado -->
+            <!-- Mapa real de Google Maps -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardMapContainer"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                android:layout_marginHorizontal="8dp">
+                android:layout_marginHorizontal="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
 
-                <LinearLayout
+                <fragment
+                    android:id="@+id/mapFragmentProfile"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="#E8F5E8"
-                    android:gravity="center">
-
-                    <!-- Simulación del mapa -->
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/ic_location"
-                        app:tint="#009688"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mapa de Ubicación"
-                        android:textSize="16sp"
-                        android:textColor="#009688"
-                        android:textStyle="bold"/>
-
-                </LinearLayout>
+                    android:layout_height="match_parent" />
 
             </androidx.cardview.widget.CardView>
 

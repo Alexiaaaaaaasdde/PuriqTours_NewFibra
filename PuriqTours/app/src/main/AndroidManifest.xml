@@ -146,6 +146,9 @@
         <activity
             android:name=".admin.ChatAdminActivity"
             android:exported="false" />
+        <activity
+            android:name=".admin.NotificationsActivity"
+            android:exported="false" />
 
         <!-- 🔹 Nueva pantalla unificada de detalles de reserva -->
         <activity

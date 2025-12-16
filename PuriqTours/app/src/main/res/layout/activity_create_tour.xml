@@ -259,48 +259,68 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ruta"
+                android:text="Ruta del Tour"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/teal_700"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Mapa en tiempo real -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <fragment
+                    android:id="@+id/mapFragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Instrucciones -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="💡 Agrega ubicaciones buscándolas o tocando directamente en el mapa"
+                android:textSize="13sp"
+                android:textColor="#666"
+                android:padding="12dp"
+                android:background="@drawable/rounded_edittext"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Mapa placeholder -->
-            <FrameLayout
+            <!-- Sección de ubicaciones dinámicas -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/rounded_corners"
-                android:layout_marginBottom="16dp">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/map_placeholder"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_corners" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Mapa de ruta"
-                    android:textColor="@color/white"
+                    android:layout_weight="1"
+                    android:text="Ubicaciones de la ruta:"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_gravity="center"
-                    android:background="#80000000"
-                    android:padding="8dp"
-                    android:layout_margin="8dp" />
+                    android:textColor="@color/black" />
 
-            </FrameLayout>
+                <Button
+                    android:id="@+id/btnAgregarUbicacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="+ Agregar"
+                    android:textSize="14sp"
+                    android:background="@drawable/rounded_button_small"
+                    android:backgroundTint="@color/teal_700"
+                    android:textColor="@color/white"
+                    android:paddingHorizontal="16dp" />
 
-            <!-- Sección de ubicaciones dinámicas -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Selecciona las ubicaciones:"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:layout_marginBottom="8dp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layoutUbicaciones"

@@ -186,8 +186,8 @@ public class FirestoreHelper {
                 tour.setIdTour(tourId);
                 Log.d(TAG, "Tour creado con ID: " + tourId);
                 
-                // Guardar subcollections: locations y extraServices
-                saveLocationsSubcollection(tourId, tour.getRuta());
+                // Guardar solo subcollection de extraServices
+                // locations se guarda manualmente desde CreateTourActivity
                 saveExtraServicesSubcollection(tourId, tour.getServiciosExtras());
                 
                 listener.onTourCreated(true, tourId);
@@ -201,7 +201,7 @@ public class FirestoreHelper {
     /**
      * Guardar subcollection de locations (ruta) para un tour
      */
-    private void saveLocationsSubcollection(String tourId, List<Tour.Ubicacion> ubicaciones) {
+    public void saveLocationsSubcollection(String tourId, List<Tour.Ubicacion> ubicaciones) {
         if (ubicaciones == null || ubicaciones.isEmpty()) {
             return;
         }
@@ -220,6 +220,43 @@ public class FirestoreHelper {
                 .addOnSuccessListener(docRef -> Log.d(TAG, "Location guardada"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error al guardar location", e));
         }
+    }
+    
+    /**
+     * Cargar ubicaciones de un tour específico
+     */
+    public void loadLocationsByTourId(String tourId, OnLocationsLoadedListener listener) {
+        db.collection(COLLECTION_TOURS)
+            .document(tourId)
+            .collection("locations")
+            .orderBy("order")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                List<Tour.Ubicacion> ubicaciones = new ArrayList<>();
+                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                    Tour.Ubicacion ubicacion = new Tour.Ubicacion();
+                    ubicacion.setTitle(doc.getString("title"));
+                    Object orderObj = doc.get("order");
+                    if (orderObj instanceof Long) {
+                        ubicacion.setOrder(((Long) orderObj).intValue());
+                    }
+                    Object latObj = doc.get("lat");
+                    if (latObj instanceof Double) {
+                        ubicacion.setLat((Double) latObj);
+                    }
+                    Object lngObj = doc.get("lng");
+                    if (lngObj instanceof Double) {
+                        ubicacion.setLng((Double) lngObj);
+                    }
+                    ubicaciones.add(ubicacion);
+                }
+                Log.d(TAG, "Ubicaciones cargadas: " + ubicaciones.size());
+                listener.onLocationsLoaded(ubicaciones);
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "Error al cargar ubicaciones", e);
+                listener.onLocationsLoaded(new ArrayList<>());
+            });
     }
     
     /**
@@ -858,5 +895,9 @@ public class FirestoreHelper {
     
     public interface OnSolicitudCreatedListener {
         void onSolicitudCreated(boolean success, String solicitudId);
+    }
+    
+    public interface OnLocationsLoadedListener {
+        void onLocationsLoaded(List<Tour.Ubicacion> ubicaciones);
     }
 }

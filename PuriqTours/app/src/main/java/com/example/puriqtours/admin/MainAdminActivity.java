@@ -75,13 +75,8 @@ public class MainAdminActivity extends AppCompatActivity {
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                // Simular TODAS las notificaciones para demostración
-                if (notificationHelper != null) {
-                    notificationHelper.simulateAllNotifications();
-                    Toast.makeText(this, "🔔 Probando todas las notificaciones del sistema...", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(this, NotificationsActivity.class);
+                startActivity(intent);
             });
         }
 
@@ -163,7 +158,17 @@ public class MainAdminActivity extends AppCompatActivity {
     }
     
     private void loadLatestTour() {
-        firestoreHelper.loadTours(tours -> {
+        // Obtener ID de la empresa actual
+        String currentUid = FirebaseAuth.getInstance().getUid();
+        if (currentUid == null || currentUid.isEmpty()) {
+            Log.e(TAG, "No se pudo obtener el UID del usuario actual");
+            tourTitle.setText("No hay tours");
+            tourDescription.setText("Crea tu primer tour");
+            return;
+        }
+        
+        // Cargar tours de la empresa actual
+        firestoreHelper.loadToursByEmpresa(currentUid, tours -> {
             if (tours != null && !tours.isEmpty()) {
                 // Obtener el último tour creado (el más reciente)
                 com.example.puriqtours.entity.Tour latestTour = tours.get(tours.size() - 1);
@@ -196,12 +201,16 @@ public class MainAdminActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
                 
-                Log.d(TAG, "Tour más reciente cargado: " + tourAdmin.getName());
+                Log.d(TAG, "Tour cargado exitosamente: " + tourAdmin.getName());
             } else {
-                Log.d(TAG, "No hay tours disponibles");
+                Log.d(TAG, "No hay tours disponibles para esta empresa");
                 tourTitle.setText("No hay tours");
                 tourDescription.setText("Crea tu primer tour");
-                cardLatestTour.setOnClickListener(null);
+                cardLatestTour.setOnClickListener(v -> {
+                    // Ir a crear tour
+                    Intent intent = new Intent(MainAdminActivity.this, CreateTourActivity.class);
+                    startActivity(intent);
+                });
             }
         });
     }

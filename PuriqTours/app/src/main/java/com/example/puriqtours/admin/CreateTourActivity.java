@@ -4,11 +4,17 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -17,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Tour;
@@ -25,6 +32,21 @@ import com.example.puriqtours.helper.StorageManager;
 import com.example.puriqtours.helper.FirestoreHelper;
 import com.example.puriqtours.helper.TourConverter;
 import com.example.puriqtours.entity.TourAdmin;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.Handler;
+import android.os.Looper;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.textfield.TextInputEditText;
+import java.io.IOException;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,22 +54,34 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class CreateTourActivity extends AppCompatActivity {
+public class CreateTourActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "CreateTourActivity";
+    
     // Campos del formulario
     private EditText etTituloTour, etHoraInicio, etHoraFin, etCosto, etIdiomas, etRegion, etLocation;
     private TextView tvCantidadServicios, tvImagenTourSeleccionada;
     private LinearLayout layoutServiciosExtra, layoutUbicaciones;
-    private Button btnCrearTour, btnSeleccionarImagenTour;
-    private Uri tourImageUri; // URI de la imagen del tour
+    private Button btnCrearTour, btnSeleccionarImagenTour, btnAgregarUbicacion;
+    private Uri tourImageUri;
+    
+    // Google Maps
+    private GoogleMap mMap;
+    private Geocoder geocoder;
+    private List<RouteLocation> routeLocations;
+    private boolean isSelectingOnMap = false;
+    private View currentLocationView;
+    private Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
     
     // Lista para manejar servicios extra dinámicos
     private List<ExtraService> serviciosExtra;
-    private int contadorUbicaciones = 1;
+    private int contadorUbicaciones = 0;
     private int contadorServicios = 1;
     
     // Calendario para fecha
@@ -72,11 +106,15 @@ public class CreateTourActivity extends AppCompatActivity {
 
         // Inicializar variables
         serviciosExtra = new ArrayList<>();
+        routeLocations = new ArrayList<>();
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         storageHelper = new StorageHelper(this);
         firestoreHelper = new FirestoreHelper();
         storageManager = new StorageManager();
+        
+        // Inicializar Geocoder
+        geocoder = new Geocoder(this, new Locale("es", "PE"));
         
         // Configurar image picker launcher
         setupImagePickerLauncher();
@@ -90,48 +128,117 @@ public class CreateTourActivity extends AppCompatActivity {
         // Configurar listeners
         setupListeners();
         
-        // Agregar primera ubicación por defecto
-        addUbicacionInput();
-    }
-    
-    private void setupImagePickerLauncher() {
-        imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        selectedImageUri = result.getData().getData();
-                        if (selectedImageUri != null && currentImageTextView != null) {
-                            currentImageTextView.setText("Imagen seleccionada ✓");
-                            currentImageTextView.setTag(selectedImageUri); // Guardar URI en el tag
-                            currentImageTextView.setTextColor(getResources().getColor(R.color.teal_700));
-                            
-                            // Si es la imagen del tour, guardarla en tourImageUri
-                            if (currentImageTextView.getId() == R.id.tvImagenTourSeleccionada) {
-                                tourImageUri = selectedImageUri;
-                            }
-                        }
-                    }
-                }
-        );
-    }
-    
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        imagePickerLauncher.launch(intent);
-    }
-
-    private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setTitle("Crear nuevo tour");
+        // Configurar mapa
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapFragment);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
         }
     }
-
+    
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+        
+        // Configurar mapa centrado en Perú
+        LatLng peru = new LatLng(-9.19, -75.0152);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(peru, 5));
+        
+        // Configurar click en el mapa
+        mMap.setOnMapClickListener(latLng -> {
+            if (isSelectingOnMap && currentLocationView != null) {
+                onMapLocationSelected(latLng);
+            }
+        });
+        
+        Log.d(TAG, "Mapa listo");
+    }
+    
+    private void onMapLocationSelected(LatLng latLng) {
+        // Encontrar el índice de la ubicación actual
+        int locationIndex = layoutUbicaciones.indexOfChild(currentLocationView);
+        if (locationIndex >= 0) {
+            // Actualizar la ubicación en la lista
+            RouteLocation location;
+            if (locationIndex < routeLocations.size()) {
+                location = routeLocations.get(locationIndex);
+            } else {
+                location = new RouteLocation();
+                routeLocations.add(location);
+            }
+            
+            location.setLatLng(latLng);
+            location.setOrder(locationIndex + 1);
+            
+            // Actualizar UI del item
+            TextView tvUbicacionSel = currentLocationView.findViewById(R.id.tvUbicacionSeleccionada);
+            TextView tvCoordenadas = currentLocationView.findViewById(R.id.tvCoordenadas);
+            
+            tvUbicacionSel.setText("📌 Lat: " + String.format("%.6f", latLng.latitude) + 
+                                 ", Lng: " + String.format("%.6f", latLng.longitude));
+            tvUbicacionSel.setVisibility(View.VISIBLE);
+            tvCoordenadas.setText("Lat: " + latLng.latitude + ", Lng: " + latLng.longitude);
+            
+            // Actualizar mapa
+            updateMapMarkers();
+            
+            // Desactivar modo selección
+            isSelectingOnMap = false;
+            currentLocationView = null;
+            
+            Toast.makeText(this, "Ubicación seleccionada en el mapa", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    private void updateMapMarkers() {
+        if (mMap == null) return;
+        
+        // Limpiar mapa
+        mMap.clear();
+        
+        // Agregar marcadores para cada ubicación válida
+        List<LatLng> validLocations = new ArrayList<>();
+        
+        for (int i = 0; i < routeLocations.size(); i++) {
+            RouteLocation location = routeLocations.get(i);
+            if (location.getLatLng() != null) {
+                // Agregar marcador
+                MarkerOptions markerOptions = new MarkerOptions()
+                    .position(location.getLatLng())
+                    .title(location.getTitle() != null ? location.getTitle() : "Ubicación " + (i + 1));
+                
+                Marker marker = mMap.addMarker(markerOptions);
+                location.setMarker(marker);
+                validLocations.add(location.getLatLng());
+            }
+        }
+        
+        // Dibujar líneas conectando las ubicaciones en orden
+        if (validLocations.size() > 1) {
+            PolylineOptions polylineOptions = new PolylineOptions()
+                .addAll(validLocations)
+                .color(Color.parseColor("#009688"))
+                .width(8f);
+            mMap.addPolyline(polylineOptions);
+        }
+        
+        // Ajustar cámara para mostrar todas las ubicaciones
+        if (!validLocations.isEmpty()) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (LatLng latLng : validLocations) {
+                builder.include(latLng);
+            }
+            try {
+                LatLngBounds bounds = builder.build();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+            } catch (Exception e) {
+                Log.e(TAG, "Error ajustando cámara", e);
+            }
+        }
+    }
+    
     private void initViews() {
+        // Campos básicos
         etTituloTour = findViewById(R.id.etTituloTour);
         etHoraInicio = findViewById(R.id.etHoraInicio);
         etHoraFin = findViewById(R.id.etHoraFin);
@@ -139,38 +246,45 @@ public class CreateTourActivity extends AppCompatActivity {
         etIdiomas = findViewById(R.id.etIdiomas);
         etRegion = findViewById(R.id.etRegion);
         etLocation = findViewById(R.id.etLocation);
+        
+        // Servicios extra
         tvCantidadServicios = findViewById(R.id.tvCantidadServicios);
-        tvImagenTourSeleccionada = findViewById(R.id.tvImagenTourSeleccionada);
         layoutServiciosExtra = findViewById(R.id.layoutServiciosExtra);
-        layoutUbicaciones = findViewById(R.id.layoutUbicaciones);
-        btnCrearTour = findViewById(R.id.btnCrearTour);
+        
+        // Imagen del tour
         btnSeleccionarImagenTour = findViewById(R.id.btnSeleccionarImagenTour);
+        tvImagenTourSeleccionada = findViewById(R.id.tvImagenTourSeleccionada);
         
-        // Actualizar texto inicial de servicios
-        updateServiciosText();
+        // Ubicaciones
+        layoutUbicaciones = findViewById(R.id.layoutUbicaciones);
+        btnAgregarUbicacion = findViewById(R.id.btnAgregarUbicacion);
+        
+        // Botón crear
+        btnCrearTour = findViewById(R.id.btnCrearTour);
     }
-
+    
     private void setupListeners() {
-        // Time picker para hora de inicio
-        etHoraInicio.setOnClickListener(v -> showTimePickerInicio());
+        // Listeners de hora
+        etHoraInicio.setOnClickListener(v -> showTimePicker(etHoraInicio));
+        etHoraFin.setOnClickListener(v -> showTimePicker(etHoraFin));
         
-        // Time picker para hora de fin
-        etHoraFin.setOnClickListener(v -> showTimePickerFin());
+        // Listener para servicios extra
+        tvCantidadServicios.setOnClickListener(v -> showServiciosDialog());
         
-        // Agregar servicio extra - hacer clickeable todo el layout
-        layoutServiciosExtra.setOnClickListener(v -> showExtraServiceDialog());
-        
-        // Seleccionar imagen del tour
+        // Listener para imagen del tour
         btnSeleccionarImagenTour.setOnClickListener(v -> {
             currentImageTextView = tvImagenTourSeleccionada;
             openImagePicker();
         });
         
-        // Crear tour
+        // Listener para agregar ubicación
+        btnAgregarUbicacion.setOnClickListener(v -> addUbicacionInput());
+        
+        // Listener para crear tour
         btnCrearTour.setOnClickListener(v -> createTour());
     }
-
-    private void showTimePickerInicio() {
+    
+    private void showTimePicker(EditText editText) {
         Calendar currentTime = Calendar.getInstance();
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
@@ -178,27 +292,12 @@ public class CreateTourActivity extends AppCompatActivity {
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 (view, hourOfDay, min) -> {
                     String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, min);
-                    etHoraInicio.setText(time);
+                    editText.setText(time);
                 }, hour, minute, true);
         timePickerDialog.show();
     }
-
-    private void showTimePickerFin() {
-        Calendar currentTime = Calendar.getInstance();
-        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = currentTime.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, hourOfDay, min) -> {
-                    String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, min);
-                    etHoraFin.setText(time);
-                }, hour, minute, true);
-        timePickerDialog.show();
-    }
-
-
-
-    private void showExtraServiceDialog() {
+    
+    private void showServiciosDialog() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_extra_service, null);
         
         LinearLayout layoutServiciosDinamicos = dialogView.findViewById(R.id.layoutServiciosDinamicos);
@@ -315,48 +414,273 @@ public class CreateTourActivity extends AppCompatActivity {
             tvCantidadServicios.setText(serviciosExtra.size() + " servicio(s) agregado(s)");
         }
     }
-
+    
     private void addUbicacionInput() {
-        View ubicacionView = LayoutInflater.from(this).inflate(R.layout.item_ubicacion_input, null);
+        View ubicacionView = LayoutInflater.from(this).inflate(R.layout.item_ubicacion_map_input, layoutUbicaciones, false);
         
-        TextView tvNumeroUbicacion = ubicacionView.findViewById(R.id.tvNumeroUbicacion);
-        EditText etNombreUbicacion = ubicacionView.findViewById(R.id.etNombreUbicacion);
-        EditText etActividadesUbicacion = ubicacionView.findViewById(R.id.etActividadesUbicacion);
-        Button btnAgregarUbicacion = ubicacionView.findViewById(R.id.btnAgregarUbicacion);
-        Button btnEliminarUbicacion = ubicacionView.findViewById(R.id.btnEliminarUbicacion);
-
-        tvNumeroUbicacion.setText("Ubicación " + contadorUbicaciones);
+        TextView tvNumero = ubicacionView.findViewById(R.id.tvNumeroUbicacion);
+        TextInputEditText etTitulo = ubicacionView.findViewById(R.id.etTituloUbicacion);
+        AutoCompleteTextView actvBuscar = ubicacionView.findViewById(R.id.actvBuscarUbicacion);
+        Button btnSeleccionarMapa = ubicacionView.findViewById(R.id.btnSeleccionarEnMapa);
+        Button btnEliminar = ubicacionView.findViewById(R.id.btnEliminarUbicacion);
+        Button btnMoveUp = ubicacionView.findViewById(R.id.btnMoveUp);
+        Button btnMoveDown = ubicacionView.findViewById(R.id.btnMoveDown);
+        TextView tvUbicacionSel = ubicacionView.findViewById(R.id.tvUbicacionSeleccionada);
+        TextView tvCoordenadas = ubicacionView.findViewById(R.id.tvCoordenadas);
         
-        // Listener para agregar nueva ubicación
-        btnAgregarUbicacion.setOnClickListener(v -> {
-            contadorUbicaciones++;
-            addUbicacionInput();
+        int currentPosition = layoutUbicaciones.getChildCount();
+        tvNumero.setText("Ubicación " + (currentPosition + 1));
+        
+        // Crear ubicación en la lista
+        RouteLocation newLocation = new RouteLocation();
+        newLocation.setOrder(currentPosition + 1);
+        routeLocations.add(newLocation);
+        
+        // Configurar autocomplete con Places API
+        setupPlacesAutocomplete(actvBuscar, ubicacionView, currentPosition);
+        
+        // Botón seleccionar en mapa
+        btnSeleccionarMapa.setOnClickListener(v -> {
+            isSelectingOnMap = true;
+            currentLocationView = ubicacionView;
+            Toast.makeText(this, "Toca en el mapa para seleccionar la ubicación", Toast.LENGTH_LONG).show();
         });
-
-        // Listener para eliminar ubicación (solo si hay más de 1)
-        btnEliminarUbicacion.setOnClickListener(v -> {
-            if (layoutUbicaciones.getChildCount() > 1) {
+        
+        // Botón eliminar
+        btnEliminar.setOnClickListener(v -> {
+            if (layoutUbicaciones.getChildCount() > 0) {
+                int index = layoutUbicaciones.indexOfChild(ubicacionView);
                 layoutUbicaciones.removeView(ubicacionView);
+                if (index < routeLocations.size()) {
+                    RouteLocation removed = routeLocations.remove(index);
+                    if (removed.getMarker() != null) {
+                        removed.getMarker().remove();
+                    }
+                }
                 updateUbicacionNumbers();
-            } else {
-                Toast.makeText(this, "Debe haber al menos una ubicación", Toast.LENGTH_SHORT).show();
+                updateMapMarkers();
+                Toast.makeText(this, "Ubicación eliminada", Toast.LENGTH_SHORT).show();
             }
         });
-
+        
+        // Botón mover arriba
+        btnMoveUp.setOnClickListener(v -> moveLocation(ubicacionView, -1));
+        
+        // Botón mover abajo
+        btnMoveDown.setOnClickListener(v -> moveLocation(ubicacionView, 1));
+        
+        // Listener para actualizar título en la ubicación
+        etTitulo.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int index = layoutUbicaciones.indexOfChild(ubicacionView);
+                if (index >= 0 && index < routeLocations.size()) {
+                    routeLocations.get(index).setTitle(s.toString());
+                    updateMapMarkers();
+                }
+            }
+            
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+        
         layoutUbicaciones.addView(ubicacionView);
+        contadorUbicaciones++;
     }
-
+    
+    private void setupPlacesAutocomplete(AutoCompleteTextView actvBuscar, View ubicacionView, int position) {
+        actvBuscar.setThreshold(3);
+        
+        actvBuscar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+                
+                if (s.length() >= 3) {
+                    searchRunnable = () -> searchPlaces(s.toString(), actvBuscar, ubicacionView);
+                    searchHandler.postDelayed(searchRunnable, 500);
+                }
+            }
+            
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+        
+        actvBuscar.setOnItemClickListener((parent, view, itemPosition, id) -> {
+            // Recuperar la lista original de Address
+            @SuppressWarnings("unchecked")
+            List<Address> addresses = (List<Address>) actvBuscar.getTag(R.id.actvBuscarUbicacion);
+            
+            if (addresses != null && itemPosition < addresses.size()) {
+                Address address = addresses.get(itemPosition);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                String placeName = address.getFeatureName() != null ? address.getFeatureName() : address.getLocality();
+                updateLocationFromSearch(ubicacionView, latLng, placeName);
+            }
+        });
+    }
+    
+    private void searchPlaces(String query, AutoCompleteTextView actvBuscar, View ubicacionView) {
+        new Thread(() -> {
+            try {
+                List<Address> addresses = geocoder.getFromLocationName(query + ", Perú", 5);
+                
+                if (addresses != null && !addresses.isEmpty()) {
+                    // Crear lista de strings formateados
+                    List<String> addressStrings = new ArrayList<>();
+                    for (Address address : addresses) {
+                        StringBuilder builder = new StringBuilder();
+                        if (address.getFeatureName() != null) {
+                            builder.append(address.getFeatureName());
+                        }
+                        if (address.getLocality() != null) {
+                            if (builder.length() > 0) builder.append(", ");
+                            builder.append(address.getLocality());
+                        }
+                        if (address.getAdminArea() != null) {
+                            if (builder.length() > 0) builder.append(", ");
+                            builder.append(address.getAdminArea());
+                        }
+                        addressStrings.add(builder.toString());
+                    }
+                    
+                    runOnUiThread(() -> {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            addressStrings
+                        );
+                        
+                        actvBuscar.setAdapter(adapter);
+                        actvBuscar.setTag(R.id.actvBuscarUbicacion, addresses); // Guardar lista de Address original
+                        adapter.notifyDataSetChanged();
+                    });
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error buscando lugares con Geocoder", e);
+                runOnUiThread(() -> 
+                    Toast.makeText(this, "Error buscando ubicaciones", Toast.LENGTH_SHORT).show()
+                );
+            }
+        }).start();
+    }
+    
+    private void updateLocationFromSearch(View ubicacionView, LatLng latLng, String placeName) {
+        TextView tvCoordenadas = ubicacionView.findViewById(R.id.tvCoordenadas);
+        TextView tvUbicacionSel = ubicacionView.findViewById(R.id.tvUbicacionSeleccionada);
+        TextInputEditText etTitulo = ubicacionView.findViewById(R.id.etTituloUbicacion);
+        
+        tvCoordenadas.setText("Lat: " + latLng.latitude + ", Lng: " + latLng.longitude);
+        tvUbicacionSel.setText("📌 " + placeName);
+        tvUbicacionSel.setVisibility(View.VISIBLE);
+        
+        // Si no hay título, usar el nombre del lugar
+        if (etTitulo.getText() == null || etTitulo.getText().toString().trim().isEmpty()) {
+            etTitulo.setText(placeName);
+        }
+        
+        // Actualizar RouteLocation
+        int position = layoutUbicaciones.indexOfChild(ubicacionView);
+        if (position >= 0 && position < routeLocations.size()) {
+            RouteLocation routeLoc = routeLocations.get(position);
+            routeLoc.setLatLng(latLng);
+            if (routeLoc.getTitle() == null || routeLoc.getTitle().isEmpty()) {
+                routeLoc.setTitle(placeName);
+            }
+        }
+        
+        updateMapMarkers();
+        Toast.makeText(this, "Ubicación agregada", Toast.LENGTH_SHORT).show();
+    }
+    
+    private void moveLocation(View ubicacionView, int direction) {
+        int currentIndex = layoutUbicaciones.indexOfChild(ubicacionView);
+        int newIndex = currentIndex + direction;
+        
+        if (newIndex < 0 || newIndex >= layoutUbicaciones.getChildCount()) {
+            Toast.makeText(this, "No se puede mover más en esa dirección", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Mover en la vista
+        layoutUbicaciones.removeView(ubicacionView);
+        layoutUbicaciones.addView(ubicacionView, newIndex);
+        
+        // Mover en la lista
+        RouteLocation temp = routeLocations.get(currentIndex);
+        routeLocations.set(currentIndex, routeLocations.get(newIndex));
+        routeLocations.set(newIndex, temp);
+        
+        // Actualizar números y mapa
+        updateUbicacionNumbers();
+        updateMapMarkers();
+        
+        Toast.makeText(this, "Ubicación reordenada", Toast.LENGTH_SHORT).show();
+    }
+    
     private void updateUbicacionNumbers() {
         for (int i = 0; i < layoutUbicaciones.getChildCount(); i++) {
             View child = layoutUbicaciones.getChildAt(i);
             TextView tvNumero = child.findViewById(R.id.tvNumeroUbicacion);
             tvNumero.setText("Ubicación " + (i + 1));
+            
+            if (i < routeLocations.size()) {
+                routeLocations.get(i).setOrder(i + 1);
+            }
         }
-        contadorUbicaciones = layoutUbicaciones.getChildCount();
+    }
+    
+    private void setupImagePickerLauncher() {
+        imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        selectedImageUri = result.getData().getData();
+                        if (selectedImageUri != null && currentImageTextView != null) {
+                            currentImageTextView.setText("Imagen seleccionada ✓");
+                            currentImageTextView.setTag(selectedImageUri); // Guardar URI en el tag
+                            currentImageTextView.setTextColor(getResources().getColor(R.color.teal_700));
+                            
+                            // Si es la imagen del tour, guardarla en tourImageUri
+                            if (currentImageTextView.getId() == R.id.tvImagenTourSeleccionada) {
+                                tourImageUri = selectedImageUri;
+                            }
+                        }
+                    }
+                }
+        );
+    }
+    
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        imagePickerLauncher.launch(intent);
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("Crear nuevo tour");
+        }
     }
 
     private void createTour() {
+        Log.d(TAG, "createTour() llamado");
+        
         if (validateForm()) {
+            Log.d(TAG, "Formulario válido");
+            
             // Recopilar datos del formulario
             String tituloTour = etTituloTour.getText().toString().trim();
             String location = etLocation.getText().toString().trim();
@@ -369,6 +693,8 @@ public class CreateTourActivity extends AppCompatActivity {
             
             // Obtener ID del admin/empresa logueado
             String idEmpresa = com.google.firebase.auth.FirebaseAuth.getInstance().getUid();
+            
+            Log.d(TAG, "Datos recopilados - Título: " + tituloTour + ", ID Empresa: " + idEmpresa);
             
             // Crear objeto Tour para Firestore
             Tour nuevoTour = new Tour();
@@ -392,13 +718,18 @@ public class CreateTourActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();
             
+            Log.d(TAG, "tourImageUri: " + (tourImageUri != null ? "presente" : "null"));
+            
             // Primero subir imagen del tour, luego servicios
             if (tourImageUri != null) {
                 uploadTourImageAndContinue(nuevoTour, idEmpresa, tituloTour);
             } else {
                 // Sin imagen del tour, continuar con servicios
+                Log.d(TAG, "Sin imagen de tour, continuando con servicios");
                 uploadServiceImagesAndCreateTour(nuevoTour, idEmpresa, tituloTour);
             }
+        } else {
+            Log.e(TAG, "Formulario NO válido");
         }
     }
     
@@ -501,25 +832,62 @@ public class CreateTourActivity extends AppCompatActivity {
             progressDialog.setMessage("Guardando tour...");
         }
         
+        Log.d(TAG, "=== INICIANDO GUARDADO DE TOUR ===");
+        Log.d(TAG, "Título: " + nuevoTour.getTitle());
+        Log.d(TAG, "ID Empresa: " + nuevoTour.getIdEmpresa());
+        Log.d(TAG, "Precio: " + nuevoTour.getPrice());
+        Log.d(TAG, "Región: " + nuevoTour.getRegion());
+        
+        // Preparar ubicaciones para guardar en subcolección
+        List<Tour.Ubicacion> ubicaciones = new ArrayList<>();
+        Log.d(TAG, "Route locations size: " + routeLocations.size());
+        
+        for (RouteLocation routeLoc : routeLocations) {
+            if (routeLoc.getLatLng() != null) {
+                Tour.Ubicacion ubicacion = new Tour.Ubicacion();
+                ubicacion.setTitle(routeLoc.getTitle() != null ? routeLoc.getTitle() : "Ubicación " + routeLoc.getOrder());
+                ubicacion.setOrder(routeLoc.getOrder());
+                ubicacion.setLat(routeLoc.getLat());
+                ubicacion.setLng(routeLoc.getLng());
+                ubicaciones.add(ubicacion);
+                Log.d(TAG, "Ubicación agregada: " + ubicacion.getTitle() + " - Lat:" + ubicacion.getLat() + " Lng:" + ubicacion.getLng());
+            }
+        }
+        
+        Log.d(TAG, "Total ubicaciones a guardar: " + ubicaciones.size());
+        
         // Guardar en Firestore
+        final List<Tour.Ubicacion> finalUbicaciones = ubicaciones;
         firestoreHelper.createTour(nuevoTour, (success, tourId) -> {
+            Log.d(TAG, "Callback createTour - success: " + success + ", tourId: " + tourId);
+            
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
             
             if (success && tourId != null) {
-                Toast.makeText(this, "¡Tour creado exitosamente!", Toast.LENGTH_SHORT).show();
+                // Guardar ubicaciones en subcolección si hay
+                if (!finalUbicaciones.isEmpty()) {
+                    Log.d(TAG, "Guardando " + finalUbicaciones.size() + " ubicaciones");
+                    firestoreHelper.saveLocationsSubcollection(tourId, finalUbicaciones);
+                }
                 
-                // Retornar a ToursActivity
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("tour_created", true);
-                resultIntent.putExtra("tour_name", nombreTour);
-                setResult(RESULT_OK, resultIntent);
-                finish();
+                String mensajeUbicaciones = finalUbicaciones.isEmpty() ? "" : " con " + finalUbicaciones.size() + " ubicaciones";
+                Toast.makeText(this, "¡Tour creado exitosamente" + mensajeUbicaciones + "!", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "Tour guardado exitosamente con ID: " + tourId);
+                finishCreation();
             } else {
-                Toast.makeText(this, "Error al crear tour", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error al guardar tour en Firestore");
+                Toast.makeText(this, "Error al crear tour", Toast.LENGTH_LONG).show();
             }
         });
+    }
+    
+    private void finishCreation() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("tour_created", true);
+        setResult(RESULT_OK, resultIntent);
+        finish();
     }
     
     private String getFirstLocationName() {
@@ -559,21 +927,19 @@ public class CreateTourActivity extends AppCompatActivity {
     private String getDescriptionSummary() {
         StringBuilder descripcion = new StringBuilder();
         
+        // Agregar información de ubicaciones
+        int numLocations = routeLocations.size();
+        if (numLocations > 0) {
+            descripcion.append("Ruta con ").append(numLocations).append(" ubicación");
+            if (numLocations > 1) {
+                descripcion.append("es");
+            }
+            descripcion.append(". ");
+        }
+        
         // Agregar información de servicios
         if (!serviciosExtra.isEmpty()) {
             descripcion.append("Incluye ").append(serviciosExtra.size()).append(" servicio(s) extra. ");
-        }
-        
-        // Agregar primera actividad como ejemplo
-        if (layoutUbicaciones.getChildCount() > 0) {
-            View firstLocation = layoutUbicaciones.getChildAt(0);
-            EditText etActividades = firstLocation.findViewById(R.id.etActividadesUbicacion);
-            String actividades = etActividades.getText().toString().trim();
-            
-            if (!actividades.isEmpty()) {
-                descripcion.append(actividades.length() > 100 ? 
-                    actividades.substring(0, 97) + "..." : actividades);
-            }
         }
         
         if (descripcion.length() == 0) {
@@ -629,18 +995,18 @@ public class CreateTourActivity extends AppCompatActivity {
         // Validar que todas las ubicaciones tengan datos
         for (int i = 0; i < layoutUbicaciones.getChildCount(); i++) {
             View child = layoutUbicaciones.getChildAt(i);
-            EditText etNombre = child.findViewById(R.id.etNombreUbicacion);
-            EditText etActividades = child.findViewById(R.id.etActividadesUbicacion);
+            EditText etTitulo = child.findViewById(R.id.etTituloUbicacion);
+            TextView tvCoordenadas = child.findViewById(R.id.tvCoordenadas);
 
-            if (etNombre.getText().toString().trim().isEmpty()) {
-                etNombre.setError("El nombre de la ubicación es obligatorio");
-                etNombre.requestFocus();
+            if (etTitulo != null && etTitulo.getText().toString().trim().isEmpty()) {
+                etTitulo.setError("El título de la ubicación es obligatorio");
+                etTitulo.requestFocus();
                 return false;
             }
 
-            if (etActividades != null && etActividades.getText().toString().trim().isEmpty()) {
-                etActividades.setError("Las actividades son obligatorias");
-                etActividades.requestFocus();
+            // Validar que la ubicación tenga coordenadas seleccionadas
+            if (i >= routeLocations.size() || routeLocations.get(i).getLatLng() == null) {
+                Toast.makeText(this, "Debe seleccionar una ubicación en el mapa para la ubicación " + (i + 1), Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
