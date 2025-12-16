@@ -50,6 +50,7 @@ public class ChatActivityDos extends AppCompatActivity {
     private String idEmpresa;
     private String clientName;
     private String tourName;
+    private String senderRole; // 👈 NUEVO
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +60,16 @@ public class ChatActivityDos extends AppCompatActivity {
         // ================= Firebase =================
         db = FirebaseFirestore.getInstance();
         currentUserId = FirebaseAuth.getInstance().getUid();
+
+        // ================= Obtener rol del usuario =================
+        db.collection("users")
+                .document(currentUserId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        senderRole = doc.getString("rol");
+                    }
+                });
 
         // ================= Views =================
         recyclerChat = findViewById(R.id.recyclerChat);
@@ -81,11 +92,16 @@ public class ChatActivityDos extends AppCompatActivity {
         recyclerChat.setAdapter(adapter);
 
         // ================= Cargar datos =================
-        cargarEmpresa();          // 🔥 NUEVO
-        escucharMensajes();       // ya lo tenías
+        cargarEmpresa();
+        escucharMensajes();
 
         btnSend.setOnClickListener(v -> enviarMensaje());
     }
+
+
+
+
+
 
     // =========================================================================
     // 🔥 CARGAR EMPRESA (NOMBRE + FOTO)
@@ -143,10 +159,11 @@ public class ChatActivityDos extends AppCompatActivity {
 
         String text = etMensaje.getText().toString().trim();
         if (TextUtils.isEmpty(text)) return;
+        if (senderRole == null) return; // seguridad
 
         ChatMessage message = new ChatMessage(
                 currentUserId,
-                "Cliente",
+                senderRole,   // ✅ DINÁMICO
                 text
         );
 

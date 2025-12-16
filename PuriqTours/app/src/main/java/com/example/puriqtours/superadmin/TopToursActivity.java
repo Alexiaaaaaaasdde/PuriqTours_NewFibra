@@ -37,8 +37,6 @@ public class TopToursActivity extends AppCompatActivity {
         tvTituloRanking = findViewById(R.id.tvTituloRanking);
 
         // 🔹 Toolbar SIN flecha (flecha manual)
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        setSupportActionBar(toolbar);
 
 
         // Flecha personalizada

@@ -46,51 +46,9 @@
         android:tint="@color/teal_700"
         android:contentDescription="Volver"/>
 
-    <!-- 🔹 Logo -->
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/mathi"/>
 
-    <!-- 🔹 Saludo -->
-    <TextView
-        android:id="@+id/tvSaludo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="6dp"
-        android:text="Buenas tardes"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"/>
 
-    <!-- 🔹 FAQ (puedes ocultarlo luego si quieres) -->
-    <LinearLayout
-        android:id="@+id/layoutFAQ"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:text="¿A qué hora debo llegar para el check-in?"
-                android:textColor="@android:color/black"/>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
 
     <!-- 🔹 CHAT -->
     <androidx.recyclerview.widget.RecyclerView

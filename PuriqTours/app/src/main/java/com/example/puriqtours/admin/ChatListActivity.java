@@ -7,156 +7,139 @@ import android.text.TextWatcher;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.puriqtours.helper.NotificationHelper;
 import com.example.puriqtours.R;
-import com.example.puriqtours.helper.StorageHelper;
-import com.example.puriqtours.adapter.ChatAdminAdapter;
-import com.example.puriqtours.entity.ChatAdmin;
+import com.example.puriqtours.adapter.ChatListAdapter;
+import com.example.puriqtours.cliente.ChatActivityDos;
+import com.example.puriqtours.entity.ChatThread;
+import com.example.puriqtours.helper.NotificationHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatListActivity extends AppCompatActivity {
 
+    // 🔹 UI
     private RecyclerView recyclerViewChats;
-    private ChatAdminAdapter chatAdminAdapter;
-    private List<ChatAdmin> chatAdminList;
     private TextInputEditText searchBar;
-    private StorageHelper storageHelper;
+
+    // 🔹 Data
+    private final List<ChatThread> chatList = new ArrayList<>();
+    private ChatListAdapter adapter;
+
+    // 🔹 Firebase
+    private FirebaseFirestore db;
+
+    // 🔹 Helpers
     private NotificationHelper notificationHelper;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
-        // Inicializar vistas
+        db = FirebaseFirestore.getInstance();
+        notificationHelper = new NotificationHelper(this);
+
         initViews();
-        
-        // Crear datos de ejemplo
-        createSampleData();
-        
-        // Configurar RecyclerView
-        setupRecyclerView();
-        
-        // Configurar listeners
+        setupRecycler();
         setupListeners();
-        
-        // Configurar bottom navigation
+        cargarChats();
         setupBottomNavigation();
     }
 
+    // =========================================================================
     private void initViews() {
         recyclerViewChats = findViewById(R.id.recyclerViewChats);
         searchBar = findViewById(R.id.searchBar);
-    }
 
-    private void createSampleData() {
-        storageHelper = new StorageHelper(this);
-        notificationHelper = new NotificationHelper(this);
-        
-        // Cargar chats desde SharedPreferences
-        chatAdminList = storageHelper.loadChats();
-    }
-
-    private void setupRecyclerView() {
-        chatAdminAdapter = new ChatAdminAdapter(this, chatAdminList);
-        chatAdminAdapter.setOnChatClickListener(new ChatAdminAdapter.OnChatClickListener() {
-            @Override
-            public void onChatClick(ChatAdmin chatAdmin, int position) {
-                // Abrir ChatActivity
-                Intent intent = new Intent(ChatListActivity.this, ChatAdminActivity.class);
-                intent.putExtra("chat_id", chatAdmin.getId());
-                intent.putExtra("client_name", chatAdmin.getClientName());
-                intent.putExtra("tour_name", chatAdmin.getTourName());
-                startActivity(intent);
-            }
-
-            @Override
-            public void onDeleteChat(ChatAdmin chatAdmin, int position) {
-                // Eliminar chat del storage
-                storageHelper.deleteChat(chatAdmin.getId());
-                
-                // Eliminar chat de la lista visual
-                chatAdminAdapter.removeChat(position);
-                Toast.makeText(ChatListActivity.this, 
-                    "Chat con " + chatAdmin.getClientName() + " eliminado",
-                    Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        recyclerViewChats.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewChats.setAdapter(chatAdminAdapter);
-    }
-
-    private void setupListeners() {
-        // Icono de notificaciones en toolbar (ahora con simulación)
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                // Simular llegada de mensaje para demostración
-                notificationHelper.simulateIncomingMessage();
-                Toast.makeText(this, "Simulando llegada de mensaje...", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-        // Configurar toolbar navigation (botón de logout)
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.topAppBar);
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(v -> {
-                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-        // Configurar búsqueda en tiempo real
-        if (searchBar != null) {
-            searchBar.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (chatAdminAdapter != null) {
-                        chatAdminAdapter.getFilter().filter(s);
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {}
+                Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
             });
         }
     }
 
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
-        if (bottomNavigation != null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_chat);
-            
-            bottomNavigation.setOnItemSelectedListener(item -> {
-                int id = item.getItemId();
+    // =========================================================================
+    private void setupRecycler() {
+        adapter = new ChatListAdapter(chatList, chat -> {
+            Intent intent = new Intent(this, ChatActivityDos.class);
+            intent.putExtra("chatId", chat.getChatId());
+            intent.putExtra("idCliente", chat.getIdCliente());
+            intent.putExtra("idEmpresa", chat.getIdEmpresa());
+            intent.putExtra("clientName", chat.getClientName());
+            intent.putExtra("tourName", chat.getTourName());
+            startActivity(intent);
+        });
 
-                if (id == R.id.nav_dashboard) {
-                    startActivity(new Intent(this, MainAdminActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                } else if (id == R.id.nav_reports) {
-                    startActivity(new Intent(this, ReportsActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                } else if (id == R.id.nav_chat) {
-                    return true; // Ya estás en chat
-                } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileAdminActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
+        recyclerViewChats.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewChats.setAdapter(adapter);
+    }
+
+    // =========================================================================
+    private void cargarChats() {
+        db.collection("chatThreads")
+                .orderBy("lastTimestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener((snapshots, error) -> {
+
+                    if (error != null || snapshots == null) return;
+
+                    chatList.clear();
+                    chatList.addAll(snapshots.toObjects(ChatThread.class));
+                    adapter.notifyDataSetChanged();
+                });
+    }
+
+    // =========================================================================
+    private void setupListeners() {
+        if (searchBar != null) {
+            searchBar.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void afterTextChanged(Editable s) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    adapter.filtrar(s.toString());
                 }
-                return false;
             });
         }
+    }
+
+    // =========================================================================
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
+        if (bottomNavigation == null) return;
+
+        bottomNavigation.setSelectedItemId(R.id.nav_chat);
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_dashboard) {
+                startActivity(new Intent(this, MainAdminActivity.class));
+                return true;
+            }
+            if (id == R.id.nav_reports) {
+                startActivity(new Intent(this, ReportsActivity.class));
+                return true;
+            }
+            if (id == R.id.nav_chat) {
+                return true;
+            }
+            if (id == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileAdminActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 }

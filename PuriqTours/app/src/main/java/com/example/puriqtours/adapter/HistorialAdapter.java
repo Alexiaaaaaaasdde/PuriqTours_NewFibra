@@ -16,13 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.puriqtours.R;
-import com.example.puriqtours.cliente.ChatActivity;
+import com.example.puriqtours.cliente.ChatActivityDos;
 import com.example.puriqtours.cliente.ReservaDetalleActivity;
 import com.example.puriqtours.cliente.ValoracionActivity;
 import com.example.puriqtours.entity.HistorialTour;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.ViewHolder> {
 
@@ -97,12 +103,41 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
 
         // ✅ Click en botón Chat
         holder.btnChat.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("RESERVA_ID", tour.getIdReserva());
-            intent.putExtra("TOUR_TITULO", tour.getTitulo());
-            intent.putExtra("estado", tour.getEstado());
-            context.startActivity(intent);
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String idCliente = FirebaseAuth.getInstance().getUid();
+
+            // 1️⃣ Obtener idEmpresa desde el tour
+            db.collection("tours")
+                    .document(tour.getIdTour())
+                    .get()
+                    .addOnSuccessListener(doc -> {
+
+                        if (!doc.exists()) return;
+
+                        String idEmpresa = doc.getString("idEmpresa");
+
+                        // 2️⃣ Verificar si ya existe chat
+                        db.collection("chatThreads")
+                                .whereEqualTo("idCliente", idCliente)
+                                .whereEqualTo("idEmpresa", idEmpresa)
+                                .whereEqualTo("idReserva", tour.getIdReserva())
+                                .limit(1)
+                                .get()
+                                .addOnSuccessListener(snapshot -> {
+
+                                    if (!snapshot.isEmpty()) {
+                                        // ✅ Chat existe
+                                        String chatId = snapshot.getDocuments().get(0).getId();
+                                        abrirChat(chatId, tour, idEmpresa);
+                                    } else {
+                                        // ❌ Crear chat
+                                        crearChat(tour, idEmpresa);
+                                    }
+                                });
+                    });
         });
+
     }
 
     @Override
@@ -172,4 +207,35 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
             btnValorar = itemView.findViewById(R.id.btnValorar);  // 🔥 NUEVO
         }
     }
+
+    private void abrirChat(String chatId, HistorialTour tour, String idEmpresa) {
+        Intent intent = new Intent(context, ChatActivityDos.class);
+        intent.putExtra("chatId", chatId);
+        intent.putExtra("idCliente", FirebaseAuth.getInstance().getUid());
+        intent.putExtra("idEmpresa", idEmpresa);
+        intent.putExtra("clientName", "Cliente"); // opcional
+        intent.putExtra("tourName", tour.getTitulo());
+        context.startActivity(intent);
+    }
+    private void crearChat(HistorialTour tour, String idEmpresa) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String idCliente = FirebaseAuth.getInstance().getUid();
+
+        DocumentReference ref = db.collection("chatThreads").document();
+
+        Map<String, Object> chat = new HashMap<>();
+        chat.put("chatId", ref.getId());
+        chat.put("idCliente", idCliente);
+        chat.put("idEmpresa", idEmpresa);
+        chat.put("idReserva", tour.getIdReserva());
+        chat.put("tourName", tour.getTitulo());
+        chat.put("lastMessage", null);
+        chat.put("lastTimestamp", Timestamp.now());
+
+        ref.set(chat).addOnSuccessListener(aVoid -> {
+            abrirChat(ref.getId(), tour, idEmpresa);
+        });
+    }
+
 }

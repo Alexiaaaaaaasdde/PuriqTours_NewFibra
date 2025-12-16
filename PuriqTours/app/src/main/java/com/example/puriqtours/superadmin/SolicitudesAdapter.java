@@ -56,7 +56,7 @@ public class SolicitudesAdapter
             // ==========================
             // BOTÓN ACEPTAR
             // ==========================
-            MaterialButton btnAceptar = crearBoton("Aceptar", R.color.teal_700);
+            MaterialButton btnAceptar = crearBoton("Aceptar", R.color.green_600);
             btnAceptar.setOnClickListener(v -> {
                 doc.getReference()
                         .update("guide_status", "Habilitado")
@@ -70,7 +70,7 @@ public class SolicitudesAdapter
             // ==========================
             // BOTÓN RECHAZAR
             // ==========================
-            MaterialButton btnRechazar = crearBoton("Rechazar", R.color.red);
+            MaterialButton btnRechazar = crearBoton("Rechazar", R.color.red_600);
             btnRechazar.setOnClickListener(v -> {
                 doc.getReference()
                         .update("guide_status", "Rechazado")
@@ -103,7 +103,7 @@ public class SolicitudesAdapter
         }
     }
 
-    private MaterialButton crearBoton(String texto, int color) {
+    private MaterialButton crearBoton(String texto, int colorFondo) {
         MaterialButton btn = new MaterialButton(context);
 
         // Texto
@@ -111,21 +111,29 @@ public class SolicitudesAdapter
         btn.setAllCaps(false);
         btn.setTextSize(14);
         btn.setTypeface(null, android.graphics.Typeface.BOLD);
+        btn.setTextColor(context.getColor(android.R.color.white));
 
-        // 🎨 Estilo igual que los botones de usuarios
-        btn.setBackgroundTintList(context.getColorStateList(android.R.color.white));
-        btn.setStrokeColorResource(color);
-        btn.setStrokeWidth(2);
-        btn.setTextColor(context.getColor(color));
-        btn.setCornerRadius(30);
-        btn.setElevation(3);
-
-        // Margen entre botones
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+        // 🎨 Fondo sólido
+        btn.setBackgroundTintList(
+                context.getColorStateList(colorFondo)
         );
-        params.setMarginEnd(16);
+
+        // Forma
+        btn.setCornerRadius(40);
+        btn.setElevation(4);
+
+        // Tamaño
+        btn.setMinHeight(36);
+        btn.setMinimumHeight(36);
+        btn.setMinWidth(120);              // 👈 CLAVE
+        btn.setMinimumWidth(120);
+        // Margen entre botones
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+        params.setMarginEnd(24);
         btn.setLayoutParams(params);
 
         return btn;

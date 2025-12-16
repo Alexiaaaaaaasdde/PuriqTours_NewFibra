@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/imgAvatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:src="@drawable/avatar1"
             android:contentDescription="@string/avatar"
             android:scaleType="centerCrop"/>
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="10dp"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

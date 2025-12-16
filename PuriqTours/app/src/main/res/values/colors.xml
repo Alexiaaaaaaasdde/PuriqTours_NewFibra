@@ -31,7 +31,11 @@
     <color name="lightgreen">#A5EDD9</color>
     <color name="lightgray">#EFE8F2</color>
     <color name="darkgreen">#2B746C</color>
-    <color name="red">#9B0505</color>
+    <color name="red">#D92121</color>
+    <color name="red_600">#BF1212</color>
+    <color name="green_600">#17B618</color>
+
+
     <color name="orange">#FF9800</color>
     <!-- éxito para el check del modal -->
     <color name="md_theme_success">@color/teal_button</color>
