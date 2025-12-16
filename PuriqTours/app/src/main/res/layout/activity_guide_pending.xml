@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_puriq"
+    android:padding="24dp">
+
+    <!-- Card -->
+    <LinearLayout
+        android:id="@+id/cardPending"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@drawable/bg_card_rounded"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Icono -->
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/reloj_superadmin"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Solicitud enviada"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/teal_dark"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Mensaje -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Un administrador revisará tu información.\nTe avisaremos cuando tu cuenta sea habilitada."
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textColor="@color/md_theme_onSurface"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Botón cerrar sesión -->
+        <Button
+            android:id="@+id/btnLogoutGuide"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Cerrar sesión"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_button"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

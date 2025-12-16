@@ -311,10 +311,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Verificar nuevamente al volver a esta actividad
         if (mAuth.getCurrentUser() != null) {
-            Log.d(TAG, "Usuario ya autenticado en onStart");
             irAProfile();
         }
     }
+
 }

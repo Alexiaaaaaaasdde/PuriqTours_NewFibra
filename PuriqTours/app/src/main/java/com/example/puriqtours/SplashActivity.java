@@ -14,6 +14,7 @@ import com.example.puriqtours.WelcomeActivity;
 import com.example.puriqtours.admin.MainAdminActivity;
 import com.example.puriqtours.cliente.ProfileActivity;
 import com.example.puriqtours.entity.Usuario;
+import com.example.puriqtours.guia.GuidePendingActivity;
 import com.example.puriqtours.guia.MainGuiaActivity;
 import com.example.puriqtours.helper.UserSessionManager;
 import com.example.puriqtours.helper.WelcomePrefs;
@@ -21,6 +22,7 @@ import com.example.puriqtours.login.LoginActivity;
 import com.example.puriqtours.superadmin.MainSuperAdminActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -58,31 +60,66 @@ public class SplashActivity extends AppCompatActivity {
 
     private void checkSession() {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        Usuario user = session.getUser();
 
-        if (firebaseUser != null && user != null && user.getRol() != null) {
-            Intent intent;
-            switch (user.getRol().toLowerCase()) {
-                case "cliente":
-                    intent = new Intent(this, ProfileActivity.class);
-                    break;
-                case "guia":
-                    intent = new Intent(this, MainGuiaActivity.class);
-                    break;
-                case "admin":
-                    intent = new Intent(this, MainAdminActivity.class);
-                    break;
-                case "superadmin":
-                    intent = new Intent(this, MainSuperAdminActivity.class);
-                    break;
-                default:
-                    intent = new Intent(this, WelcomeActivity.class);
-                    break;
-            }
-            startActivity(intent);
-        } else {
+        if (firebaseUser == null) {
             startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+            return;
         }
-        finish();
+
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(firebaseUser.getUid())
+                .get()
+                .addOnSuccessListener(snapshot -> {
+
+                    if (!snapshot.exists()) {
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(this, WelcomeActivity.class));
+                        finish();
+                        return;
+                    }
+
+                    Usuario user = Usuario.fromSnapshot(snapshot);
+
+                    // 🔥 ACTUALIZAR SESIÓN
+                    session.saveUser(user);
+
+                    // 🔒 GUÍA NO HABILITADO
+                    if ("Guia".equalsIgnoreCase(user.getRol())
+                            && !"Habilitado".equalsIgnoreCase(user.getGuide_status())) {
+
+                        startActivity(new Intent(this, GuidePendingActivity.class));
+                        finish();
+                        return;
+                    }
+
+                    Intent intent;
+                    switch (user.getRol().toLowerCase()) {
+                        case "cliente":
+                            intent = new Intent(this, ProfileActivity.class);
+                            break;
+                        case "guia":
+                            intent = new Intent(this, MainGuiaActivity.class);
+                            break;
+                        case "admin":
+                            intent = new Intent(this, MainAdminActivity.class);
+                            break;
+                        case "superadmin":
+                            intent = new Intent(this, MainSuperAdminActivity.class);
+                            break;
+                        default:
+                            intent = new Intent(this, WelcomeActivity.class);
+                            break;
+                    }
+
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    startActivity(new Intent(this, WelcomeActivity.class));
+                    finish();
+                });
     }
+
 }
