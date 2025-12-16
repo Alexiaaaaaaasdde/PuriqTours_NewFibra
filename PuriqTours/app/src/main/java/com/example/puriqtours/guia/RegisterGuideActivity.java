@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.puriqtours.R;
@@ -29,7 +28,6 @@ public class RegisterGuideActivity extends AppCompatActivity {
     private EditText etName, etLastName, etEmail, etBirthDate, etPhone, etAddress, etDocumentNumber;
     private Spinner spnDocumentType;
     private Button btnSubmit;
-    private ImageButton btnBack;
     private ProgressBar progressBar;
 
     // 🔹 Idiomas
@@ -43,12 +41,16 @@ public class RegisterGuideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_guide);
 
+        // ❌ QUITAR ActionBar (evita botón atrás automático)
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         db = FirebaseFirestore.getInstance();
 
         initViews();
         setupDatePicker();
 
-        btnBack.setOnClickListener(v -> finish());
         btnSubmit.setOnClickListener(v -> {
             if (!validateForm()) return;
             verifyEmailInFirestore();
@@ -65,9 +67,9 @@ public class RegisterGuideActivity extends AppCompatActivity {
         etPhone = findViewById(R.id.etPhone);
         etAddress = findViewById(R.id.etAddress);
         etDocumentNumber = findViewById(R.id.etDocumentNumber);
+
         spnDocumentType = findViewById(R.id.spnDocumentType);
         btnSubmit = findViewById(R.id.btnSubmitGuide);
-        btnBack = findViewById(R.id.btnBackRegisterGuide);
         progressBar = findViewById(R.id.progressBarGuide);
 
         cbSpanish = findViewById(R.id.cbSpanish);
@@ -78,7 +80,6 @@ public class RegisterGuideActivity extends AppCompatActivity {
         cbChinese = findViewById(R.id.cbChinese);
         cbJapanese = findViewById(R.id.cbJapanese);
     }
-
 
     private void setupDatePicker() {
         etBirthDate.setOnClickListener(v -> {
@@ -97,11 +98,17 @@ public class RegisterGuideActivity extends AppCompatActivity {
 
     private boolean validateForm() {
         clearErrors();
-
         boolean ok = true;
 
-        if (isEmpty(etName)) { setError(etName, "Ingresa tu nombre"); ok = false; }
-        if (isEmpty(etLastName)) { setError(etLastName, "Ingresa tus apellidos"); ok = false; }
+        if (isEmpty(etName)) {
+            setError(etName, "Ingresa tu nombre");
+            ok = false;
+        }
+
+        if (isEmpty(etLastName)) {
+            setError(etLastName, "Ingresa tus apellidos");
+            ok = false;
+        }
 
         String email = getText(etEmail);
         if (TextUtils.isEmpty(email)) {
@@ -112,13 +119,22 @@ public class RegisterGuideActivity extends AppCompatActivity {
             ok = false;
         }
 
+        // 📞 TELÉFONO → EXACTAMENTE 9 DÍGITOS
+        String phone = getText(etPhone);
+        if (!phone.matches("\\d{9}")) {
+            setError(etPhone, "El teléfono debe tener 9 dígitos");
+            ok = false;
+        }
+
         if (spnDocumentType.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Selecciona tipo de documento", Toast.LENGTH_SHORT).show();
             ok = false;
         }
 
-        if (isEmpty(etDocumentNumber)) {
-            setError(etDocumentNumber, "Ingresa tu documento");
+        // 🪪 DOCUMENTO → EXACTAMENTE 9 DÍGITOS (DNI)
+        String doc = getText(etDocumentNumber);
+        if (!doc.matches("\\d{9}")) {
+            setError(etDocumentNumber, "El DNI debe tener 9 dígitos");
             ok = false;
         }
 
@@ -167,7 +183,7 @@ public class RegisterGuideActivity extends AppCompatActivity {
         userData.put("doc_type", spnDocumentType.getSelectedItem().toString());
         userData.put("document", getText(etDocumentNumber));
 
-        // 🔐 DIFERENCIA CLAVE DEL GUÍA
+        // 🔐 CAMPOS CLAVE DEL GUÍA
         userData.put("rol", "Guia");
         userData.put("status", "Inactivo");
         userData.put("guide_status", "No habilitado");
@@ -205,7 +221,9 @@ public class RegisterGuideActivity extends AppCompatActivity {
     }
 
     private void clearErrors() {
-        EditText[] fields = {etName, etLastName, etEmail, etDocumentNumber};
-        for (EditText et : fields) if (et != null) et.setError(null);
+        EditText[] fields = {etName, etLastName, etEmail, etPhone, etDocumentNumber};
+        for (EditText et : fields) {
+            if (et != null) et.setError(null);
+        }
     }
 }
