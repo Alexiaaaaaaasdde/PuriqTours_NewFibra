@@ -168,7 +168,7 @@
                             <ImageView
                                 android:layout_width="96dp"
                                 android:layout_height="96dp"
-                                android:src="@drawable/ic_guide_superadmin"
+                                android:src="@drawable/stop_guia"
                                 android:scaleType="centerInside"/>
 
                             <TextView
