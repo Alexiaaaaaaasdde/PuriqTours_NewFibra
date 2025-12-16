@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -107,6 +108,7 @@ public class ToursActivity extends BaseActivity {
 
             intent.putExtra("tourId", safeId);
             intent.putExtra("idGuia", tour.getIdGuia());
+            Log.d("FIRESTORE TOURS", "ID GUIA: " + tour.getIdGuia());
             intent.putExtra("titulo", tour.getTitle() != null ? tour.getTitle() : "Sin título");
             intent.putExtra("precio", String.valueOf(tour.getPrice() != null ? tour.getPrice() : 0));
             intent.putExtra("desc", tour.getDesc() != null ? tour.getDesc() : "Sin descripción");

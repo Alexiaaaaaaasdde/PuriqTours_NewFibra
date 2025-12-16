@@ -108,7 +108,6 @@ public class PagoActivity extends BaseActivity {
 
         // 🔹 Recuperar datos enviados desde DetalleTourActivity
         String viajeros = getIntent().getStringExtra("viajeros");
-        String precio = getIntent().getStringExtra("precio");
         String titulo = getIntent().getStringExtra("titulo");
         String fecha = getIntent().getStringExtra("fecha");
         String hora = getIntent().getStringExtra("hora");

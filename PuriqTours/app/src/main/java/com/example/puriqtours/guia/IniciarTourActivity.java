@@ -61,9 +61,6 @@ public class IniciarTourActivity extends AppCompatActivity {
         idTour = getIntent().getStringExtra("idTour");
 
         cargarInformacionReserva();
-        actualizarContadorVista();
-
-        evaluarInicioTour();
 
         // Mostrar el diálogo para ingresar el token
         btnIniciarTour.setOnClickListener(v -> {
@@ -121,6 +118,8 @@ public class IniciarTourActivity extends AppCompatActivity {
                 .addOnSuccessListener(doc -> {
                     clientesTotales = doc.getLong("totalClients");
                     clientesVerificados = doc.getLong("verifiedClients");
+                    actualizarContadorVista();
+                    evaluarInicioTour();
                 });
         cargarInformacionReservasIndividuales();
     }
@@ -199,8 +198,8 @@ public class IniciarTourActivity extends AppCompatActivity {
                             }else {
                                 Toast.makeText(this, "QR inválido", Toast.LENGTH_SHORT).show();
                                 Log.e("QR", "El Token de Inicio no coincide");
-                                return;
                             }
+                            return;
                         }
                     }
                     Toast.makeText(this, "QR inválido", Toast.LENGTH_SHORT).show();

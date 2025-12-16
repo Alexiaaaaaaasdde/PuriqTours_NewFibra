@@ -494,6 +494,7 @@ public class DetalleTourActivity extends BaseActivity {
             i.putExtra("hora", horaSeleccionada[0]);
             i.putExtra("tourId", tourId);
             i.putExtra("idGuia", idGuia);
+            Log.d("FIRESTORE DETALLE TOUR", "ID GUIA: " + idGuia);
             i.putExtra("titulo", tituloTour);
             i.putExtra("ubicacion", location);
             i.putExtra("img", getIntent().getStringExtra("img"));
