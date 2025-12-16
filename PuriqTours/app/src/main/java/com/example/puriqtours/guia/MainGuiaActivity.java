@@ -2,6 +2,7 @@ package com.example.puriqtours.guia;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -18,6 +19,9 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class MainGuiaActivity extends AppCompatActivity implements PerfilActualizadoListener {
 
@@ -45,35 +49,7 @@ public class MainGuiaActivity extends AppCompatActivity implements PerfilActuali
         // 🔹 Cargar imagen de perfil en toolbar
         cargarFotoToolbar();
 
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
-        // 🔹 MENÚ LATERAL
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            Fragment fragment = null;
-            String title = getString(R.string.app_name);
-
-            if (id == R.id.nav_logout) {
-                auth.signOut();
-                sessionManager.clearSession();
-                startActivity(new Intent(this, SplashActivity.class));
-                finish();
-                return true;
-            }
-
-            if (fragment != null) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-                toolbar.setTitle(title);
-            }
-
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
+        profileicon.setOnClickListener(v -> showLogoutMenu());
 
         // 🔹 Fragment inicial
         if (savedInstanceState == null) {
@@ -139,5 +115,33 @@ public class MainGuiaActivity extends AppCompatActivity implements PerfilActuali
     @Override
     public void onPerfilActualizado() {
         cargarFotoToolbar();  // ← Recarga la foto en la toolbar
+    }
+
+    private void showLogoutMenu() {
+        PopupMenu popup = new PopupMenu(this, profileicon);
+        popup.getMenu().add(1, 1, 1, "  Cerrar Sesión")
+                .setIcon(R.drawable.ic_logout);
+
+        try {
+            Field field = popup.getClass().getDeclaredField("mPopup");
+            field.setAccessible(true);
+            Object helper = field.get(popup);
+            Method m = helper.getClass().getDeclaredMethod("setForceShowIcon", boolean.class);
+            m.invoke(helper, true);
+        } catch (Exception ignored) {}
+
+        popup.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == 1) cerrarSesion();
+            return true;
+        });
+
+        popup.show();
+    }
+
+    private void cerrarSesion() {
+        auth.signOut();
+        sessionManager.clearSession();
+        startActivity(new Intent(this, SplashActivity.class));
+        finish();
     }
 }
