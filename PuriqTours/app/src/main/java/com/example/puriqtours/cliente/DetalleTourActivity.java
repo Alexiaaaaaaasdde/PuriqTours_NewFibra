@@ -1001,6 +1001,7 @@ public class DetalleTourActivity extends BaseActivity {
         TextView tvEmpresa = findViewById(R.id.tvEmpresa);
         TextView tvEmpresaTelefono = findViewById(R.id.tvEmpresaTelefono);
         TextView tvEmpresaEmail = findViewById(R.id.tvEmpresaEmail);
+        TextView tvEmpresaDireccion = findViewById(R.id.tvEmpresaDireccion);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -1025,9 +1026,18 @@ public class DetalleTourActivity extends BaseActivity {
                     String phone = doc.getString("phone");
                     String logoUrl = doc.getString("profile_image");
 
+                    // 🔹 NUEVO: dirección
+                    String direccion = doc.getString("address");
+
                     tvEmpresa.setText("Ofrecido por: " + nombre);
                     tvEmpresaTelefono.setText("Teléfono: " + phone);
                     tvEmpresaEmail.setText("Email: " + email);
+
+                    if (direccion != null && !direccion.isEmpty()) {
+                        tvEmpresaDireccion.setText("Dirección: " + direccion);
+                    } else {
+                        tvEmpresaDireccion.setText("Dirección: No disponible");
+                    }
 
                     if (logoUrl != null && !logoUrl.isEmpty()) {
                         imgEmpresaLogo.setVisibility(View.VISIBLE);
@@ -1037,6 +1047,7 @@ public class DetalleTourActivity extends BaseActivity {
                                 .into(imgEmpresaLogo);
                     }
                 })
+
                 .addOnFailureListener(e -> {
                     tvEmpresa.setText("Empresa no disponible");
                 });
