@@ -22,10 +22,10 @@ import com.example.puriqtours.R;
 import com.example.puriqtours.entity.TourAdmin;
 import com.example.puriqtours.entity.GuideAdmin;
 import com.example.puriqtours.helper.FirestoreHelper;
-import com.example.puriqtours.helper.NotificationHelper;
 import com.example.puriqtours.helper.TourConverter;
 import com.example.puriqtours.helper.GuideConverter;
 import com.example.puriqtours.helper.UserSessionManager;
+import com.example.puriqtours.utils.NotificationHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -71,17 +71,12 @@ public class MainAdminActivity extends AppCompatActivity {
         // Inicializar vistas
         initViews();
         
-        // 🔹 Icono de notificaciones en toolbar (probar todas las notificaciones)
+        // 🔹 Icono de notificaciones en toolbar
         ImageView notificationIcon = findViewById(R.id.notificationIcon);
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
-                // Simular TODAS las notificaciones para demostración
-                if (notificationHelper != null) {
-                    notificationHelper.simulateAllNotifications();
-                    Toast.makeText(this, "🔔 Probando todas las notificaciones del sistema...", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "Notificaciones", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(MainAdminActivity.this, NotificationsActivity.class);
+                startActivity(intent);
             });
         }
 
@@ -163,7 +158,17 @@ public class MainAdminActivity extends AppCompatActivity {
     }
     
     private void loadLatestTour() {
-        firestoreHelper.loadTours(tours -> {
+        // Obtener ID de la empresa actual
+        String currentUid = FirebaseAuth.getInstance().getUid();
+        if (currentUid == null || currentUid.isEmpty()) {
+            Log.e(TAG, "No se pudo obtener el UID del usuario actual");
+            tourTitle.setText("No hay tours");
+            tourDescription.setText("Crea tu primer tour");
+            return;
+        }
+        
+        // Cargar tours de la empresa actual
+        firestoreHelper.loadToursByEmpresa(currentUid, tours -> {
             if (tours != null && !tours.isEmpty()) {
                 // Obtener el último tour creado (el más reciente)
                 com.example.puriqtours.entity.Tour latestTour = tours.get(tours.size() - 1);
@@ -196,12 +201,16 @@ public class MainAdminActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
                 
-                Log.d(TAG, "Tour más reciente cargado: " + tourAdmin.getName());
+                Log.d(TAG, "Tour cargado exitosamente: " + tourAdmin.getName());
             } else {
-                Log.d(TAG, "No hay tours disponibles");
+                Log.d(TAG, "No hay tours disponibles para esta empresa");
                 tourTitle.setText("No hay tours");
                 tourDescription.setText("Crea tu primer tour");
-                cardLatestTour.setOnClickListener(null);
+                cardLatestTour.setOnClickListener(v -> {
+                    // Ir a crear tour
+                    Intent intent = new Intent(MainAdminActivity.this, CreateTourActivity.class);
+                    startActivity(intent);
+                });
             }
         });
     }
@@ -408,38 +417,24 @@ public class MainAdminActivity extends AppCompatActivity {
         // Recargar datos cuando volvamos a esta actividad
         loadLatestTour();
         loadLatestGuides();
+        updateNotificationBadge();
+    }
+    
+    private void updateNotificationBadge() {
+        TextView badge = findViewById(R.id.notificationBadge);
+        if (badge != null && notificationHelper != null) {
+            int unreadCount = notificationHelper.getUnreadCount();
+            if (unreadCount > 0) {
+                badge.setVisibility(View.VISIBLE);
+                badge.setText(String.valueOf(unreadCount));
+            } else {
+                badge.setVisibility(View.GONE);
+            }
+        }
     }
     
     private void initializeNotificationSystem() {
-        // Crear instancia del NotificationHelper (esto crea los canales automáticamente)
+        // Crear instancia del NotificationHelper local
         notificationHelper = new NotificationHelper(this);
-        
-        // Solicitar permisos para notificaciones en Android 13+
-        requestNotificationPermission();
-    }
-    
-    private void requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, 
-                    android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
-                        100);
-            }
-        }
-    }
-    
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        
-        if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permisos de notificación concedidos", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Las notificaciones están deshabilitadas", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 }

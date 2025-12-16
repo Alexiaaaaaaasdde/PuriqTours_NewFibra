@@ -2,8 +2,12 @@ package com.example.puriqtours.admin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,26 +16,45 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.puriqtours.MainActivity;
 import com.example.puriqtours.R;
 import com.example.puriqtours.entity.Usuario;
 import com.example.puriqtours.helper.FirestoreHelper;
 import com.example.puriqtours.helper.UserSessionManager;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
-public class ProfileAdminActivity extends AppCompatActivity {
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
+public class ProfileAdminActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private static final String TAG = "ProfileAdminActivity";
+    
     // Firebase helpers
     private FirestoreHelper firestoreHelper;
     private UserSessionManager sessionManager;
     private String currentAdminUid;
     private Usuario currentAdmin;
+    
+    // Google Maps
+    private GoogleMap mMap;
+    private Geocoder geocoder;
+    private CardView cardMapContainer;
 
     // Views para formulario
     private ScrollView completeProfileView;
@@ -58,8 +81,12 @@ public class ProfileAdminActivity extends AppCompatActivity {
         
         // Obtener UID del usuario actual
         currentAdminUid = sessionManager.getUid();
+        
+        // Inicializar Geocoder
+        geocoder = new Geocoder(this, new Locale("es", "PE"));
 
         initViews();
+        setupMap();
         
         // Ocultar ambas vistas inicialmente para evitar el flash
         if (completeProfileView != null) {
@@ -67,6 +94,15 @@ public class ProfileAdminActivity extends AppCompatActivity {
         }
         if (profileView != null) {
             profileView.setVisibility(View.GONE);
+        }
+        
+        // Icono de notificaciones
+        ImageView notificationIcon = findViewById(R.id.notificationIcon);
+        if (notificationIcon != null) {
+            notificationIcon.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileAdminActivity.this, NotificationsActivity.class);
+                startActivity(intent);
+            });
         }
         
         setupBottomNavigation();
@@ -107,6 +143,9 @@ public class ProfileAdminActivity extends AppCompatActivity {
         etEditPhone = findViewById(R.id.etEditPhone);
         etEditEmail = findViewById(R.id.etEditEmail);
         btnEdit = findViewById(R.id.btnEdit);
+        
+        // Contenedor del mapa
+        cardMapContainer = findViewById(R.id.cardMapContainer);
 
         // Configurar botón guardar
         btnSave.setOnClickListener(v -> saveProfile());
@@ -213,6 +252,11 @@ public class ProfileAdminActivity extends AppCompatActivity {
         tvPhone.setText(phone);
         tvEmail.setText(email);
         tvAddress.setText(address);
+        
+        // Mostrar ubicación en el mapa
+        if (mMap != null) {
+            showLocationOnMap(address);
+        }
         
         // Cargar imagen de perfil desde Firebase Storage
         String profileImageUrl = currentAdmin.getProfile_image();
@@ -395,6 +439,100 @@ public class ProfileAdminActivity extends AppCompatActivity {
                 }
                 return false;
             });
+        }
+    }
+    
+    private void setupMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapFragmentProfile);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+        
+        // Configurar click en el mapa para abrir Google Maps
+        if (cardMapContainer != null) {
+            cardMapContainer.setOnClickListener(v -> openInGoogleMaps());
+        }
+    }
+    
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+        
+        // Configurar estilo del mapa
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setZoomGesturesEnabled(false);
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.getUiSettings().setTiltGesturesEnabled(false);
+        
+        Log.d(TAG, "Mapa listo para mostrar ubicación");
+        
+        // Si ya tenemos los datos del admin, mostrar ubicación
+        if (currentAdmin != null && currentAdmin.getAddress() != null) {
+            showLocationOnMap(currentAdmin.getAddress());
+        }
+    }
+    
+    private void showLocationOnMap(String address) {
+        if (mMap == null || address == null || address.trim().isEmpty() || address.equals("Sin dirección")) {
+            Log.d(TAG, "No se puede mostrar ubicación: mapa o dirección no válida");
+            return;
+        }
+        
+        new Thread(() -> {
+            try {
+                List<Address> addresses = geocoder.getFromLocationName(address + ", Perú", 1);
+                
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address location = addresses.get(0);
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    
+                    runOnUiThread(() -> {
+                        mMap.clear();
+                        mMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title(currentAdmin.getName() != null ? currentAdmin.getName() : "Empresa"));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        
+                        Log.d(TAG, "Ubicación mostrada: " + latLng.toString());
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        Log.e(TAG, "No se encontró la dirección: " + address);
+                        Toast.makeText(this, "No se pudo encontrar la ubicación", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            } catch (IOException e) {
+                runOnUiThread(() -> {
+                    Log.e(TAG, "Error al geocodificar dirección", e);
+                    Toast.makeText(this, "Error al cargar ubicación", Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
+    }
+    
+    private void openInGoogleMaps() {
+        if (currentAdmin == null || currentAdmin.getAddress() == null || 
+            currentAdmin.getAddress().trim().isEmpty() || currentAdmin.getAddress().equals("Sin dirección")) {
+            Toast.makeText(this, "No hay dirección configurada", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Crear URI para Google Maps
+        String address = currentAdmin.getAddress();
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(address + ", Perú"));
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        
+        // Verificar si Google Maps está instalado
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        } else {
+            // Si no está instalado, abrir en el navegador
+            Uri webUri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + Uri.encode(address + ", Perú"));
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, webUri);
+            startActivity(webIntent);
         }
     }
 }

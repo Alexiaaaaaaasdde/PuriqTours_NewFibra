@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header con número y botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <!-- Número de ubicación -->
+            <TextView
+                android:id="@+id/tvNumeroUbicacion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ubicación 1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/teal_700" />
+
+            <!-- Botón mover arriba -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnMoveUp"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="↑"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_marginEnd="4dp"
+                android:padding="0dp" />
+
+            <!-- Botón mover abajo -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnMoveDown"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="↓"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_marginEnd="8dp"
+                android:padding="0dp" />
+
+            <!-- Botón eliminar -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEliminarUbicacion"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="✕"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:backgroundTint="#E53935"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:padding="0dp" />
+
+        </LinearLayout>
+
+        <!-- Título de la ubicación -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="Título de la ubicación"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTituloUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Autocomplete para buscar ubicación -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:hint="Buscar ubicación en el mapa"
+            app:boxBackgroundMode="outline"
+            app:startIconDrawable="@android:drawable/ic_menu_search"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/actvBuscarUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="1"
+                android:completionThreshold="3" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Botón para seleccionar en mapa -->
+        <Button
+            android:id="@+id/btnSeleccionarEnMapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📍 Seleccionar directamente en el mapa"
+            android:textSize="14sp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@color/white"
+            android:layout_marginBottom="12dp"
+            android:paddingVertical="12dp" />
+
+        <!-- Ubicación seleccionada -->
+        <TextView
+            android:id="@+id/tvUbicacionSeleccionada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📌 Sin ubicación seleccionada"
+            android:textSize="13sp"
+            android:textColor="#666"
+            android:padding="8dp"
+            android:background="@drawable/rounded_edittext"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone" />
+
+        <!-- Coordenadas (ocultas, solo para verificación) -->
+        <TextView
+            android:id="@+id/tvCoordenadas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="11sp"
+            android:textColor="#999"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

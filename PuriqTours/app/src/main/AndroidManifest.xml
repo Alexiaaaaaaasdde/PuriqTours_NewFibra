@@ -252,6 +252,9 @@
             android:name=".admin.ChatAdminActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".admin.NotificationsActivity"
+            android:exported="false" />
 
         <activity
             android:name=".cliente.ReservaDetalleActivity"

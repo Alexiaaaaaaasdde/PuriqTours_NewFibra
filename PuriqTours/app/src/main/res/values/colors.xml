@@ -70,5 +70,8 @@
     <color name="zxing_custom_viewfinder_laser">#FF6F00</color>
     <color name="zxing_custom_viewfinder_mask">#60000000</color>
 
+    <!-- Notificaciones -->
+    <color name="notification_unread_bg">#E0F7FA</color> <!-- Fondo azul claro para notificaciones no leídas -->
 </resources>
+    
 
