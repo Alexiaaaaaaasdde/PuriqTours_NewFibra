@@ -32,10 +32,6 @@ public class UsuariosAdministradoresFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_usuarios_administradores, container, false);
 
-        FloatingActionButton fab = view.findViewById(R.id.fabAgregarAdmin);
-        fab.setOnClickListener(v -> {
-            // Acción al agregar admin
-        });
 
         RecyclerView recyclerView = new RecyclerView(getContext());
         recyclerView.setId(View.generateViewId());

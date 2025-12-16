@@ -107,9 +107,11 @@ public class CrecimientoActivity extends AppCompatActivity {
 
                         if ("Activo".equalsIgnoreCase(status)) {
                             activos++;
-                        } else {
+                        } else if ("Inactivo".equalsIgnoreCase(status)) {
                             inactivos++;
                         }
+// todo lo demás se ignora
+
                     }
 
                     // 🔹 Datos del gráfico

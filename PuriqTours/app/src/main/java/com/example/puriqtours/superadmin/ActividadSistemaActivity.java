@@ -1,8 +1,11 @@
 package com.example.puriqtours.superadmin;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -129,31 +132,71 @@ public class ActividadSistemaActivity extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot doc : snapshot) {
 
-                        String dateStr = doc.getString("date"); // yyyy-MM-dd
+                        String docId = doc.getId();
                         String status = doc.getString("status");
+                        Object tsObj = doc.get("timestamp");
 
-                        if (dateStr == null || status == null) continue;
+                        Log.d(TAG, "------------------------------");
+                        Log.d(TAG, "Doc ID: " + docId);
+                        Log.d(TAG, "Status: " + status);
+                        Log.d(TAG, "Timestamp raw: " + tsObj);
 
-                        // Parsear fecha
-                        String[] parts = dateStr.split("-");
-                        if (parts.length < 2) continue;
+                        if (status == null || tsObj == null) {
+                            Log.d(TAG, "⛔ Ignorado: status o timestamp nulo");
+                            continue;
+                        }
 
                         Calendar cal = Calendar.getInstance();
-                        cal.set(
-                                Integer.parseInt(parts[0]),
-                                Integer.parseInt(parts[1]) - 1,
-                                1
-                        );
 
-                        int key = cal.get(Calendar.YEAR) * 100 + cal.get(Calendar.MONTH);
+                        if (tsObj instanceof com.google.firebase.Timestamp) {
+                            cal.setTime(((com.google.firebase.Timestamp) tsObj).toDate());
+                            Log.d(TAG, "Timestamp tipo Firebase.Timestamp");
 
-                        // Si no está dentro del rango → ignorar
-                        if (!conteoMeses.containsKey(key)) continue;
+                        } else if (tsObj instanceof Long) {
+                            cal.setTimeInMillis((Long) tsObj);
+                            Log.d(TAG, "Timestamp tipo Long (millis)");
 
-                        // Conteo para gráfico
+                        } else if (tsObj instanceof String) {
+                            String dateStr = (String) tsObj;
+                            Log.d(TAG, "Timestamp tipo String: " + dateStr);
+
+                            String[] parts = dateStr.split("-");
+                            if (parts.length < 2) {
+                                Log.d(TAG, "⛔ Fecha inválida");
+                                continue;
+                            }
+
+                            cal.set(
+                                    Integer.parseInt(parts[0]),
+                                    Integer.parseInt(parts[1]) - 1,
+                                    1
+                            );
+                        } else {
+                            Log.d(TAG, "⛔ Timestamp tipo desconocido");
+                            continue;
+                        }
+
+                        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+                        int year = cal.get(Calendar.YEAR);
+                        int month = cal.get(Calendar.MONTH); // 0-based
+                        int key = year * 100 + month;
+
+                        Log.d(TAG, "Fecha normalizada → Año: " + year + " Mes: " + (month + 1));
+                        Log.d(TAG, "Key calculada: " + key);
+                        Log.d(TAG, "¿Existe en rango?: " + conteoMeses.containsKey(key));
+
+                        if (!conteoMeses.containsKey(key)) {
+                            Log.d(TAG, "⛔ Fuera del rango seleccionado");
+                            continue;
+                        }
+
+                        // Conteo gráfico
                         conteoMeses.put(key, conteoMeses.get(key) + 1);
 
-                        // Conteo para cards
+                        Log.d(TAG, "✅ SUMA al mes → nuevo valor: " + conteoMeses.get(key));
+
+                        // Conteo cards
                         switch (status) {
                             case "Reservado":
                                 reservado++;
@@ -165,7 +208,13 @@ public class ActividadSistemaActivity extends AppCompatActivity {
                                 finalizado++;
                                 break;
                         }
+
+                        Log.d(TAG, "Cards → R:" + reservado + " P:" + proceso + " F:" + finalizado);
                     }
+
+
+
+
 
                     mostrarGraficoUltimosMeses(conteoMeses, meses);
 

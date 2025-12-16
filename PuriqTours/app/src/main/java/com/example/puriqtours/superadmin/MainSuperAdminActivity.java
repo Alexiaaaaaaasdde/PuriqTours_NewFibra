@@ -3,10 +3,15 @@ package com.example.puriqtours.superadmin;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
+import com.example.puriqtours.helper.UserSessionManager;
+import com.example.puriqtours.SplashActivity;
+
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -59,6 +64,9 @@ public class MainSuperAdminActivity extends AppCompatActivity {
     private TextView tvEnabledGuidesCount;
     private TextView tvRegisteredCompaniesCount;
     private LinearLayout llToursBarsContainer;
+    private FirebaseAuth auth;
+    private UserSessionManager sessionManager;
+
     private FirebaseFirestore db;
     private ListenerRegistration usersListener;
     private GuiasHorizontalAdapter guiasAdapter;
@@ -102,9 +110,11 @@ public class MainSuperAdminActivity extends AppCompatActivity {
 
                         // 🧭 GUÍAS HABILITADOS
                         if ("Guia".equalsIgnoreCase(rol)
-                                && "Activo".equalsIgnoreCase(status)) {
+                                && "Activo".equalsIgnoreCase(status)
+                                && "Habilitado".equalsIgnoreCase(doc.getString("guide_status"))) {
                             enabledGuides++;
                         }
+
 
                         // 🏢 EMPRESAS REGISTRADAS (Admins activos)
                         if ("Admin".equalsIgnoreCase(rol)
@@ -416,12 +426,16 @@ public class MainSuperAdminActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_superadmin_home);
-        // 🔹 Toolbar
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        setSupportActionBar(toolbar);
-        // 🔹 Firestore
-        db = FirebaseFirestore.getInstance();
 
+        // ✅ 1. Obtener toolbar DESDE el include
+        View topBar = findViewById(R.id.includeTopBar);
+        MaterialToolbar toolbar = topBar.findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+
+        // ✅ 2. Inicializar Firebase y sesión
+        auth = FirebaseAuth.getInstance();
+        sessionManager = new UserSessionManager(this);
+        db = FirebaseFirestore.getInstance();
         // 🔹 Status bar
         getWindow().setStatusBarColor(Color.WHITE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
@@ -497,23 +511,20 @@ public class MainSuperAdminActivity extends AppCompatActivity {
 
 
     }
+
+
     @Override
-    public boolean onOptionsItemSelected(@NonNull android.view.MenuItem item) {
-
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // 3. Capturar el click en "Cerrar sesión"
         if (item.getItemId() == R.id.action_logout) {
-
-            FirebaseAuth.getInstance().signOut();
-
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-
+            cerrarSesion();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onResume() {
@@ -665,6 +676,34 @@ public class MainSuperAdminActivity extends AppCompatActivity {
                 progress = item.findViewById(R.id.progressBar);
             }
         }
+    }
+    private void cerrarSesion() {
+
+        // 1️⃣ Firebase
+        auth.signOut();
+
+        // 2️⃣ SharedPreferences (UserSessionManager)
+        sessionManager.clearSession();
+
+        // 3️⃣ LIMPIAR CACHE DE IMÁGENES (GLIDE)
+        new Thread(() -> {
+            Glide.get(getApplicationContext()).clearDiskCache();
+        }).start();
+
+        Glide.get(this).clearMemory();
+
+        // 4️⃣ Volver al Splash (app como recién abierta)
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // 2. Inflar el menú
+        getMenuInflater().inflate(R.menu.menu_topbar_superadmin, menu);
+        return true;
     }
 
 

@@ -66,21 +66,23 @@
                     android:id="@+id/btn3m"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="3 meses"/>
+                    android:text="3 meses"
+                    android:paddingHorizontal="12dp"/>
+
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn6m"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="6 meses"
-                    android:layout_marginStart="8dp"/>
+                    android:paddingHorizontal="12dp"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn12m"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="12 meses"
-                    android:layout_marginStart="8dp"/>
+                    android:paddingHorizontal="12dp"/>
             </LinearLayout>
 
             <!-- GRÁFICO -->
@@ -210,14 +212,14 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationSuperAdmin"
         android:layout_width="0dp"
-        android:layout_height="105dp"
+        android:layout_height="72dp"
         android:background="@android:color/white"
         app:menu="@menu/bottom_nav_superadmin"
         app:itemIconTint="@color/teal_700"
         app:itemTextColor="@color/teal_700"
         app:labelVisibilityMode="labeled"
         app:itemBackground="@android:color/transparent"
-        app:itemIconSize="45dp"
+        app:itemIconSize="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

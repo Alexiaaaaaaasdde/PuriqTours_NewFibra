@@ -29,8 +29,9 @@ public class SolicitudesActivity extends AppCompatActivity {
     private SolicitudesAdapter adapter;
     private List<DocumentSnapshot> solicitudList;
     private FirebaseFirestore db;
+    private String estadoActual = "No habilitado"; // default Pendientes
 
-    private MaterialButton btnPendientes, btnRechazados, btnHabilitados, btnTodos;
+    private MaterialButton btnPendientes, btnHabilitados;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +67,24 @@ public class SolicitudesActivity extends AppCompatActivity {
         }
 
         rvSolicitudes = findViewById(R.id.rvSolicitudes);
+        rvSolicitudes.setOnApplyWindowInsetsListener((v, insets) -> {
+            int bottomInset = insets.getSystemWindowInsetBottom();
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    bottomInset + dpToPx(16)
+            );
+            return insets;
+        });
+        rvSolicitudes.requestApplyInsets(); // 👈 ESTA ES LA LÍNEA
+
         rvSolicitudes.setLayoutManager(new LinearLayoutManager(this));
         solicitudList = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
 
         btnPendientes = findViewById(R.id.btnPendientes);
-        btnRechazados = findViewById(R.id.btnRechazados);
         btnHabilitados = findViewById(R.id.btnHabilitados);
-        btnTodos = findViewById(R.id.btnTodosSolicitudes);
 
         // 🔹 Carga inicial
         cargarSolicitudes("No habilitado");
@@ -91,24 +102,18 @@ public class SolicitudesActivity extends AppCompatActivity {
 
         // 🔹 Filtros (ahora cada uno resalta el suyo)
         btnPendientes.setOnClickListener(v -> {
-            cargarSolicitudes("No habilitado");
+            estadoActual = "No habilitado";
+            cargarSolicitudes(estadoActual);
             highlightFilter(R.id.btnPendientes);
         });
 
         btnHabilitados.setOnClickListener(v -> {
-            cargarSolicitudes("Habilitado");
+            estadoActual = "Habilitado";
+            cargarSolicitudes(estadoActual);
             highlightFilter(R.id.btnHabilitados);
         });
 
-        btnRechazados.setOnClickListener(v -> {
-            cargarSolicitudes("Rechazado");
-            highlightFilter(R.id.btnRechazados);
-        });
 
-        btnTodos.setOnClickListener(v -> {
-            cargarSolicitudes(null);
-            highlightFilter(R.id.btnTodosSolicitudes);
-        });
 
         // 🔹 Ordenar
         LinearLayout ordenarLayout = findViewById(R.id.ordenarLayoutSolicitudes);
@@ -134,9 +139,10 @@ public class SolicitudesActivity extends AppCompatActivity {
                 solicitudList.add(doc);
             }
 
-            boolean mostrarBotones = !"Habilitado".equals(estado);
+            boolean mostrarBotones = !"Habilitado".equals(estadoActual);
             adapter = new SolicitudesAdapter(this, solicitudList, mostrarBotones);
             rvSolicitudes.setAdapter(adapter);
+
 
         }).addOnFailureListener(e ->
                 Toast.makeText(this, "Error al cargar solicitudes.", Toast.LENGTH_SHORT).show());
@@ -160,9 +166,10 @@ public class SolicitudesActivity extends AppCompatActivity {
                 filtradas.add(doc);
             }
         }
-
-        adapter = new SolicitudesAdapter(this, filtradas, true);
+        boolean mostrarBotones = !"Habilitado".equals(estadoActual);
+        adapter = new SolicitudesAdapter(this, filtradas, mostrarBotones);
         rvSolicitudes.setAdapter(adapter);
+
     }
 
     // =====================================================
@@ -184,12 +191,29 @@ public class SolicitudesActivity extends AppCompatActivity {
     // ✅ SOMBREADO IGUAL A USUARIOS
     // =====================================================
     private void highlightFilter(int selectedId) {
-        int[] ids = {R.id.btnPendientes, R.id.btnRechazados, R.id.btnHabilitados, R.id.btnTodosSolicitudes};
+        int[] ids = {
+                R.id.btnPendientes,
+                R.id.btnHabilitados
+        };
+
         for (int id : ids) {
             View btn = findViewById(id);
             if (btn != null) {
-                btn.setBackgroundColor(getResources().getColor(id == selectedId ? R.color.teal_50 : android.R.color.white));
+                btn.setBackgroundColor(
+                        getResources().getColor(
+                                id == selectedId
+                                        ? R.color.teal_50
+                                        : android.R.color.white
+                        )
+                );
             }
         }
     }
+    private int dpToPx(int dp) {
+        return Math.round(
+                dp * getResources().getDisplayMetrics().density
+        );
+    }
+
+
 }

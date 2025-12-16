@@ -113,15 +113,19 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
         listaCamposTexto.clear();
         listaSpinners.clear();
 
-        // Campos comunes
         agregarCampoTexto("Nombre");
         agregarCampoTexto("Apellido");
         agregarCampoTexto("Email");
+
+        // 🔥 NUEVOS CAMPOS
+        agregarCampoTexto("Teléfono", InputType.TYPE_CLASS_PHONE);
+        agregarCampoTexto("Dirección", InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+
         agregarCampoTexto("Password", InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        // Campos exclusivos para Admin
         agregarCampoSpinner("Idioma", new String[]{"Español", "Inglés", "Aymara"});
     }
+
 
     // =====================================================
     // CAMPOS
@@ -175,21 +179,40 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
     private void crearUsuario() {
         String rol = "Admin";
 
+        // 1️⃣ LEER CAMPOS
         int i = 0;
-        String nombre = getTexto(i++);
-        String apellido = getTexto(i++);
-        String email = getTexto(i++);
-        String password = getTexto(i++);
+        String nombre    = getTexto(i++);
+        String apellido  = getTexto(i++);
+        String email     = getTexto(i++);
+        String telefono  = getTexto(i++);
+        String direccion = getTexto(i++);
+        String password  = getTexto(i++);
 
-        if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(getContext(), "❗Completa todos los campos", Toast.LENGTH_LONG).show();
+        // 2️⃣ VALIDAR CAMPOS DE TEXTO
+        if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty()
+                || telefono.isEmpty() || direccion.isEmpty() || password.isEmpty()) {
+
+            Toast.makeText(getContext(),
+                    "❗Completa todos los campos",
+                    Toast.LENGTH_LONG).show();
             return;
         }
 
+        // 3️⃣ 🔥 VALIDAR FOTO (AQUÍ VA)
+        if (imagenSeleccionadaUri == null) {
+            Toast.makeText(getContext(),
+                    "📸 Debes adjuntar una foto de perfil",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // 4️⃣ DATA PARA FIRESTORE
         Map<String, Object> data = new HashMap<>();
         data.put("name", nombre);
         data.put("last_name", apellido);
         data.put("email", email);
+        data.put("phone", telefono);
+        data.put("address", direccion);
         data.put("rol", rol);
         data.put("status", "Activo");
 
@@ -198,26 +221,52 @@ public class CrearUsuarioDialog extends AppCompatDialogFragment {
 
         Toast.makeText(getContext(), "Creando usuario...", Toast.LENGTH_SHORT).show();
 
+        // 5️⃣ CREAR USUARIO AUTH
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String uid = authResult.getUser().getUid();
-                    data.put("uid", uid);
 
-                    db.collection("users").document(uid)
-                            .set(data)
-                            .addOnSuccessListener(a -> {
-                                Toast.makeText(getContext(), "✅ Usuario creado correctamente", Toast.LENGTH_LONG).show();
-                                dismiss();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(getContext(), "❌ Error Firestore: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            });
+                    // 📸 Ruta de la foto
+                    StorageReference fotoRef =
+                            storageRef.child(uid + ".jpg");
 
+                    // ⬆️ Subir imagen
+                    fotoRef.putFile(imagenSeleccionadaUri)
+                            .addOnSuccessListener(taskSnapshot ->
+                                    fotoRef.getDownloadUrl()
+                                            .addOnSuccessListener(uri -> {
+
+                                                // ✅ Guardar URL
+                                                data.put("uid", uid);
+                                                data.put("profile_image", uri.toString());
+
+                                                // 💾 Guardar usuario en Firestore
+                                                db.collection("users").document(uid)
+                                                        .set(data)
+                                                        .addOnSuccessListener(a -> {
+                                                            Toast.makeText(getContext(),
+                                                                    "✅ Usuario creado con foto",
+                                                                    Toast.LENGTH_LONG).show();
+                                                            dismiss();
+                                                        })
+                                                        .addOnFailureListener(e ->
+                                                                Toast.makeText(getContext(),
+                                                                        "❌ Firestore: " + e.getMessage(),
+                                                                        Toast.LENGTH_LONG).show());
+                                            }))
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(getContext(),
+                                            "❌ Error al subir foto: " + e.getMessage(),
+                                            Toast.LENGTH_LONG).show());
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "❌ Error Auth: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                .addOnFailureListener(e ->
+                        Toast.makeText(getContext(),
+                                "❌ Error Auth: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show());
+
     }
+
+
 
     // =====================================================
     // HELPERS
